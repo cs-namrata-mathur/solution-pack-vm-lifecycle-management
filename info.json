@@ -1,0 +1,152 @@
+{
+    "name": "vMLifecycleManagement",
+    "version": "1.0.0",
+    "fsrMinCompatibility": "7.6.4",
+    "type": "solutionpack",
+    "local": true,
+    "label": "VM Lifecycle Management",
+    "dependencies": [
+        {
+            "name": "sOARFramework",
+            "type": "solutionpack",
+            "label": "SOAR Framework",
+            "minVersion": null
+        }
+    ],
+    "prerequisite": "# Connectors: \n- Active Directory (installed)\n- DNS\n- FortiMail\n- FortiGate\n- SSH (KVM)\n- Google Gemini\n- -IMAP\n- SMTP\n- VirusTotal\n\n# Users:\nYou will need extra users (other than csadmin) to test the requests from \n",
+    "publisher": "Fortinet CSE",
+    "contributor": "Naili.M",
+    "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
+    "help": null,
+    "category": [
+        "Compute Platform"
+    ],
+    "supportInfo": null,
+    "iconLarge": null,
+    "postInstallConfig": {
+        "enabled": false
+    },
+    "recordTags": ["FortiSOAR", "VM Lifecycle Management"],
+    "date": "2026-04-15T07:09:05+00:00",
+    "contents": {
+        "picklistNames": [
+            {
+                "name": "VM Status"
+            },
+            {
+                "name": "VM Type"
+            }
+        ],
+        "modules": {
+            "network_interfaces": {
+                "name": "Network Interfaces",
+                "apiName": "network_interfaces"
+            },
+            "v_m_instances": {
+                "name": "VM Instances",
+                "apiName": "v_m_instances"
+            }
+        },
+        "viewTemplates": {
+            "network_interfaces": {
+                "name": "Network Interfaces",
+                "apiName": "network_interfaces",
+                "views": [
+                    "list",
+                    "form",
+                    "detail"
+                ]
+            },
+            "v_m_instances": {
+                "name": "VM Instances",
+                "apiName": "v_m_instances",
+                "views": [
+                    "detail",
+                    "list",
+                    "form"
+                ]
+            }
+        },
+        "views": {
+            "navigation": [
+                "Dashboard",
+                "Queue & Shift Management",
+                "Incident Response",
+                "Automation",
+                "Resources",
+                "Vulnerability Management",
+                "Threat Intel Management",
+                "Outbreak Management",
+                "VM Lifecycle Management",
+                "Reports",
+                "Widget Library",
+                "Content Hub",
+                "Simulations",
+                "Help",
+                "User Community"
+            ]
+        },
+        "roles": [
+            {
+                "name": "Full App Permissions"
+            }
+        ],
+        "globalVariables": [
+            {
+                "name": "Current_Date",
+                "value": "{{arrow.utcnow().timestamp}}",
+                "default_value": "{{arrow.utcnow().timestamp}}"
+            },
+            {
+                "name": "infrastructure_team_email",
+                "value": "cloud-ops@fortielab.com",
+                "default_value": "cloud-ops@fortielab.com"
+            },
+            {
+                "name": "Server_fqhn",
+                "value": "34.1.59.201:13002",
+                "default_value": "master.fortisoar.in"
+            }
+        ],
+        "playbooks": [
+            {
+                "name": "02 - VM Lifecycle Management"
+            }
+        ],
+        "connectors": [
+            {
+                "name": "Active Directory",
+                "apiName": "activedirectory"
+            },
+            {
+                "name": "DNS",
+                "apiName": "dns"
+            },
+            {
+                "name": "Fortinet FortiGate",
+                "apiName": "fortigate-firewall"
+            },
+            {
+                "name": "Fortinet FortiMail",
+                "apiName": "fortinet-fortimail"
+            },
+            {
+                "name": "Google Gemini",
+                "apiName": "google-bard",
+                "version": "2.1.0"
+            },
+            {
+                "name": "IMAP",
+                "apiName": "imap"
+            },
+            {
+                "name": "SMTP",
+                "apiName": "smtp"
+            },
+            {
+                "name": "SSH",
+                "apiName": "ssh"
+            }
+        ]
+    }
+}

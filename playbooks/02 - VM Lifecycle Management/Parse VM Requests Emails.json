@@ -1,0 +1,201 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Parse VM Requests Emails",
+    "aliasName": null,
+    "tag": null,
+    "description": "Parse emails with VM requests",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/151e866a-6408-42d5-a5dd-295e97b9b054",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "email_body": "{{vars.input.records[0].emailBody | striptags}}",
+                "useMockOutput": "false",
+                "request_attributes": "{\n\"requestor_email\":\"{{vars.input.records[0].emailFrom | regex_search('[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}') }}\"\n}"
+            },
+            "status": null,
+            "top": "165",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "422d83c5-a445-4e80-833b-5dd90a024f5e"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Parsed VM Request Attributes",
+            "description": null,
+            "arguments": {
+                "_update_attributes": "{{vars.request_attributes.update(vars.steps.Parse_Requestor_Email.data.candidates[0].content.parts[0].text|toDict)}}"
+            },
+            "status": null,
+            "top": "435",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "a560a833-cbda-48fe-8edf-50010aaf2a82"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Parse Requestor Email",
+            "description": null,
+            "arguments": {
+                "name": "Google Gemini",
+                "config": "ac6f4d85-6a0d-45e6-8dde-9aeae0ac7a74",
+                "params": {
+                    "name": "models\/gemini-3.1-pro-preview",
+                    "text": "how many tokens did you consume to answer this question",
+                    "topK": "",
+                    "topP": "",
+                    "contents": "[\n  {\n    \"role\": \"user\",\n    \"parts\": [\n      {\n        \"text\": \"[SCHEMA]\\n{\\n  'vm_name': 'name of the VM if mentioned in the text or any name derived from the text. It must be all lower case and has no metacharacter nor space except dashes',\\n  'vm_type': 'Debian' or 'Tiny Core Linux',\\n  'department': 'replace this text with the department the requestor belongs to if he or she mentioned it in the text',\\n  'deleteAfter': replace this value with an integer number representing the epoch time when the VM should be deleted, if mentioned in the text,\\n  'internet_access': replace this text with a boolean value representing if the user asked for internet access or not for the requested VM,\\n  'businessJustification': 'replace this value with a string explaining why the user is requesting this VM, if mentioned in the text'\\n}\\nBased on the above schema, extract the relevant information from the following user request text and return it as a valid JSON object\\n\\n[TEXT]\\n{{vars.email_body}}\"\n      }\n    ]\n  }\n]",
+                    "temperature": "",
+                    "stopSequences": "",
+                    "safetySettings": "[]",
+                    "candidate_count": 1,
+                    "maxOutputTokens": "",
+                    "system_instruction": "You are a Data Extraction Engine parsing a text and returning a valid JSON object as per the supplied SCHEMA. Make sure the returned JSON object is not a json string but an object. DO NOT include any markdown formatting, backticks (```), or introductory\/concluding text. If a value is missing, or you cannot guess it from the context use null."
+                },
+                "version": "2.1.0",
+                "connector": "google-bard",
+                "operation": "generate_text",
+                "mock_result": "{\n  \"data\": {\n    \"candidates\": [\n      {\n        \"index\": 0,\n        \"content\": {\n          \"role\": \"model\",\n          \"parts\": [\n            {\n              \"text\": \"{\\n  \\\"vm_name\\\": \\\"oracle-erp-test\\\",\\n  \\\"vm_type\\\": \\\"Debian\\\",\\n  \\\"department\\\": null,\\n  \\\"deleteAfter\\\": 1721520000,\\n  \\\"internet_access\\\": true,\\n  \\\"businessJustification\\\": \\\"test a new Oracle database hosting our ERP system and download necessary packages\\\"\\n}\",\n              \"thoughtSignature\": \"Epk2CpY2Ab4+9vvKb54ruJ0bCv25BawdbepyakrvUUp7LXy8Yc\/q6+ERyG53BeAQ8L192h7URXKW6MPz01sk93QfXq3yQPhgErEJGNhrUxM23O6wQrgbncAE+eQfAlv72gTAbBdgPx7rrEXTo2momiRrOI5nfY1omTVcwvV1QkxKlGu2OP8zK9qakU0ahd3582y7BwT3YPOoa4dxU+NpObnNDXVE69zuwAhdljfJm6v0fenswJrXz+zyZjSZGYO7ZABKpRbchR9ulIVEXYqbqvb3brLJ1W0GoE+DRpayF+yrrlxstr6wkDpEr4N7vUuKdzu0D0SpzNk9Q\/qWlQGuWbDjP5mxRqB6QsTJhcgZ+2bK7KAoevFzSwnGMVhqIOEElDXth2mImNw7nsuvGQYJvpwdvlEoFpwrvXPIhJ6j0n7NabM\/8VWxhaUVNWiwOYg72I8bdDRcXJMuh4Ysu37DGxby6C\/KEtEv4WBiOgD8G\/P8wA5GsGlFv35W17Siy9lSXNfhEozF1XfxNxmCfwDFKg76Jd28doNgUoBl51XlsyMVx5CSWBoJxalEbL4DZAtD7hZQkY5mPMh7hSKLruR\/6pH7Ebr1ivTWzPzPXfi8B0cBq5zKw8CZaOZCzDlG1sqJEHyIUuSpktVnm6oq7uVj4OfsVL7LKShSQw9yXkx5lXxit9XbwvtnjVrwnNaybUyq0qLAacFxIupioEec9tVcOrGhrxEsiHLueIrIWPnKxgOwvvDS0GMoXUsluAXGyKbcrPm7Sk\/w1Kb4qgujavzcyxx0oOOpfAcK9aF6WeAI\/Q1Ele29y2j9dfADDeITCGvBUWnapkA\/XU5aKbBT39PGKOt9fb+ba2lNIPdnxGG0S\/zwAn0113fZ8G96CrmyzlXLk28IC8KkwYvo8\/GjYC4Wab7aRM8vhzwNf6ZYgPcv7zD5jTnf7tC2bWPc0VhcuuPzXMOOJWqiRwv3h1WsHjnMTf0XznJD4prqXQBUMj7Sf2izzURsoB27AqASlFWP+9kGf12y3hpDCV252CQmz5Zmc\/8NkHktmK\/xqTfbDOeV2TCPqEvEHTAiXQYY1te6nXtSOyzxFgdZ0fHGgZE4JoJmh1JYNw16Tinqc0xu++QsLQNOPHynOPS4VoZQHEvQcFDecVTq7Q3gBkr7MDCxlZm3BSO0pHs+5G4ZuKUumA9ebR9Tfcd5NEmDNXTgpxbavmiJobXf9umQ2yK4gixI7Yz+\/SvOr0lQFD+UQzaP1hN8jFOjZoU9P5jBV27hIusfjduWK8kiqBVFr30yaia9iJqUjMyVa8aW+RKbyQEfDhDMZqVBxaDZO9smRun0asqtq8co4LllZKRMD0nApL1ml2HX2QokEbq2Kqh1eH66hryXx8jsGSAT\/2KvehfH+WMcscs\/eZyYcatmDWXRFIAu9sTJzw2H2UhIlawg61uIOQ2HmfXvP58ZmL4ICBOq41+9qHHF8Kya7f3xR5t2coxQI+mIdGi1PX+07sLDp+vqDWGWeEnRJ7zAi+J0ZdRxhjL\/rWr02wCHsvX6i\/Dz3+tiX2DaqSmTljvuu6qqXsk2Xq3yXPJM+T91e24y5j42yK5MShcx1vwTzEldEd2ReTkj12Bl9OLT8K+bb32Lwdtqri7qDazWj7DYOqLEbzbssHyLpQVYuJNm663XvTF81fgpoYGcG7HcLrySbenXYXX4SflNW39OiFEQBjvTMDdfaKZm1wIwX+UFMMfvhOwtOlfLD3679ouwSo+ChXYed88wcOgdltC4yhpNxkOo7qSQ+cY0kPlNggn8lLzG34qVz2j+aS\/OtdJP+gCL84XEl2eNyBs0+YY\/OZUyFB39GpK6p7tuPDOpZ5rkoKJXMdcn9ranfA8qFp7qhZIXfLjz2H6CfT3d2EDNrEaVOhM52Hk1TXY7i8GMyIAw6ulJCMrcANYXpRKVTTHGO9zqQgTyeKQ8c30PhhQuTDne2NE0o6Y0JwcqP96kiIal09x2kLCmaRZZbmVoPzHeneHoyulXQbjUkrNeQ8YF8ZGeCD3l1ZSlhbJMqE1Kl+0cmNpOc0ICDDJchC6Y2z2Vv2jXlaCyvphzmhwBGF7gabGk72L7LW8Ijpe5wLZslR8n5sAviefPx94cLSfRRFS\/UtDSD\/V3CeBqGPum8XbfHI27ggKperQz+kxLJly3SO0BnSVfvPrbynfVKX2kNX1MpdOOhgmvB9tBHPyCcV72bVx8iARDUiqLala\/isWYJvYCNIWv+ZNRZonNm1Pb1GgXYzVRxsaA+6CKJfyjK2zm47cq9nOrkWb6dOHcPKkzeJI0qa53IQVMIm+SUbO9vC9r3rX92lxWAbdUZuoXVCIoMYYvOk6h9yh0+fuqGRJHoKEobcnPlBmYZiKczryQZYMVUeX9\/HSBMaz2czu58OsywalPEtHkU6DNKT9LTUTKVa3QVrNFWVzcLTZWau01lObQW8YpY+5xDbX0MBrIpOuCEC9Y+\/jiwqsgp5f2gPhTdzmc4HDUj1zSbQDalsTOyuSOhD4HA\/P3Srps62+6Z44xOaYnphHIL8rW\/nIXd4EQNBvGwGx8z+kZcozgkNSvkNzj25dz4fDQdrPP03rUEnDqZOfQ1vXvhhyTjZe327Zk\/OxSCYOoZ42oMugaxhdxa58F1aqVzVmQUzcINPy2kezGwUO6I4x0fUcLVIdLG5\/Lne07E5L8HS3KxlRRsWR4FJJKFfktvWldCVu9gwCdBmcRhAQ0Q3maWV9brlzUXFMaCa\/7tUHvb3+nUkvj0K27hfSMKeAn\/7izEmuM8TKI5zcKvQkpRucqaBmjcZ0KU4SkPvn8FUgBWyuGiVfp2nvoLKp83CyoNN1PjKU1eV1m\/a8SVTUSwzjyzL6t2DSm69F7321nXUk\/ChMYiIMVS4nQFiUO4nqL\/jFsDHLeC8M7fjIH6hdzxPiY8qZSZBLrzL\/dE9WUFICHvjeoxGVvug1ZJm6ThqauoIbw0agtIvKA5ARvFmuNexEFU375A5bSBRhmwwDoYUujlP5ID2SInLU47+XQ915Q7vOCHER0xc3uYKZae0pBSMkRqoo1vuS\/Ie972W2\/Skk1c6eYuTRnx6vqKEVVyS0jn9z858y12Yw\/qF2zn9F1wWpI2Y35qlHvPviB4LBZTsVv5DLi0TzXrWdmzazKX82Xdx\/Fb9lh7xQ+qLskJ0QVYfemQrub2gZZJtec3XyR9ai9+pbku45ctJdjyDs30sjiX+z\/TaL0je+1yG\/48DncT\/yZyUAJ3+SzV6q58JIHaaKejD2E9UW1U00tkl5TeUOEOdYtS\/gr39EmpcgeCzqWyA0ydqmRy9M3A5eBea3mfvZKambAz0S5ZtPUUyUBwBOOk5IcVxNbS0PrlsOloJl4YFq1C3Vzp4Zi7lnqSHy8TtQxqZOr+ADMI8ik9rd2i4Q9ysTE9nZloTntTfOft0lXcnoxpRzi7euVx\/npam1DYl8QAp2BPicsP5YE3NOnLNZ0QQY065AtApzE4IhZJgteK4mxROZk3l5xRu8CzhU3o3kmEQWD5oyIahIwj9B39Xmvv\/u7WFcqlC6I7pM9T2\/N5p1hwdCb9mIvwQ4M2ftJLIYHYd2d09Y3JHplznfyOJdKjNXKoCH4PsNmtURwbtovBxa+avbokcISu4\/lE8RV7OBOe5o+npaCf5Qx3V9dVZGAH2lJAWd\/Z362ACY7Kjl4ov9FJuJ3yJU3rZT1O6AAa9BZhc2nrrzg5NRvdAEU2\/SNEqEcLYoaq2pPRqSGMMGGyEMiiRpqVaGTlmLPjht\/kmGA9lgM4hvzotETasQlt6WqmPDoO1o6XjaZDWsrI663q666S0VsJaBsR7BHI8L6EoQk8q5RyE3XxpHw4COJLpqzMRdqnCkwzbr6O8CnSz\/V6uvUSraNeQOI6hTY7Vgx0Y07WK\/8t3BJuxHXukLPes5AX\/JAryERkptGYV7wjC9M79abFvdAIGdzOdU\/29yaqDwIMpw1unFNRUgktYbbmD1rpjwNgoXcUFAjBbzLrulz0BuZpcyGT+HPR6HXzNrJht2h9XJzudv3C19JuxFD29UaENfQKVO+bseGznzZtC9ni1KKyDrlbgfxriYGOE8S4QT89YdHZeOhNNJyxeXGy8J\/OqmPHD1\/4KjvtY7qO5Jux9nCMeYSjNjtrZJF3HfU8d6ieH6G8Vg69CfDQ0p9D07Zi\/+b\/wvZBmxPjAcg61mCECWjd4fXoriZ\/23uo9r4aaptmT04TQsSIcavYjuz+JKiYiU+ulMZcT6OSi5lGXPmN1FOQd5RCdrSwOFPWW80xBh2IoKGqwZgsWSLq3q0K7nvHAcuKDxVVKop+WrY6U55F2yuUFFfdV9HGaqJ\/vJP8VPJfhHiYhhJz7o\/gMI4UNDpHuPTKSuBeiGA5S+VDmP8PbxMMH0S\/SrR1h4rQUDj1GnS+ds6rGz+1zED5kp+yiUeNIJPtskYrNigqpGEORRZUMTl\/S15PhMlRkDRJbA2umVFu9QUlZfWTQYvjidZAxOhJyEVDj1IcbH0ov\/xdFv6OtrdzpdwyqgD8RyEMivZ5gjpRMVrifuui2gIRIoU+77KPJiB0Cw0pr\/PwDAILKWGjBqBv4jWZdm8INUBRV2h57M9mC0pyGouc\/BoIholiQOe42Rhn7\/B+ISOcgymO+zlC18VR0MZCiINSjRVbs7HevR501NVTQczW+8vbbdr5kRpbTAjY\/JbGWI+KSCr+ncK6hMVBzJlVnPG9Us7ssWhjMjnQr9sdrUY1krQKeq8SOJqoQjC9U3G3FIrI1sCERlpgjBPUkbx+Ggc8CElTDSv6QptG9A5DNlMgWRth+7nfLNXeYbLnV1Y6fxTIX\/iZRq9zjZ2DKQuuUCBoR560qlvBllbjTES6mmuxI+9q+lfA\/0iRycWgBx17yh4AmUrcjwHwkLzEDdj8Tj6851QC1rjyZyssIrn+a93w1PnxYOmKGlmh4JRJh3LP60wYB7mT3DTP5cJ2RyOdmEoT6rz1n8SQVPjpgWaquj58rGQZEz+ibWGmrcMpuPwmb8DIDeluyEsE+2ciB6XwXxaAfCIQAHXikKu75pASOSjFe6mqyX2TaxWJOGjwGJh7T66O5YJFxmsV\/Yrs6hiR6u\/fUxCG2T+pCwNLBfaorcANtAT6DxlLCvyFT9v9jX4qOllHv7xzXNyIYBoxPD5PBwmiDP\/EStM3topnIDf\/fvDleiWordKu8GNpaq56c+J0UTuDMzBU\/G3k89upOpwkW1zcJ\/bWzGu\/CYu9uD8oaqh+pEt4NrQA8u5OTGeJCNwrvNUdnqV3IvpKGPG8Vn+9ZyHFMiUg20RH+tfRSJsHQldqA83mtBGtnplY4XPb2eCuN8yCHbcSJe7rOZGOEktNBy5MJoKTezKCMyNRoTAV+qD0fgDZF9Tp8HtUS0CC35qRQBOXOTVIHLEFYmwf1gMdfrHMqQ8pbv3wAQnp7U9cPS2EMut9O\/BJecksnuspjxgxGw6ylVvsqs9yv\/\/v1oc\/kqUrfy1QHYDxQ46ZDqsW6oM1vGVSmwHcF\/s4GqKgrp+4cQ8qM6SoITP4ABt48QcDXEvd2UEp3FIo5XpYYOGJA6Do9RWdrxnVotlV69xERr+Mga495SPOO4F8VYozUatOGSS+4l1ib15571D2nzSYDNWga4yMgiC+GlJD962I8ADfEcuyOVyzyoaKVIGmwDk8dblFLfJpG+FBnhQS4wbIA7gMOpcSNLsbb8EAh3eY\/jjqfCXipEhCfnKYi1AAcoFQYtso7yYbadoGCXmFPnH4XpxSW+MuHqe15PCKymsWNRjwe+Qfstn5CmRkv4PLStiVac2YlyFRNlg7MI2CCXy24xrJtxGhfXVyyPOTkatBcYbMpB3n8tOH5LE7Fb\/BvLjwYX+b4uCK\/QTA6F6bwOIOSCsQJGingMhujnPMqaEYJriV4TSPlbbZc70YKlXjqvIbktEMq3gjosM7LbsQGdH0Xo8K0l6ess\/a8ZvvXhAsx3rG+vrzjtt5fFqbMadECn4qQ5EWP217mOa2PkIs37WJ\/GTo7ZwQwg\/g6rcDpnpA\/ANsZWB7QsxLu7sxY2gbL\/\/z\/8H\/D3T7JRREumZhkUdE6pPeX2t4n3dFxGjplFSn5dGyAL1AD6S1Z2Pv0RZdnMh4mToubHd7UCUFZ1G52sBfktEKvtaXyyWGb9OgLPO09g0WfwwsTfzC\/nsGVVTnkAJE8OCLUkSMDE\/0Njaozq\/Q79H2ku5D2z14rf\/J8\/AsmmAAGPqoIrqBmBzxd1YUoA\/1dfBmIDQ6GjfDVBws5R4Bk+NSX2XoQXqQyQ3Pq0ZiaQpUGF4roqiRYTKfNwGxBC5JEDTj+433dSvBy3dGh0Mvqlk7NpDF5UGtR+8JoYUHMMUwPTLxxcw4ZOFKglFqXf5OtgyAX4Y5ekjSvzInZjQpETcmULCDA9SwYzU0NYrI9nrJOiHEpN6+9tD3YOQ2xwiSHO8Ir70OzEP+ZUbe31fiWz18BbAACFFxk1GfjbrWTNu6lbwDk90Amfwo8hVcOpFOWlkyK1YuKYqoNZjCnfGaY2PARwCp5lem5qiKP26nDU5ZrvkxmaKzdIyHZ5Jlp3yaWp0yHGF1FXKUNUXzpf6HkIf6Nw3zAlMrYavvMwFO+zS1teV2Xopzc6SPG+0ae8Eglme3m5IeqB0Sjf8S9My4\/RZxiDmjjjUxwVJOZn7\/em0U08f\/XnKuzWcPdYMwvCkGlYBeOKvVAkUk3ZigS3eENF9BwzC2wJ+W0HwAwtbDiIRrefwcWfbdmgczxYQSQutK6P7yYHt3DIrzdIr23YR\/UMf2OnLUCF0CwvdLvPw7Ri0Kp9f3wTZRXNHFBWm5ClxAD58Z78RRmzVJH9t0UxJ9tZQvXIIqJT+rKzwDQceAfcQUr\/i0+h7\/2\/VQaHPre7dG8vsaMYaQVv8vn914D3bPUzJZL34V3JWbTW5zvB6QMToms2U2XGGDqKcwXqwnDNVbqGmop1WSohnSoLrct+sPJUDH11CNIW3JXKENJgHlojKErH2UjnGTFBF763UXTxMaFVeNAln9eB+7gurYqrMollJI6pv92ygGshHzr74DuEt4lkugJpk8GO3TazlI767J\/fFDyqmFACHUDvkFOE1UyPpqXYaTX2nbSeY+O2V+ms2MHQz5pXjdxHGE6mSqAqaXS7KwPTGPDJVVD42dAFmBwrs6v+KJm5LpD958wA\/QHCg9kdeYs1X3eqZurXEXSZt3goA+ic+Yi5ELLSFHLohz6KY5GMSIKyzbn4U0\/z4j+8TWMShSpscOqhjwgWO\/0N30kmljNDzkdNsZMbjRonZp96v4qfd+OrXT89nGayBC1Z5ZnwMfYCLYGf5xtFjp90Fjh2tdD6mrMW5h6zagSEk2Xd8xCAmhhwk7\/wZ5vn2B4UVjNjG9naSQHRYGKfQBIGIsI7yFmQFkW2SahtRnDAoL1fl3EDj0xl+P\/tQ24eIn7tDmorZnCewgk7zJ9LRp\/xYXr2osr6ag4HoyQiwJ49RmGDN9zkFzqGU2+vthK2pve2203JF0l0BgWun37fNMyWhVoyBI1XErTqPtDtzxKRnC2iXtHBtJA+wwXUo2b\/wRM5WR96pmGE5CCWFccZdOsGPBNP9ujcMeG\/\/d9TgALvLSEaSEbFvOD4yBc3AteTBXt6rNLoN6pnUoc2jlPJUkOFeeb2XYiVhBxiptoNrRKER4KXWw5HwVuoMG2OjC30mDYgGYI\/QYOVfVRcRqoP13waPGdbrv18LFHr76w+icaNXpepl1w+r35nf+ndCoVm9xppZ0KezryPneOLGJx7PI1b07EBxz3k5geT0ORB7GiHQZfW7w0Yej0HoFXyJLmoGxUHpEKGHJ7A2ZFWoHXhj8URJ9TTZ52Pm5EIiE\/aSnlAh1xsOcpulgQPlaxVAPrpsw8e+pYLrlYzPKN8DooYCk0ZkvWRAbl1hcX6vPZeowO+onaCK8MxAX4itgc3tL74FMma4Zi\/7WUt4TQRVB3uJQtkbD6\/7C0icEyNABPcytlwcXPP+bZpCaCgg\/PY7rjcwxZchHZqg6VpWNeowMtjhVjK4kET8Wa\/9BygeMA4ptpgRsYYxC5DtdYntGFIH+ZeGgbgXnIzsO+0F4I7jAxDwW7chMa+UEJ3e\/OxZMd0ywob7s4kEawKPxnFJNcIONZCKYMDA00XSh0HtkITVwZFh2xpjnkQvaY2sAvC7XfgJob0iklIvf4ZR7VhiAd0dn1TQ+DJ5HJsTzp3JnBGSH5WEF6oH8vLf7qZglh9g7XKSpmhaSdM8vTz\/Ruml5hl5RlKBggKqBwirLYKj\/7CgrONkViZeeuzT76GPZir4eIYiQsCfAqS1OYwIPVaLwEqIU0f+1z65h34BvbK5RhdAq\/FFvfumtTOZuZYz9G0nUgYzBdOuWXDrnT8NJ\/ai3+QCdoYs+PQrOFeqQa02CxsBVILMJvDjeC2lTWk+hw+vKifPTQh5Gz2X2fK8a1IUg4tmhaZgpoVDxpK\/SXPPbHR0\/uu090seJaYfehciyiubliCKJlWSRjrAmrMggSZHKiNC+KefoZImkjdIIUN9xn\/OOcg59PA3vfXZI0fFLFxCpg4epnbbaZJjWjxGAkFFWJbResTJn79pZ\/IV9yXjSV5WRI6X7qrbtUNjIMTTRmUzqHxmqoKcdL\/fuN0B4JRW0o3fM7U7dxckTiX0lS28SbrhFZZpY+NcAlVGPg48PXxj\/JrHG1dZ3Q2fEvLrT4aZghHJN8ZI6sUgA+lnTYvrpXnK0Yc9B8ApYvcUtwZvNFl5657yooJWIvYOMnfWSzLyvhMhVuDDGIDX9sK2ieu2PsuDtg7fCgjYjpjaBj+6\/qHXhcRvx47iCUyR1iRh9P3jfMAazVDsoMtFB5WK+rYQ875H5iLdmTcIkm+aJ0FsFL25eEfQ6ZVAxL0TiZZccAcFRYWiEhfWG98wG0LxUtAy5S4yqyffaNNTjEKfBiH6717IsPCKIhzWlJDx+gJQBTlzrO6vKeVKkNP\/Yx7jViQ8Kdd34UvcCMEKU45VqWPiRmyX9c+szkH88+udaDDOmbOubPRW5Pe5QKDgnrOi3tFWeQdxzWZ21J4jo8LteAjLZL+t+H3DAuuRvX9chSWsJMW3OBkH\/+tWahmGAYu821EdaVSrelG1fzjGUEWG\/ur3LERJ4TdZACyma5oBSrVzJ6xnPjq5pOEp3ty2abwE8zuIbya3fvlDMY8PE7AmZYyw3qgpAvZgrLbK+ahwAsvxIORaqk3YzTJJgmtJAg==\"\n            }\n          ]\n        },\n        \"finishReason\": \"STOP\"\n      }\n    ],\n    \"responseId\": \"5N2vafH-IMSNkdUPvaLWqAY\",\n    \"modelVersion\": \"gemini-3-flash-preview\",\n    \"usageMetadata\": {\n      \"totalTokenCount\": 2574,\n      \"promptTokenCount\": 374,\n      \"thoughtsTokenCount\": 2116,\n      \"promptTokensDetails\": [\n        {\n          \"modality\": \"TEXT\",\n          \"tokenCount\": 374\n        }\n      ],\n      \"candidatesTokenCount\": 84\n    }\n  },\n  \"status\": \"Success\",\n  \"message\": \"\",\n  \"operation\": null,\n  \"execution_time\": \"13 seconds 744 ms\"\n}",
+                "operationTitle": "Generate Text",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "7c31ffc5-454a-43a4-b36e-ef9a1e5d2345"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Request VM Instance",
+            "description": null,
+            "arguments": {
+                "arguments": {
+                    "request_attributes": "{{vars.request_attributes}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/0bda469e-1790-4fdb-bf95-cbdd98cf85ed"
+            },
+            "status": null,
+            "top": "570",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "44bd0f7e-727d-4483-812c-a80449145866"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "resource": "alerts",
+                "resources": [
+                    "alerts"
+                ],
+                "__triggerLimit": true,
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": [
+                            "{{vars.input.records[0]}}"
+                        ]
+                    }
+                },
+                "triggerOnSource": true,
+                "fieldbasedtrigger": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "OR",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "emailSubject",
+                            "value": "%VM Request%",
+                            "operator": "like",
+                            "_operator": "like"
+                        }
+                    ]
+                },
+                "triggerOnReplicate": false
+            },
+            "status": null,
+            "top": "30",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/ea155646-3821-4542-9702-b246da430a8d",
+            "group": null,
+            "uuid": "151e866a-6408-42d5-a5dd-295e97b9b054"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Parse Requestor Email",
+            "targetStep": "\/api\/3\/workflow_steps\/7c31ffc5-454a-43a4-b36e-ef9a1e5d2345",
+            "sourceStep": "\/api\/3\/workflow_steps\/422d83c5-a445-4e80-833b-5dd90a024f5e",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "44fa1a1d-e2db-44b8-a440-9f29092c9477"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Parsed VM Request Attributes -> Request VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/44bd0f7e-727d-4483-812c-a80449145866",
+            "sourceStep": "\/api\/3\/workflow_steps\/a560a833-cbda-48fe-8edf-50010aaf2a82",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "3e0eb82e-a868-400a-b9be-3ea0adcfe480"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Parse Requestor Email -> Get Parsed VM Config",
+            "targetStep": "\/api\/3\/workflow_steps\/a560a833-cbda-48fe-8edf-50010aaf2a82",
+            "sourceStep": "\/api\/3\/workflow_steps\/7c31ffc5-454a-43a4-b36e-ef9a1e5d2345",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "51e3d538-cc09-42e1-abac-77eef8138211"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/422d83c5-a445-4e80-833b-5dd90a024f5e",
+            "sourceStep": "\/api\/3\/workflow_steps\/151e866a-6408-42d5-a5dd-295e97b9b054",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "8c116078-2cb8-4c80-a64f-ad7486fe8ac8"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "82b656ad-6ca7-427c-bcbe-8970d2e18aea",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Main"
+    ]
+}

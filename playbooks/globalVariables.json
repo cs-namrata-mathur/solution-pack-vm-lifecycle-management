@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Current_Date",
+        "value": "{{arrow.utcnow().timestamp}}",
+        "default_value": "{{arrow.utcnow().timestamp}}"
+    },
+    {
+        "name": "infrastructure_team_email",
+        "value": "cloud-ops@fortielab.com",
+        "default_value": "cloud-ops@fortielab.com"
+    },
+    {
+        "name": "Server_fqhn",
+        "value": "34.1.59.201:13002",
+        "default_value": "master.fortisoar.in"
+    }
+]

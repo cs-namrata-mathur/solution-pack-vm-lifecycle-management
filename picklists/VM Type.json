@@ -1,0 +1,30 @@
+{
+    "@context": "\/api\/3\/contexts\/PicklistName",
+    "@id": "\/api\/3\/picklist_names\/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+    "@type": "PicklistName",
+    "name": "VM Type",
+    "system": false,
+    "picklists": [
+        {
+            "@id": "\/api\/3\/picklists\/6b1a558e-69a8-444d-9614-43cd9aa08e03",
+            "@type": "Picklist",
+            "itemValue": "Debian",
+            "orderIndex": 0,
+            "color": null,
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+            "uuid": "6b1a558e-69a8-444d-9614-43cd9aa08e03"
+        },
+        {
+            "@id": "\/api\/3\/picklists\/4ba4ed66-015c-4ce5-94a3-fdee72d83b73",
+            "@type": "Picklist",
+            "itemValue": "Tiny Core Linux",
+            "orderIndex": 1,
+            "color": null,
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+            "uuid": "4ba4ed66-015c-4ce5-94a3-fdee72d83b73"
+        }
+    ],
+    "uuid": "a47a3ca3-ac28-470a-bf78-a23f462d51a7"
+}

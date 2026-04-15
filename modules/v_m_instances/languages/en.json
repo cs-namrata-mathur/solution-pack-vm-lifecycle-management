@@ -1,0 +1,24 @@
+{
+    "V_M_INSTANCES": {
+        "MODULE_DETAILS": {
+            "SINGULAR_NAME": "VM Instance",
+            "PLURAL_NAME": "VM Instances"
+        },
+        "FIELDS": {
+            "EMAILREQUESTOR": "Email Requestor",
+            "INTERNETACCESS": "Internet Access",
+            "DESCRIPTION": "Description",
+            "DESTROYEDON": "Destroyed On",
+            "LOGS": "Logs",
+            "DELETEAFTER": "Delete After",
+            "VMTYPE": "VM Type",
+            "DEPARTMENT": "Department",
+            "BUSINESSJUSTIFICATION": "Business Justification",
+            "NAME": "Name",
+            "REQUESTOR": "Local Requestor",
+            "NETWORKINTERFACES": "Network Interfaces",
+            "STATUS": "Status",
+            "PROVISIONEDON": "Provisioned On"
+        }
+    }
+}
