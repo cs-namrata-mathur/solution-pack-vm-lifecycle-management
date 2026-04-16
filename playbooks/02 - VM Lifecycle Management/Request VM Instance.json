@@ -1,0 +1,1452 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Request VM Instance",
+    "aliasName": null,
+    "tag": null,
+    "description": "Request virtual machine deployment and manage approval process",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [
+        "request_attributes"
+    ],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/493c4f60-b0a0-41bc-9e69-428bdc68693f",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Compute Existing IP Addresses",
+            "description": null,
+            "arguments": {
+                "hosts": "{{vars.steps.Get_IP_Addresses|yaql('$.map(int($.iPAddress.split(\".\")[-1]))')}}"
+            },
+            "status": null,
+            "top": "400",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "06ce81f3-0b29-440a-9bb5-c6415e73d605"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "vm_name": "{{vars.input.params.request_attributes.vm_name}}",
+                "vm_type": "{{vars.input.params.request_attributes.vm_type}}",
+                "user_iri": "{{vars.request.currentUser or vars.request.headers['X-RUNBYUSER']}}",
+                "vm_subnet": "10.255.255.",
+                "department": "{{vars.input.params.request_attributes.department}}",
+                "deleteAfter": "{{vars.input.params.request_attributes.deleteAfter}}",
+                "vm_ip_range": "{{range(129,191)|list}}",
+                "internet_access": "{{vars.input.params.request_attributes.internet_access}}",
+                "requestor_email": "{{vars.input.params.request_attributes.requestor_email}}",
+                "businessJustification": "{{vars.input.params.request_attributes.businessJustification}}"
+            },
+            "status": null,
+            "top": "160",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "14bc9bc6-6d22-4717-aeb7-c0a8639b7720"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Correct Name and Unique",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "no",
+                        "step_iri": "\/api\/3\/workflow_steps\/b322736f-3e8c-4f3d-82f4-860fa3a4b8a0",
+                        "condition": "{{ vars.vm_name is none or vars.steps.Find_Existing_VMs | length > 0 }}",
+                        "step_name": "Duplicate Name Message"
+                    },
+                    {
+                        "option": "yes",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/2efbae02-cebc-49fa-8695-546423164490",
+                        "step_name": "Create Network Interface"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1400",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "fe463ef9-a1f1-4e09-b4d9-d746419342a0"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Create Network Interface",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "dNS": "1.1.1.1",
+                    "name": "{{vars.ip_address}}",
+                    "gateway": "10.255.255.1",
+                    "netmask": "255.255.255.0",
+                    "__replace": "",
+                    "iPAddress": "{{vars.ip_address}}",
+                    "description": "{{arrow.utcnow().format(\"DD-MM-YYYY HH:mm\")}}: Created by Playbook",
+                    "vMInstances": "{{vars.steps.Create_VM_Instance['@id']}}"
+                },
+                "operation": "Overwrite",
+                "collection": "\/api\/3\/network_interfaces",
+                "__recommend": [],
+                "fieldOperation": {
+                    "recordTags": "Overwrite"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1540",
+            "left": "360",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "group": null,
+            "uuid": "2efbae02-cebc-49fa-8695-546423164490"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Create VM Instance",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "name": "{{vars.vm_name}}",
+                    "owner": "{{vars.user_iri}}",
+                    "status": "\/api\/3\/picklists\/541c0fde-adaf-44cd-89d2-e7adf05f438d",
+                    "vMType": "{{vars.vm_type}}",
+                    "__replace": "",
+                    "requestor": "{{vars.local_requestor}}",
+                    "department": "{{vars.department}}",
+                    "deleteAfter": "{{vars.deleteAfter}}",
+                    "emailRequestor": "{{vars.email_requestor}}",
+                    "internetAccess": "{{vars.internet_access}}",
+                    "networkInterfaces": "{{vars.steps.Create_Network_Interface['@id']}}",
+                    "businessJustification": "{{vars.businessJustification}}"
+                },
+                "operation": "Overwrite",
+                "collection": "\/api\/3\/v_m_instances",
+                "__recommend": [],
+                "fieldOperation": {
+                    "recordTags": "Overwrite"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1680",
+            "left": "360",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "group": null,
+            "uuid": "e5a5ca19-d8d9-499e-915b-342c887e5651"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Duplicate Name Message",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "VM Name Duplicate",
+                        "description": "The name {{ vars.vm_name }} already exists or contains invalid characters. VM names must be unique and include only alphanumeric characters. Please choose a different name and try again",
+                        "inputVariables": []
+                    }
+                },
+                "record": "",
+                "timeout": {
+                    "days": 0,
+                    "hours": 0,
+                    "minutes": 5,
+                    "step_iri": "\/api\/3\/workflow_steps\/b5a45789-74e2-41aa-804c-48839ae6dc8e"
+                },
+                "agent_id": null,
+                "resources": "v_m_instances",
+                "is_approval": false,
+                "owner_detail": {
+                    "isAssigned": false,
+                    "emailRecipients": ""
+                },
+                "isRecordLinked": false,
+                "step_variables": [],
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "OK",
+                            "step_iri": "\/api\/3\/workflow_steps\/c7154126-e89a-4ef8-8f5e-927ab54fd7a4"
+                        }
+                    ],
+                    "duplicateOption": false,
+                    "customSuccessMessage": "Awaiting Playbook resumed successfully."
+                },
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                },
+                "customEmailExternal": false,
+                "inline_channel_list": [],
+                "external_channel_list": [],
+                "unauthenticated_input": false,
+                "external_email_subject": null,
+                "internal_email_subject": "A FortiSOAR playbook is requesting your input",
+                "custom_email_body_external": null,
+                "external_email_attachments": null
+            },
+            "status": null,
+            "top": "1540",
+            "left": "720",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "b322736f-3e8c-4f3d-82f4-860fa3a4b8a0"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Email Input Validation",
+            "description": null,
+            "arguments": {
+                "vm_name": "{{vars.steps.VM_Request_by_Email.input.vMName|regex_search('^[A-Za-z0-9-]+$')}}",
+                "vm_type": "{{\"VM Type\" | picklist(vars.steps.VM_Request_by_Email.input.vMType, \"@id\")}}",
+                "department": "{{vars.steps.VM_Request_by_Email.input.department or vars.steps.Get_User_Details.data.department}}",
+                "deleteAfter": "{%- if vars.steps.VM_Request_by_Email.input.deleteAfter and vars.steps.VM_Request_by_Email.input.deleteAfter|length > 0 -%}\n{{arrow.get(vars.steps.VM_Request_by_Email.input.deleteAfter).int_timestamp}}\n{%- endif -%}",
+                "email_requestor": "{{vars.requestor_email}}",
+                "internet_access": "{{vars.steps.VM_Request_by_Email.input.allowInternetAccess}}",
+                "businessJustification": "{{vars.steps.VM_Request_by_Email.input.businessJustification}}"
+            },
+            "status": null,
+            "top": "1240",
+            "left": "960",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "478a2cad-7845-4b35-8e4b-54b1fdc2b1fa"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Existing VMs",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "name",
+                            "value": "{{vars.vm_name}}",
+                            "operator": "eq",
+                            "_operator": "eq"
+                        }
+                    ],
+                    "__selectFields": [
+                        "name"
+                    ]
+                },
+                "module": "v_m_instances?$limit=100",
+                "checkboxFields": true,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1240",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "4e52bdda-6085-44de-ae38-a68aa8a595bc"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Available IP Addresses",
+            "description": null,
+            "arguments": {
+                "available_hosts": "{%- if vars.hosts and vars.hosts|length > 0 -%}\n{{vars.vm_ip_range| difference(vars.hosts)}}\n{%- else -%}\n{{vars.vm_ip_range}}\n{%- endif -%}"
+            },
+            "status": null,
+            "top": "540",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "f8ccecb6-a37b-4ab4-ad30-b044a96d2545"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Candidate IP",
+            "description": null,
+            "arguments": {
+                "ip_address": "{{vars.vm_subnet ~ (vars.available_hosts|random|string)}}"
+            },
+            "status": null,
+            "top": "680",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "96e0943b-fe67-42f7-984b-bbf03f947ad9"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get IP Addresses",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [],
+                    "__selectFields": [
+                        "iPAddress"
+                    ]
+                },
+                "module": "network_interfaces?$limit=100",
+                "checkboxFields": true,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "280",
+            "left": "740",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "909a4831-6e69-417f-8ba7-cfa7e29dc966"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get User Details",
+            "description": null,
+            "arguments": {
+                "when": "{{vars.user_iri and vars.user_iri | length > 0}}",
+                "params": {
+                    "iri": "{{vars.user_iri}}",
+                    "body": "",
+                    "method": "GET"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "280",
+            "left": "340",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "e161c87f-56b6-46ed-af1d-70d575a13799"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Notify Requestor",
+            "description": null,
+            "arguments": {
+                "when": "{{vars.requestor_email | length > 0}}",
+                "config": "88c3d39c-2fa9-4731-b00d-29815008f17c",
+                "params": {
+                    "body": "<p>The name {{ vars.vm_name }} already exists or contains invalid characters. VM names must be unique and include only alphanumeric characters. Please raise another request with a different name.<\/p>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
+                    "subject": "VM Instance Request Provisioning Failure",
+                    "iri_list": "",
+                    "cc_recipients": "{{vars.infrastructure_team_email}}",
+                    "to_recipients": "{{vars.requestor_email}}",
+                    "bcc_recipients": ""
+                },
+                "version": "2.6.0",
+                "from_str": "admin@example.com",
+                "connector": "smtp",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1680",
+            "left": "720",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "group": null,
+            "uuid": "c7154126-e89a-4ef8-8f5e-927ab54fd7a4"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Raise Exception",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "msg": "The name {{ vars.vm_name }} already exists or contains invalid characters. VM names must be unique and include only alphanumeric characters. Please choose a different name and try again"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "raise_exception",
+                "operationTitle": "Utils: Raise Exception",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1820",
+            "left": "720",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "b5a45789-74e2-41aa-804c-48839ae6dc8e"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Request Origin",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "Email",
+                        "step_iri": "\/api\/3\/workflow_steps\/38958261-a5ad-4439-984a-e17a9f170072",
+                        "condition": "{{ '@' in vars.requestor_email }}",
+                        "step_name": "VM Request by Email"
+                    },
+                    {
+                        "option": "UI",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/0a772081-8511-41d0-8d22-428863ebfcf5",
+                        "step_name": "UI VM Request"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "940",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "316f5676-e249-465a-a77d-5890958c1d0c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "route": "b7eb2058-7c4a-45da-a997-7c78d1ce6843",
+                "resources": [
+                    "v_m_instances"
+                ],
+                "__triggerLimit": true,
+                "inputVariables": [],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    }
+                },
+                "_promptexpanded": true,
+                "triggerOnSource": true,
+                "displayConditions": {
+                    "alerts": {
+                        "sort": [],
+                        "limit": 30,
+                        "logic": "AND",
+                        "filters": []
+                    },
+                    "v_m_instances": {
+                        "sort": [],
+                        "limit": 30,
+                        "logic": "AND",
+                        "filters": []
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "showToasterMessage": {
+                    "visible": false,
+                    "messageVisible": true
+                },
+                "triggerOnReplicate": false,
+                "singleRecordExecution": false
+            },
+            "status": null,
+            "top": "20",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "493c4f60-b0a0-41bc-9e69-428bdc68693f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Stop",
+            "description": null,
+            "arguments": {
+                "params": [],
+                "version": "3.6.0",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1080",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "3286bcc0-9c08-4bac-b291-04f1badc08e7"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "UI Input Validation",
+            "description": null,
+            "arguments": {
+                "vm_name": "{{vars.steps.UI_VM_Request.input.vMName|regex_search('^[A-Za-z0-9-]+$')}}",
+                "vm_type": "{{vars.steps.UI_VM_Request.input.vMType[\"@id\"]}}",
+                "department": "{{vars.steps.UI_VM_Request.input.department or vars.steps.Get_User_Details.data.department}}",
+                "deleteAfter": "{%- if vars.steps.UI_VM_Request.input.deleteAfter and vars.steps.UI_VM_Request.input.deleteAfter|length > 0 -%}\n{{arrow.get(vars.steps.UI_VM_Request.input.deleteAfter).int_timestamp}}\n{%- endif -%}",
+                "internet_access": "{{vars.steps.UI_VM_Request.input.allowInternetAccess}}",
+                "local_requestor": "{{vars.steps.Get_User_Details.data['@id']}}",
+                "requestor_email": "{{vars.steps.Get_User_Details.data.email}}",
+                "businessJustification": "{{vars.steps.UI_VM_Request.input.businessJustification}}"
+            },
+            "status": null,
+            "top": "1240",
+            "left": "140",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "de9767c6-9e50-4510-8711-cee5ab9d78eb"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "UI VM Request",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "Request VM Instance",
+                        "description": "The VM will be configured with the IP address `{{ vars.ip_address }}`.\nAfter you submit the form, your manager will need to approve the request. Once approved, the instance will be provisioned, and you\u2019ll receive an email notification when it\u2019s ready.",
+                        "inputVariables": [
+                            {
+                                "name": "vMType",
+                                "type": "picklists",
+                                "label": "VM Type",
+                                "title": "Picklist",
+                                "usable": true,
+                                "tooltip": "",
+                                "dataType": "picklist",
+                                "formType": "picklist",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "dataSource": {
+                                    "model": "picklists",
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "field": "orderIndex",
+                                                "direction": "ASC"
+                                            }
+                                        ],
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "listName__name",
+                                                "value": "VM Type",
+                                                "operator": "eq"
+                                            }
+                                        ]
+                                    },
+                                    "displayConditions": {
+                                        "4ba4ed66-015c-4ce5-94a3-fdee72d83b73": {
+                                            "conditions": null,
+                                            "visibility": "visible"
+                                        },
+                                        "6b1a558e-69a8-444d-9614-43cd9aa08e03": {
+                                            "conditions": null,
+                                            "visibility": "visible"
+                                        }
+                                    }
+                                },
+                                "searchable": false,
+                                "moduleField": "vMType",
+                                "templateUrl": "app\/components\/form\/fields\/typeahead.html",
+                                "defaultValue": {
+                                    "id": 462,
+                                    "@id": "\/api\/3\/picklists\/6b1a558e-69a8-444d-9614-43cd9aa08e03",
+                                    "icon": null,
+                                    "uuid": "6b1a558e-69a8-444d-9614-43cd9aa08e03",
+                                    "@type": "Picklist",
+                                    "color": null,
+                                    "display": "Debian",
+                                    "listName": "\/api\/3\/picklist_names\/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+                                    "itemValue": "Debian",
+                                    "importedBy": [],
+                                    "orderIndex": 0
+                                },
+                                "_previousName": "type",
+                                "playbookField": true,
+                                "requiredQuery": [],
+                                "displayTemplate": "%7B%7B%20itemValue%20%7D%7D",
+                                "lengthConstraint": false,
+                                "responseSelected": [
+                                    {
+                                        "option": "OK",
+                                        "primary": false,
+                                        "step_iri": "\/api\/3\/workflow_steps\/9885e9aa-61ac-44e9-aedf-c7d4ca566f58"
+                                    }
+                                ],
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "mapping",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true
+                            },
+                            {
+                                "name": "businessJustification",
+                                "type": "string",
+                                "label": "Business Justification",
+                                "title": "Rich Text (Markdown)",
+                                "usable": true,
+                                "tooltip": "Describe in few words why do you need this resource",
+                                "dataType": "text",
+                                "formType": "richtext",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/markdownEditor.html",
+                                "defaultValue": null,
+                                "_previousName": "businessJusti",
+                                "playbookField": true,
+                                "requiredQuery": [],
+                                "lengthConstraint": true,
+                                "responseSelected": [
+                                    {
+                                        "option": "OK",
+                                        "primary": false,
+                                        "step_iri": "\/api\/3\/workflow_steps\/9885e9aa-61ac-44e9-aedf-c7d4ca566f58"
+                                    }
+                                ],
+                                "allowedEncryption": true,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "mapping",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true
+                            },
+                            {
+                                "name": "vMName",
+                                "type": "string",
+                                "label": "VM Name",
+                                "tooltip": "Only accepts alphanumerical characters and -",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": false,
+                                "_expanded": true,
+                                "defaultValue": "Ayyur-03",
+                                "_previousName": "name",
+                                "requiredQuery": [],
+                                "responseSelected": [
+                                    {
+                                        "option": "OK",
+                                        "primary": false,
+                                        "step_iri": "\/api\/3\/workflow_steps\/9885e9aa-61ac-44e9-aedf-c7d4ca566f58"
+                                    }
+                                ],
+                                "requiredCondition": "mapping",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true
+                            },
+                            {
+                                "name": "allowInternetAccess",
+                                "type": "boolean",
+                                "label": "Allow Internet Access",
+                                "title": "Checkbox",
+                                "usable": true,
+                                "tooltip": "Determine whether the VM will have Internet access",
+                                "dataType": "checkbox",
+                                "formType": "checkbox",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/checkbox.html",
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "playbookField": true,
+                                "lengthConstraint": false,
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "notrequired",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": false
+                            },
+                            {
+                                "name": "department",
+                                "type": "string",
+                                "label": "Department",
+                                "tooltip": "If none provided the current user department value will be used",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": false,
+                                "_expanded": true,
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "requiredCondition": "notrequired",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": false
+                            },
+                            {
+                                "name": "deleteVMAfterXDays",
+                                "type": "boolean",
+                                "label": "Delete VM after X days",
+                                "title": "Checkbox",
+                                "usable": true,
+                                "tooltip": "",
+                                "dataType": "checkbox",
+                                "formType": "checkbox",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/checkbox.html",
+                                "defaultValue": true,
+                                "_previousName": "deleteVMAfterX",
+                                "playbookField": true,
+                                "lengthConstraint": false,
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "notrequired",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": false
+                            },
+                            {
+                                "name": "deleteAfter",
+                                "type": "integer",
+                                "label": "Delete After",
+                                "title": "Date\/Time Field",
+                                "usable": true,
+                                "tooltip": "Date after which the VM will be destroyed",
+                                "dataType": "datetime",
+                                "formType": "datetime",
+                                "required": true,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/datetime.html",
+                                "defaultValue": {
+                                    "differenceType": "days",
+                                    "differenceValue": 7
+                                },
+                                "_previousName": "",
+                                "playbookField": true,
+                                "requiredQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "primitive",
+                                            "field": "deleteVMAfterXDays",
+                                            "value": true,
+                                            "operator": "eq",
+                                            "_operator": "eq"
+                                        }
+                                    ]
+                                },
+                                "visibilityQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "primitive",
+                                            "field": "deleteVMAfterXDays",
+                                            "value": true,
+                                            "operator": "eq",
+                                            "_operator": "eq"
+                                        }
+                                    ]
+                                },
+                                "lengthConstraint": false,
+                                "responseSelected": [],
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "conditional",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true,
+                                "_addVisibilityConditions": true
+                            }
+                        ]
+                    }
+                },
+                "record": "",
+                "timeout": {
+                    "days": 0,
+                    "hours": 0,
+                    "minutes": 5,
+                    "step_iri": "\/api\/3\/workflow_steps\/3286bcc0-9c08-4bac-b291-04f1badc08e7"
+                },
+                "agent_id": null,
+                "resources": "v_m_instances",
+                "is_approval": false,
+                "owner_detail": {
+                    "isAssigned": false,
+                    "emailRecipients": ""
+                },
+                "isRecordLinked": false,
+                "step_variables": [],
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "OK",
+                            "primary": false,
+                            "step_iri": "\/api\/3\/workflow_steps\/de9767c6-9e50-4510-8711-cee5ab9d78eb"
+                        },
+                        {
+                            "option": "Cancel",
+                            "step_iri": "\/api\/3\/workflow_steps\/3286bcc0-9c08-4bac-b291-04f1badc08e7"
+                        }
+                    ],
+                    "duplicateOption": false,
+                    "customSuccessMessage": "Awaiting Playbook resumed successfully."
+                },
+                "inputExternalUser": true,
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                },
+                "customEmailExternal": false,
+                "customEmailInternal": false,
+                "inline_channel_list": [],
+                "external_channel_list": [
+                    "\/api\/3\/picklists\/afb18b7f-510b-471a-9b9c-7f4646edd4bb"
+                ],
+                "unauthenticated_input": false,
+                "external_email_subject": null,
+                "internal_email_subject": "A FortiSOAR playbook is requesting your input",
+                "custom_email_body_external": null,
+                "custom_email_body_internal": null,
+                "external_email_attachments": null,
+                "internal_email_attachments": null
+            },
+            "status": null,
+            "top": "1080",
+            "left": "140",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "0a772081-8511-41d0-8d22-428863ebfcf5"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update Server FQHN",
+            "description": null,
+            "arguments": {
+                "arguments": [],
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": true,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/2446845f-7007-4885-92a2-2af00604cb67"
+            },
+            "status": null,
+            "top": "800",
+            "left": "540",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "6a4b25b4-37f6-422a-b24b-496da00bd812"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "VM Request by Email",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "Request VM Instance",
+                        "description": "The VM will be configured with the IP address `{{ vars.ip_address }}`.\nAfter you submit the form, your manager will need to approve the request. Once approved, the instance will be provisioned, and you\u2019ll receive an email notification when it\u2019s ready.",
+                        "inputVariables": [
+                            {
+                                "name": "vMType",
+                                "type": "array",
+                                "label": "VM Type",
+                                "title": "Dynamic List",
+                                "usable": true,
+                                "options": [
+                                    "Debian",
+                                    "Tiny Core Linux"
+                                ],
+                                "tooltip": "",
+                                "dataType": "dynamicList",
+                                "formType": "dynamicList",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "dataSource": [],
+                                "searchable": false,
+                                "moduleField": "vMType",
+                                "templateUrl": "app\/components\/form\/fields\/dynamicList.html",
+                                "defaultValue": "{{vars.vm_type}}",
+                                "_previousName": "vMType",
+                                "playbookField": true,
+                                "requiredQuery": [],
+                                "displayTemplate": "%7B%7B%20itemValue%20%7D%7D",
+                                "lengthConstraint": true,
+                                "responseSelected": [
+                                    {
+                                        "option": "OK",
+                                        "primary": false,
+                                        "step_iri": "\/api\/3\/workflow_steps\/9885e9aa-61ac-44e9-aedf-c7d4ca566f58"
+                                    }
+                                ],
+                                "allowedEncryption": false,
+                                "allowedGridColumn": false,
+                                "requiredCondition": "mapping",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true
+                            },
+                            {
+                                "name": "businessJustification",
+                                "type": "string",
+                                "label": "Business Justification",
+                                "title": "Rich Text (Markdown)",
+                                "usable": true,
+                                "tooltip": "Describe in few words why do you need this resource",
+                                "dataType": "text",
+                                "formType": "richtext",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/markdownEditor.html",
+                                "defaultValue": "{{vars.businessJustification}}{{vars.vm_name}}",
+                                "_previousName": "businessJusti",
+                                "playbookField": true,
+                                "requiredQuery": [],
+                                "lengthConstraint": true,
+                                "responseSelected": [
+                                    {
+                                        "option": "OK",
+                                        "primary": false,
+                                        "step_iri": "\/api\/3\/workflow_steps\/9885e9aa-61ac-44e9-aedf-c7d4ca566f58"
+                                    }
+                                ],
+                                "allowedEncryption": true,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "mapping",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true
+                            },
+                            {
+                                "name": "vMName",
+                                "type": "string",
+                                "label": "VM Name",
+                                "tooltip": "Only accepts alphanumerical characters and -",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": false,
+                                "_expanded": true,
+                                "defaultValue": "{{vars.vm_name}}",
+                                "_previousName": "name",
+                                "requiredQuery": [],
+                                "responseSelected": [
+                                    {
+                                        "option": "OK",
+                                        "primary": false,
+                                        "step_iri": "\/api\/3\/workflow_steps\/9885e9aa-61ac-44e9-aedf-c7d4ca566f58"
+                                    }
+                                ],
+                                "requiredCondition": "mapping",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true
+                            },
+                            {
+                                "name": "allowInternetAccess",
+                                "type": "boolean",
+                                "label": "Allow Internet Access",
+                                "title": "Checkbox",
+                                "usable": true,
+                                "tooltip": "Determine whether the VM will have Internet access",
+                                "dataType": "checkbox",
+                                "formType": "checkbox",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/checkbox.html",
+                                "defaultValue": "{{vars.internet_access}}",
+                                "_previousName": "",
+                                "playbookField": true,
+                                "lengthConstraint": false,
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "notrequired",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": false
+                            },
+                            {
+                                "name": "department",
+                                "type": "string",
+                                "label": "Department",
+                                "tooltip": "If none provided the current user department value will be used",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": false,
+                                "_expanded": true,
+                                "defaultValue": "{{vars.department}}",
+                                "_previousName": "",
+                                "requiredCondition": "notrequired",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": false
+                            },
+                            {
+                                "name": "deleteVMAfterXDays",
+                                "type": "boolean",
+                                "label": "Delete VM after X days",
+                                "title": "Checkbox",
+                                "usable": true,
+                                "tooltip": "",
+                                "dataType": "checkbox",
+                                "formType": "checkbox",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/checkbox.html",
+                                "defaultValue": true,
+                                "_previousName": "deleteVMAfterX",
+                                "playbookField": true,
+                                "lengthConstraint": false,
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "notrequired",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": false
+                            },
+                            {
+                                "name": "deleteAfter",
+                                "type": "integer",
+                                "label": "Delete After",
+                                "title": "Date\/Time Field",
+                                "usable": true,
+                                "tooltip": "Date after which the VM will be destroyed",
+                                "dataType": "datetime",
+                                "formType": "datetime",
+                                "required": true,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/datetime.html",
+                                "defaultValue": "{{arrow.get(vars.deleteAfter)|default(None)}}",
+                                "_previousName": "",
+                                "playbookField": true,
+                                "requiredQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "primitive",
+                                            "field": "deleteVMAfterXDays",
+                                            "value": true,
+                                            "operator": "eq",
+                                            "_operator": "eq"
+                                        }
+                                    ]
+                                },
+                                "visibilityQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "primitive",
+                                            "field": "deleteVMAfterXDays",
+                                            "value": true,
+                                            "operator": "eq",
+                                            "_operator": "eq"
+                                        }
+                                    ]
+                                },
+                                "lengthConstraint": false,
+                                "responseSelected": [],
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "requiredCondition": "conditional",
+                                "jinjaExpressionView": true,
+                                "useRecordFieldDefault": false,
+                                "_addRequiredConditions": true,
+                                "_addVisibilityConditions": true
+                            }
+                        ]
+                    }
+                },
+                "record": "",
+                "timeout": {
+                    "days": 0,
+                    "hours": 0,
+                    "minutes": 30,
+                    "step_iri": "\/api\/3\/workflow_steps\/3286bcc0-9c08-4bac-b291-04f1badc08e7"
+                },
+                "agent_id": null,
+                "resources": "v_m_instances",
+                "is_approval": false,
+                "owner_detail": {
+                    "isAssigned": false,
+                    "assignedToTeam": [],
+                    "assignedToField": null,
+                    "emailRecipients": "{{vars.requestor_email}}",
+                    "assignedToPerson": [],
+                    "assignedToRecord": false
+                },
+                "isRecordLinked": false,
+                "step_variables": [],
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "OK",
+                            "primary": false,
+                            "step_iri": "\/api\/3\/workflow_steps\/478a2cad-7845-4b35-8e4b-54b1fdc2b1fa"
+                        },
+                        {
+                            "option": "Cancel",
+                            "step_iri": "\/api\/3\/workflow_steps\/3286bcc0-9c08-4bac-b291-04f1badc08e7"
+                        }
+                    ],
+                    "duplicateOption": false,
+                    "customSuccessMessage": "Awaiting Playbook resumed successfully."
+                },
+                "inputExternalUser": true,
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                },
+                "customEmailExternal": true,
+                "customEmailInternal": false,
+                "inline_channel_list": [],
+                "external_channel_list": [
+                    "\/api\/3\/picklists\/afb18b7f-510b-471a-9b9c-7f4646edd4bb"
+                ],
+                "unauthenticated_input": true,
+                "external_email_subject": "VM Request Form",
+                "internal_email_subject": null,
+                "custom_email_body_external": "<p>Hello {{(vars.requestor_email|split('@'))[0]}},<\/p>\n<p>You have requested a new VM. Please follow the details outlined in this email to view the request.<\/p>",
+                "custom_email_body_internal": null,
+                "external_email_attachments": null,
+                "internal_email_attachments": null
+            },
+            "status": null,
+            "top": "1080",
+            "left": "960",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "38958261-a5ad-4439-984a-e17a9f170072"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Compute Existing IP Addresses -> Get Candidate IP",
+            "targetStep": "\/api\/3\/workflow_steps\/f8ccecb6-a37b-4ab4-ad30-b044a96d2545",
+            "sourceStep": "\/api\/3\/workflow_steps\/06ce81f3-0b29-440a-9bb5-c6415e73d605",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "35baf9d3-c1f9-4840-80fb-ac2cd08553b3"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Copy of Get User Details",
+            "targetStep": "\/api\/3\/workflow_steps\/e161c87f-56b6-46ed-af1d-70d575a13799",
+            "sourceStep": "\/api\/3\/workflow_steps\/14bc9bc6-6d22-4717-aeb7-c0a8639b7720",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "79f92297-babf-4dbe-82b8-73899883251f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Get IP Addresses",
+            "targetStep": "\/api\/3\/workflow_steps\/909a4831-6e69-417f-8ba7-cfa7e29dc966",
+            "sourceStep": "\/api\/3\/workflow_steps\/14bc9bc6-6d22-4717-aeb7-c0a8639b7720",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6e45c11e-0902-48fb-8d61-c93d6c62bb8f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Copy of Get User Details -> Compute Existing IP Addresses",
+            "targetStep": "\/api\/3\/workflow_steps\/06ce81f3-0b29-440a-9bb5-c6415e73d605",
+            "sourceStep": "\/api\/3\/workflow_steps\/e161c87f-56b6-46ed-af1d-70d575a13799",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ebd4e9bb-82ce-4769-aeb9-a9b5eff92244"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Copy of Input Validation -> Find Existing VMs",
+            "targetStep": "\/api\/3\/workflow_steps\/4e52bdda-6085-44de-ae38-a68aa8a595bc",
+            "sourceStep": "\/api\/3\/workflow_steps\/478a2cad-7845-4b35-8e4b-54b1fdc2b1fa",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "7ca4a4c7-a37b-4751-bcc8-12eb87cf984d"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Copy of Service Request -> Stop",
+            "targetStep": "\/api\/3\/workflow_steps\/3286bcc0-9c08-4bac-b291-04f1badc08e7",
+            "sourceStep": "\/api\/3\/workflow_steps\/38958261-a5ad-4439-984a-e17a9f170072",
+            "label": "Cancel",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "81af7e23-0aea-4ad3-bc75-4a9607d816c7"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Correct Name and None Duplicate -> Create Network Interface",
+            "targetStep": "\/api\/3\/workflow_steps\/2efbae02-cebc-49fa-8695-546423164490",
+            "sourceStep": "\/api\/3\/workflow_steps\/fe463ef9-a1f1-4e09-b4d9-d746419342a0",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f2022fa7-6d92-4597-a265-dcfc03ff84e7"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Create Network Interface -> Create VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/e5a5ca19-d8d9-499e-915b-342c887e5651",
+            "sourceStep": "\/api\/3\/workflow_steps\/2efbae02-cebc-49fa-8695-546423164490",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "bbbfea4c-0fde-416d-97a2-5a8c7aeee1f9"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Duplicate Name Message -> Notify Requestor",
+            "targetStep": "\/api\/3\/workflow_steps\/c7154126-e89a-4ef8-8f5e-927ab54fd7a4",
+            "sourceStep": "\/api\/3\/workflow_steps\/b322736f-3e8c-4f3d-82f4-860fa3a4b8a0",
+            "label": "OK",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "5ac7b81a-5f0c-4c0e-bdf4-40b12e7dc699"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Existing VMs -> Correct Name and None Duplicate",
+            "targetStep": "\/api\/3\/workflow_steps\/fe463ef9-a1f1-4e09-b4d9-d746419342a0",
+            "sourceStep": "\/api\/3\/workflow_steps\/4e52bdda-6085-44de-ae38-a68aa8a595bc",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f0ba1771-5163-476b-9e46-a92ba25e4497"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Available IP Addresses -> Get Candidate IP",
+            "targetStep": "\/api\/3\/workflow_steps\/96e0943b-fe67-42f7-984b-bbf03f947ad9",
+            "sourceStep": "\/api\/3\/workflow_steps\/f8ccecb6-a37b-4ab4-ad30-b044a96d2545",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "c039e78a-f41a-4f6d-82f1-830524027dac"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Candidate IP -> Update Server FQHN",
+            "targetStep": "\/api\/3\/workflow_steps\/6a4b25b4-37f6-422a-b24b-496da00bd812",
+            "sourceStep": "\/api\/3\/workflow_steps\/96e0943b-fe67-42f7-984b-bbf03f947ad9",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "280b6fef-6725-4e6e-8610-183eac3c2efc"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get IP Addresses -> Compute Existing IP Addresses",
+            "targetStep": "\/api\/3\/workflow_steps\/06ce81f3-0b29-440a-9bb5-c6415e73d605",
+            "sourceStep": "\/api\/3\/workflow_steps\/909a4831-6e69-417f-8ba7-cfa7e29dc966",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ee638ad6-b30f-4fa4-9909-23097cde4a24"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Input Validation -> Find Existing VMs",
+            "targetStep": "\/api\/3\/workflow_steps\/4e52bdda-6085-44de-ae38-a68aa8a595bc",
+            "sourceStep": "\/api\/3\/workflow_steps\/de9767c6-9e50-4510-8711-cee5ab9d78eb",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "99e364d6-e93c-4225-9b42-484f5e33ec77"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Name Exists -> Duplicate Name Message",
+            "targetStep": "\/api\/3\/workflow_steps\/b322736f-3e8c-4f3d-82f4-860fa3a4b8a0",
+            "sourceStep": "\/api\/3\/workflow_steps\/fe463ef9-a1f1-4e09-b4d9-d746419342a0",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "9675377d-0c85-4183-b2b7-c34cdacbcad6"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Notify Requestor -> Raise Exception",
+            "targetStep": "\/api\/3\/workflow_steps\/b5a45789-74e2-41aa-804c-48839ae6dc8e",
+            "sourceStep": "\/api\/3\/workflow_steps\/c7154126-e89a-4ef8-8f5e-927ab54fd7a4",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "fd89ac88-a764-4586-8cff-d5422bb19fa2"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Request Origin -> Copy of Service Request",
+            "targetStep": "\/api\/3\/workflow_steps\/38958261-a5ad-4439-984a-e17a9f170072",
+            "sourceStep": "\/api\/3\/workflow_steps\/316f5676-e249-465a-a77d-5890958c1d0c",
+            "label": "Email",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "02b75ee3-8924-4385-b698-43490e61f84b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Request Origin -> Service Request",
+            "targetStep": "\/api\/3\/workflow_steps\/0a772081-8511-41d0-8d22-428863ebfcf5",
+            "sourceStep": "\/api\/3\/workflow_steps\/316f5676-e249-465a-a77d-5890958c1d0c",
+            "label": "UI",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "902326fd-3ae4-4621-88f5-0fe1855af77b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Service Request by Email -> Copy of Input Validation",
+            "targetStep": "\/api\/3\/workflow_steps\/478a2cad-7845-4b35-8e4b-54b1fdc2b1fa",
+            "sourceStep": "\/api\/3\/workflow_steps\/38958261-a5ad-4439-984a-e17a9f170072",
+            "label": "OK",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b721c0be-fe3e-46c2-a297-39335ee80b24"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Service Request -> Input Validation",
+            "targetStep": "\/api\/3\/workflow_steps\/de9767c6-9e50-4510-8711-cee5ab9d78eb",
+            "sourceStep": "\/api\/3\/workflow_steps\/0a772081-8511-41d0-8d22-428863ebfcf5",
+            "label": "OK",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b423365e-c45d-4b1b-8a3f-2702c1421186"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Service Request -> Stop",
+            "targetStep": "\/api\/3\/workflow_steps\/3286bcc0-9c08-4bac-b291-04f1badc08e7",
+            "sourceStep": "\/api\/3\/workflow_steps\/0a772081-8511-41d0-8d22-428863ebfcf5",
+            "label": "Cancel",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a50de29c-8a85-4e54-99eb-3a420756afe8"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/14bc9bc6-6d22-4717-aeb7-c0a8639b7720",
+            "sourceStep": "\/api\/3\/workflow_steps\/493c4f60-b0a0-41bc-9e69-428bdc68693f",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "afae927e-5960-4d66-bd73-96e7171ec684"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update Server FQHN -> Request Origin",
+            "targetStep": "\/api\/3\/workflow_steps\/316f5676-e249-465a-a77d-5890958c1d0c",
+            "sourceStep": "\/api\/3\/workflow_steps\/6a4b25b4-37f6-422a-b24b-496da00bd812",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "cc15a1c6-026a-4642-8e9f-a2f3de7c9460"
+        }
+    ],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "Autofill attributes",
+            "description": "GenAI parsed attributes are pre-populate it in the form",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "960",
+            "left": "960",
+            "height": "90",
+            "width": "249",
+            "uuid": "83cb85d1-a9f4-4230-968a-8ad452ed000b",
+            "recordTags": []
+        },
+        {
+            "@type": "WorkflowGroup",
+            "name": "Compute IP",
+            "description": "Select an IP Address from available pool",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "660",
+            "left": "820",
+            "height": "0",
+            "width": "300",
+            "uuid": "a0cc5e06-3b60-4cde-8f47-1adfbd96d75f",
+            "recordTags": []
+        },
+        {
+            "@type": "WorkflowGroup",
+            "name": "Request Form Data",
+            "description": "Get request parameters either from UI or from Emails depending on how the request was triggered",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "1340",
+            "left": "980",
+            "height": "133",
+            "width": "226",
+            "uuid": "eda616c9-91dd-4f22-a41f-016b6359ba6a",
+            "recordTags": []
+        }
+    ],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "0bda469e-1790-4fdb-bf95-cbdd98cf85ed",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Main"
+    ]
+}

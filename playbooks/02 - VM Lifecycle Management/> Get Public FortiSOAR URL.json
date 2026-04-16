@@ -1,0 +1,265 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Get Public FortiSOAR URL",
+    "aliasName": null,
+    "tag": null,
+    "description": "Set Server_FQHN global variable",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/20335181-4d54-4ee9-89e6-9c723c8ca96a",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "uri": "{{vars.request.uri}}",
+                "server_fqdn": "{{globalVars.Server_fqhn}}"
+            },
+            "status": null,
+            "top": "200",
+            "left": "240",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "8a165d53-2283-4eda-aca2-4e9dabe41a95"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Create Base URl",
+            "description": null,
+            "arguments": {
+                "fortisoar_url": "{{vars.steps.Get_FortiSOAR_Public_IP.data}}:21443"
+            },
+            "status": null,
+            "top": "620",
+            "left": "440",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "ee74a4aa-b808-4ef1-9abe-b95592c6a2b5"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Base URl",
+            "description": null,
+            "arguments": {
+                "fortisoar_url": "{{vars.uri|regex_search('(?<=^https:\/\/)[a-zA-Z0-9.-]+(?:\\:[0-9]+)?')}}"
+            },
+            "status": null,
+            "top": "620",
+            "left": "40",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "3ba70dfe-6b34-430e-b746-8a74bc080f00"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get FortiSOAR Public IP",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "url": "https:\/\/api.ipify.org",
+                    "body": "",
+                    "method": "GET",
+                    "params": "",
+                    "verify": true,
+                    "headers": "",
+                    "password": "",
+                    "username": "",
+                    "auth_config": "",
+                    "is_upload_file": ""
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "api_call",
+                "operationTitle": "Utils: Make REST API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "480",
+            "left": "440",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "aa775db6-17d3-4eca-a2d2-8283970cf274"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "__triggerLimit": true,
+                "step_variables": {
+                    "input": {
+                        "params": []
+                    }
+                },
+                "triggerOnSource": true,
+                "triggerOnReplicate": false
+            },
+            "status": null,
+            "top": "40",
+            "left": "240",
+            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "group": null,
+            "uuid": "20335181-4d54-4ee9-89e6-9c723c8ca96a"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update FortiSOAR FQDN",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "macro": "Server_fqhn",
+                    "value": "{{vars.fortisoar_url}}"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "updatemacro",
+                "operationTitle": "FSR: Create\/Update Global Variables",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "760",
+            "left": "240",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "b415a852-73bf-42b3-bf59-b9a0e0cef17d"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "VM Request Origin",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "UI",
+                        "step_iri": "\/api\/3\/workflow_steps\/3ba70dfe-6b34-430e-b746-8a74bc080f00",
+                        "condition": "{{ vars.uri | default('') | length > 0 }}",
+                        "step_name": "Get Base URl"
+                    },
+                    {
+                        "option": "Email",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/aa775db6-17d3-4eca-a2d2-8283970cf274",
+                        "step_name": "Get FortiSOAR Public IP"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "360",
+            "left": "240",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "50fb7135-c777-499b-bcde-3a89f7bec661"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> VM Request Origin",
+            "targetStep": "\/api\/3\/workflow_steps\/50fb7135-c777-499b-bcde-3a89f7bec661",
+            "sourceStep": "\/api\/3\/workflow_steps\/8a165d53-2283-4eda-aca2-4e9dabe41a95",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "3d106377-64ed-4453-bd54-681df5dd97e5"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Create Base URl -> Update FortiSOAR FQDN",
+            "targetStep": "\/api\/3\/workflow_steps\/b415a852-73bf-42b3-bf59-b9a0e0cef17d",
+            "sourceStep": "\/api\/3\/workflow_steps\/ee74a4aa-b808-4ef1-9abe-b95592c6a2b5",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "03e7e656-727e-40ec-8cc0-b1dd30fe9a48"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Base URl -> Update FortiSOAR FQDN",
+            "targetStep": "\/api\/3\/workflow_steps\/b415a852-73bf-42b3-bf59-b9a0e0cef17d",
+            "sourceStep": "\/api\/3\/workflow_steps\/3ba70dfe-6b34-430e-b746-8a74bc080f00",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "2c15a664-693e-4c75-80fc-ff707f292abb"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get FortiSOAR Public IP -> Create Base URl",
+            "targetStep": "\/api\/3\/workflow_steps\/ee74a4aa-b808-4ef1-9abe-b95592c6a2b5",
+            "sourceStep": "\/api\/3\/workflow_steps\/aa775db6-17d3-4eca-a2d2-8283970cf274",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "59b4239b-5899-41ab-a3bb-ed9e36de8215"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/8a165d53-2283-4eda-aca2-4e9dabe41a95",
+            "sourceStep": "\/api\/3\/workflow_steps\/20335181-4d54-4ee9-89e6-9c723c8ca96a",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "bbc19f54-22eb-4748-b90b-c6d04444472a"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "VM Request Origin -> Get Base URl",
+            "targetStep": "\/api\/3\/workflow_steps\/3ba70dfe-6b34-430e-b746-8a74bc080f00",
+            "sourceStep": "\/api\/3\/workflow_steps\/50fb7135-c777-499b-bcde-3a89f7bec661",
+            "label": "UI",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "41421a78-b0d9-4426-a39d-1850ba77ec0b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "VM Request Origin -> Get FortiSOAR Public IP",
+            "targetStep": "\/api\/3\/workflow_steps\/aa775db6-17d3-4eca-a2d2-8283970cf274",
+            "sourceStep": "\/api\/3\/workflow_steps\/50fb7135-c777-499b-bcde-3a89f7bec661",
+            "label": "Email",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "0a75c236-1f5f-4e9b-983f-7bc96be95de8"
+        }
+    ],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "Training section",
+            "description": "When the request is triggered from Emails there is no URI headers entry so we have to compute FortiSOAR URL with other means",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "280",
+            "left": "580",
+            "height": "168",
+            "width": "198",
+            "uuid": "5756397b-9780-41cf-a6b6-d5814fc1240a",
+            "recordTags": []
+        }
+    ],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "2446845f-7007-4885-92a2-2af00604cb67",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Utility"
+    ]
+}

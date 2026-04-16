@@ -1,0 +1,177 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Destroy Expired VM Instances",
+    "aliasName": null,
+    "tag": null,
+    "description": "Iterate over existing VM instances and destroy expired ones",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/d9452230-001d-4ffb-b8fb-833753e1ec65",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Destroy VM Instance",
+            "description": null,
+            "arguments": {
+                "for_each": {
+                    "item": "{{vars.steps.Find_Expired_VM_Instances}}",
+                    "parallel": false,
+                    "condition": ""
+                },
+                "arguments": {
+                    "vm_instance": "{{vars.item}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/1f2f9254-007c-4c09-8c4a-0a5be5aed820"
+            },
+            "status": null,
+            "top": "300",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "596d383b-9eed-4edc-bdae-82d85da947ab"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Expired VM Instances",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "datetime",
+                            "logic": "AND",
+                            "_field": "deleteAfter",
+                            "_value": {
+                                "differenceType": "mins",
+                                "differenceValue": 1
+                            },
+                            "filters": [
+                                {
+                                    "type": "datetime",
+                                    "field": "deleteAfter",
+                                    "value": "{{getRelativeDate(0,0,0,0,1,\"start\")}}",
+                                    "operator": "lt"
+                                }
+                            ],
+                            "_operator": "lt"
+                        },
+                        {
+                            "type": "object",
+                            "field": "status",
+                            "value": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                            "_value": {
+                                "@id": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                                "display": "Active",
+                                "itemValue": "Active"
+                            },
+                            "operator": "eq"
+                        }
+                    ],
+                    "__selectFields": [
+                        "name",
+                        "vMType"
+                    ]
+                },
+                "module": "v_m_instances?$limit=100",
+                "checkboxFields": true,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "165",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "3304ef69-c677-4621-bee5-b297fa83374b"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "route": "98a9a39e-5e29-4354-baaa-69d763d1a632",
+                "resources": [
+                    "v_m_instances"
+                ],
+                "__triggerLimit": true,
+                "inputVariables": [],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    }
+                },
+                "triggerOnSource": true,
+                "displayConditions": {
+                    "v_m_instances": {
+                        "sort": [],
+                        "limit": 30,
+                        "logic": "AND",
+                        "filters": []
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "showToasterMessage": {
+                    "visible": false,
+                    "messageVisible": true
+                },
+                "triggerOnReplicate": false,
+                "singleRecordExecution": false
+            },
+            "status": null,
+            "top": "30",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "d9452230-001d-4ffb-b8fb-833753e1ec65"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Expired VM Instances -> Destroy VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/596d383b-9eed-4edc-bdae-82d85da947ab",
+            "sourceStep": "\/api\/3\/workflow_steps\/3304ef69-c677-4621-bee5-b297fa83374b",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "69e31b51-cc76-4205-b81e-d12812927259"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Find Expired VM Instances",
+            "targetStep": "\/api\/3\/workflow_steps\/3304ef69-c677-4621-bee5-b297fa83374b",
+            "sourceStep": "\/api\/3\/workflow_steps\/d9452230-001d-4ffb-b8fb-833753e1ec65",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "74f4b9d1-7104-48b0-8edf-c086d658935d"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "584fdb73-9b57-4c17-b52b-8abf01d30128",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Destroy"
+    ]
+}
