@@ -5,6 +5,9 @@
             "PLURAL_NAME": "VM Instances"
         },
         "FIELDS": {
+            "HYPERVISOR": "Hypervisor",
+            "VMID": "VM ID",
+            "SOURCEDATA": "Source Data",
             "EMAILREQUESTOR": "Email Requestor",
             "INTERNETACCESS": "Internet Access",
             "DESCRIPTION": "Description",

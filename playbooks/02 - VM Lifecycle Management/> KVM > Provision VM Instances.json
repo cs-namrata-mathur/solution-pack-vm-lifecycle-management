@@ -2,7 +2,7 @@
     "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
-    "name": "> Provision VM Instances",
+    "name": "> KVM > Provision VM Instances",
     "aliasName": null,
     "tag": null,
     "description": "Create VM Instances",
@@ -14,32 +14,10 @@
         "vm_instance"
     ],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/b60a5362-25ed-43f3-bf77-a10e719a0bc5",
+    "triggerStep": "\/api\/3\/workflow_steps\/b9ad9e47-790a-49b5-adb5-4e01a6859009",
     "steps": [
-        {
-            "@type": "WorkflowStep",
-            "name": "Allow Internet if Requested",
-            "description": null,
-            "arguments": {
-                "when": "{{vars.input.records[0].internetAccess | default(false)}}",
-                "arguments": {
-                    "ip_address": "{{vars.vm_ip_address}}"
-                },
-                "apply_async": false,
-                "step_variables": [],
-                "pass_parent_env": false,
-                "pass_input_record": false,
-                "workflowReference": "\/api\/3\/workflows\/f1e88271-3790-407c-b05e-b9d24fe975fd"
-            },
-            "status": null,
-            "top": "1240",
-            "left": "660",
-            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
-            "group": null,
-            "uuid": "4a66f1c0-8637-4849-b55c-8d0e48c618ab"
-        },
         {
             "@type": "WorkflowStep",
             "name": "Compute Available Resource",
@@ -53,7 +31,7 @@
             "left": "300",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "6ebc3d4a-f326-451d-9d49-0ff8a55defac"
+            "uuid": "1a02bc99-6c63-41be-b94e-4aa1dc226d30"
         },
         {
             "@type": "WorkflowStep",
@@ -73,7 +51,7 @@
             "left": "300",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "0011151f-7d0a-468d-9c9e-a4dc8679e592"
+            "uuid": "37669ef3-d9c8-4e52-a0b9-c080eca0b2be"
         },
         {
             "@type": "WorkflowStep",
@@ -83,14 +61,14 @@
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/4a66f1c0-8637-4849-b55c-8d0e48c618ab",
+                        "step_iri": "\/api\/3\/workflow_steps\/b5250efb-24f6-421d-beb1-b5897595417f",
                         "condition": "{{ \"provisioned successfully\" in vars.cmd_result }}",
-                        "step_name": "Allow Internet if Requested"
+                        "step_name": "Update VM Instance Success"
                     },
                     {
                         "option": "no",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/9e645836-fb78-4c6d-9e4b-399415d615f2",
+                        "step_iri": "\/api\/3\/workflow_steps\/ef17b613-e73f-48e8-a9d6-82cc8ddaf01a",
                         "step_name": "Update VM Instance Failure"
                     }
                 ],
@@ -101,7 +79,7 @@
             "left": "465",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "8be1b98b-d26c-4370-8eae-bb9c483205c8"
+            "uuid": "88f9e5ce-c20a-4aa6-abf2-211ea32a3b5a"
         },
         {
             "@type": "WorkflowStep",
@@ -128,7 +106,7 @@
             "left": "300",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "53726a7d-ed7a-43c2-905e-c0d77e3a9f2a"
+            "uuid": "5558d097-bded-452e-99e8-f8b190a6e2e5"
         },
         {
             "@type": "WorkflowStep",
@@ -142,7 +120,7 @@
             "left": "465",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "872204b9-293c-4986-9162-4537e050b2c1"
+            "uuid": "9ab071c1-a5fd-4716-9a96-57a293b7c278"
         },
         {
             "@type": "WorkflowStep",
@@ -152,14 +130,14 @@
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/e870e206-292d-4ea9-a8ef-9d3b21675102",
+                        "step_iri": "\/api\/3\/workflow_steps\/9737a788-6d25-4d91-bb9d-f15ee5a0ce81",
                         "condition": "{{ vars.available_disk >= vars.minimum_disk_gb and vars.available_ram >= vars.minimum_ram_mb }}",
                         "step_name": "Set Provisioning Params"
                     },
                     {
                         "option": "no",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/9e645836-fb78-4c6d-9e4b-399415d615f2",
+                        "step_iri": "\/api\/3\/workflow_steps\/ef17b613-e73f-48e8-a9d6-82cc8ddaf01a",
                         "step_name": "Update VM Instance Failure"
                     }
                 ],
@@ -170,7 +148,7 @@
             "left": "300",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "6ad873c3-cb83-4ee4-985f-66cb42ad528e"
+            "uuid": "38bba948-1566-4384-8395-569992948f1c"
         },
         {
             "@type": "WorkflowStep",
@@ -198,7 +176,7 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
             "group": null,
-            "uuid": "4cbc9463-fa07-4410-8a8e-f556225ea757"
+            "uuid": "90b05903-127a-4a8e-aa2e-2f601fa31fc9"
         },
         {
             "@type": "WorkflowStep",
@@ -226,7 +204,7 @@
             "left": "660",
             "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
             "group": null,
-            "uuid": "e5365072-d3e6-444c-b022-51266adc9a5f"
+            "uuid": "ea28525b-29a4-4d20-b250-c74f57e9321a"
         },
         {
             "@type": "WorkflowStep",
@@ -254,7 +232,7 @@
             "left": "465",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "d6b37f92-7e39-4b72-916b-cd4900a0333b"
+            "uuid": "5f40b3a3-ce8a-4c63-a25e-2e8f9a4282c9"
         },
         {
             "@type": "WorkflowStep",
@@ -268,14 +246,14 @@
             "left": "465",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "e870e206-292d-4ea9-a8ef-9d3b21675102"
+            "uuid": "9737a788-6d25-4d91-bb9d-f15ee5a0ce81"
         },
         {
             "@type": "WorkflowStep",
             "name": "Start",
             "description": null,
             "arguments": {
-                "route": "c9f75b2f-6181-435a-93c8-ee5f47ac8926",
+                "route": "8df4364d-56bc-470d-9ddc-fa989cc1647b",
                 "resources": [
                     "v_m_instances"
                 ],
@@ -312,7 +290,7 @@
             "left": "300",
             "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
-            "uuid": "b60a5362-25ed-43f3-bf77-a10e719a0bc5"
+            "uuid": "b9ad9e47-790a-49b5-adb5-4e01a6859009"
         },
         {
             "@type": "WorkflowStep",
@@ -337,7 +315,7 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "9e645836-fb78-4c6d-9e4b-399415d615f2"
+            "uuid": "ef17b613-e73f-48e8-a9d6-82cc8ddaf01a"
         },
         {
             "@type": "WorkflowStep",
@@ -347,6 +325,7 @@
                 "resource": {
                     "logs": "| Hypervisor Report |\n| --- | \n{%- for line in vars.cmd_result.replace('\\r','').split('\\n') if line.strip() %}\n  | > {{ line|trim }}|\n{%- endfor %}\n\n| NGFW Report |\n| --- | \n|{{vars.steps.Allow_Internet_if_Requested.status}}|\n\n",
                     "status": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                    "hypervisor": "\/api\/3\/picklists\/3e1484e4-4cb8-4b8f-bd1e-bf5032eeb4fc",
                     "description": "| Attribute | Value |\n| --- | --- |\n|Host| {{vars.vm_ip_address}}|\n|Username| sysadmin|\n|Password| fortinet|\n|Access Protocol| SSH |",
                     "provisionedOn": "{{globalVars.Current_Date}}"
                 },
@@ -365,160 +344,152 @@
             "left": "660",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "739f16dc-8630-4a6d-ae63-ff6614666f01"
+            "uuid": "b5250efb-24f6-421d-beb1-b5897595417f"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Allow Internet if Requested -> Update VM Instance Success",
-            "targetStep": "\/api\/3\/workflow_steps\/739f16dc-8630-4a6d-ae63-ff6614666f01",
-            "sourceStep": "\/api\/3\/workflow_steps\/4a66f1c0-8637-4849-b55c-8d0e48c618ab",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "dc934ed0-038f-49bd-aef5-00968cb4131e"
-        },
-        {
-            "@type": "WorkflowRoute",
             "name": "Compute Available Resource -> Are Hardware Resources Enough",
-            "targetStep": "\/api\/3\/workflow_steps\/6ad873c3-cb83-4ee4-985f-66cb42ad528e",
-            "sourceStep": "\/api\/3\/workflow_steps\/6ebc3d4a-f326-451d-9d49-0ff8a55defac",
+            "targetStep": "\/api\/3\/workflow_steps\/38bba948-1566-4384-8395-569992948f1c",
+            "sourceStep": "\/api\/3\/workflow_steps\/1a02bc99-6c63-41be-b94e-4aa1dc226d30",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "0a62f962-39ce-4e7e-b953-99a098c8c292"
+            "uuid": "e6a971be-1a33-47e6-bc24-a023ddb4c7e8"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Configuration -> Get Available Resources",
-            "targetStep": "\/api\/3\/workflow_steps\/53726a7d-ed7a-43c2-905e-c0d77e3a9f2a",
-            "sourceStep": "\/api\/3\/workflow_steps\/0011151f-7d0a-468d-9c9e-a4dc8679e592",
+            "targetStep": "\/api\/3\/workflow_steps\/5558d097-bded-452e-99e8-f8b190a6e2e5",
+            "sourceStep": "\/api\/3\/workflow_steps\/37669ef3-d9c8-4e52-a0b9-c080eca0b2be",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "2faaf225-bb37-4c6a-af1a-81384a523077"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Deployment Successful -> Allow Internet if Requested",
-            "targetStep": "\/api\/3\/workflow_steps\/4a66f1c0-8637-4849-b55c-8d0e48c618ab",
-            "sourceStep": "\/api\/3\/workflow_steps\/8be1b98b-d26c-4370-8eae-bb9c483205c8",
-            "label": "yes",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "1d595d3d-ed6b-4d4d-bcc5-b8eec0916f81"
+            "uuid": "97409c67-4b81-49f2-afdc-4e570d6776cb"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Deployment Successful -> Update VM Instance Failure",
-            "targetStep": "\/api\/3\/workflow_steps\/9e645836-fb78-4c6d-9e4b-399415d615f2",
-            "sourceStep": "\/api\/3\/workflow_steps\/8be1b98b-d26c-4370-8eae-bb9c483205c8",
+            "targetStep": "\/api\/3\/workflow_steps\/ef17b613-e73f-48e8-a9d6-82cc8ddaf01a",
+            "sourceStep": "\/api\/3\/workflow_steps\/88f9e5ce-c20a-4aa6-abf2-211ea32a3b5a",
             "label": "no",
             "isExecuted": false,
             "group": null,
-            "uuid": "dd8bfaa0-e8c7-4023-8920-41c6a1cabc2d"
+            "uuid": "d952d7a1-6d7d-4087-8ab6-3c7aef8cf16b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Deployment Successful -> Update VM Instance Success",
+            "targetStep": "\/api\/3\/workflow_steps\/b5250efb-24f6-421d-beb1-b5897595417f",
+            "sourceStep": "\/api\/3\/workflow_steps\/88f9e5ce-c20a-4aa6-abf2-211ea32a3b5a",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "94da41da-304c-4b03-8dba-fbfedddac093"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get Available Resources -> Compute Available Resource",
-            "targetStep": "\/api\/3\/workflow_steps\/6ebc3d4a-f326-451d-9d49-0ff8a55defac",
-            "sourceStep": "\/api\/3\/workflow_steps\/53726a7d-ed7a-43c2-905e-c0d77e3a9f2a",
+            "targetStep": "\/api\/3\/workflow_steps\/1a02bc99-6c63-41be-b94e-4aa1dc226d30",
+            "sourceStep": "\/api\/3\/workflow_steps\/5558d097-bded-452e-99e8-f8b190a6e2e5",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "f727ad94-6721-4619-a3db-647ca3cce634"
+            "uuid": "35e7f0d2-e69a-4fef-afbb-17be2c233d5a"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get CMD Results -> Deployment Successful",
-            "targetStep": "\/api\/3\/workflow_steps\/8be1b98b-d26c-4370-8eae-bb9c483205c8",
-            "sourceStep": "\/api\/3\/workflow_steps\/872204b9-293c-4986-9162-4537e050b2c1",
+            "targetStep": "\/api\/3\/workflow_steps\/88f9e5ce-c20a-4aa6-abf2-211ea32a3b5a",
+            "sourceStep": "\/api\/3\/workflow_steps\/9ab071c1-a5fd-4716-9a96-57a293b7c278",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "93760401-3f9f-4695-b9ed-7448a67e1d8e"
+            "uuid": "9792d513-d8cb-440d-a90b-57a445bdf0b3"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Hypervisor Hardware Resources Available -> Set Provisioning Params",
-            "targetStep": "\/api\/3\/workflow_steps\/e870e206-292d-4ea9-a8ef-9d3b21675102",
-            "sourceStep": "\/api\/3\/workflow_steps\/6ad873c3-cb83-4ee4-985f-66cb42ad528e",
+            "targetStep": "\/api\/3\/workflow_steps\/9737a788-6d25-4d91-bb9d-f15ee5a0ce81",
+            "sourceStep": "\/api\/3\/workflow_steps\/38bba948-1566-4384-8395-569992948f1c",
             "label": "yes",
             "isExecuted": false,
             "group": null,
-            "uuid": "3571ba5c-bfbe-48b2-b246-93f7a5c4bd17"
+            "uuid": "4fd1e605-6d25-42b2-a612-3226a9f66f2c"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Hypervisor Hardware Resources Available -> Update VM Instance Failure",
-            "targetStep": "\/api\/3\/workflow_steps\/9e645836-fb78-4c6d-9e4b-399415d615f2",
-            "sourceStep": "\/api\/3\/workflow_steps\/6ad873c3-cb83-4ee4-985f-66cb42ad528e",
+            "targetStep": "\/api\/3\/workflow_steps\/ef17b613-e73f-48e8-a9d6-82cc8ddaf01a",
+            "sourceStep": "\/api\/3\/workflow_steps\/38bba948-1566-4384-8395-569992948f1c",
             "label": "no",
             "isExecuted": false,
             "group": null,
-            "uuid": "22cb8671-5a23-40cb-b29d-8b233e4ff777"
+            "uuid": "2a0c7038-a0c7-4537-bb09-5ceac5db4a03"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Run Provisioning CMD -> Get CMD Results",
-            "targetStep": "\/api\/3\/workflow_steps\/872204b9-293c-4986-9162-4537e050b2c1",
-            "sourceStep": "\/api\/3\/workflow_steps\/d6b37f92-7e39-4b72-916b-cd4900a0333b",
+            "targetStep": "\/api\/3\/workflow_steps\/9ab071c1-a5fd-4716-9a96-57a293b7c278",
+            "sourceStep": "\/api\/3\/workflow_steps\/5f40b3a3-ce8a-4c63-a25e-2e8f9a4282c9",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "30f7abcc-f2b5-4a42-826c-27cf0cfe908b"
+            "uuid": "7f37dc16-981a-4fef-8495-0c1a4b71d35d"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Set Provisioning Params -> Copy of Get Available Resources",
-            "targetStep": "\/api\/3\/workflow_steps\/d6b37f92-7e39-4b72-916b-cd4900a0333b",
-            "sourceStep": "\/api\/3\/workflow_steps\/e870e206-292d-4ea9-a8ef-9d3b21675102",
+            "targetStep": "\/api\/3\/workflow_steps\/5f40b3a3-ce8a-4c63-a25e-2e8f9a4282c9",
+            "sourceStep": "\/api\/3\/workflow_steps\/9737a788-6d25-4d91-bb9d-f15ee5a0ce81",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "3dda665a-cf6b-4c39-b04b-20fba6086a91"
+            "uuid": "d2e500c7-83e1-4acf-a1e7-54901f3a0f83"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/0011151f-7d0a-468d-9c9e-a4dc8679e592",
-            "sourceStep": "\/api\/3\/workflow_steps\/b60a5362-25ed-43f3-bf77-a10e719a0bc5",
+            "targetStep": "\/api\/3\/workflow_steps\/37669ef3-d9c8-4e52-a0b9-c080eca0b2be",
+            "sourceStep": "\/api\/3\/workflow_steps\/b9ad9e47-790a-49b5-adb5-4e01a6859009",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "54901540-87fa-4095-92e1-193cc620f4ca"
+            "uuid": "9d75a0c2-0baa-4acf-85cc-0edda605b591"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Update VM Instance Failure -> Notify Failure",
-            "targetStep": "\/api\/3\/workflow_steps\/4cbc9463-fa07-4410-8a8e-f556225ea757",
-            "sourceStep": "\/api\/3\/workflow_steps\/9e645836-fb78-4c6d-9e4b-399415d615f2",
+            "targetStep": "\/api\/3\/workflow_steps\/90b05903-127a-4a8e-aa2e-2f601fa31fc9",
+            "sourceStep": "\/api\/3\/workflow_steps\/ef17b613-e73f-48e8-a9d6-82cc8ddaf01a",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "9d64d4b9-5c39-41dd-bced-aafac8e63a43"
+            "uuid": "c69977fb-6c1c-459e-8625-f685e574e2bc"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Update VM Instance Success -> Copy of Notify Failure",
-            "targetStep": "\/api\/3\/workflow_steps\/e5365072-d3e6-444c-b022-51266adc9a5f",
-            "sourceStep": "\/api\/3\/workflow_steps\/739f16dc-8630-4a6d-ae63-ff6614666f01",
+            "targetStep": "\/api\/3\/workflow_steps\/ea28525b-29a4-4d20-b250-c74f57e9321a",
+            "sourceStep": "\/api\/3\/workflow_steps\/b5250efb-24f6-421d-beb1-b5897595417f",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "5ae3a414-5931-46fa-9d0f-b420121efed3"
+            "uuid": "6c9f1ef9-2d91-4eac-bdfd-39690c635357"
         }
     ],
     "groups": [],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
-    "isEditable": false,
-    "uuid": "7188e51d-8865-4bd7-b2fd-3d5354e7852e",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "c396f555-ba88-48a2-b8b0-85aee19a6450",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
     "recordTags": [
-        "Create"
+        "Create",
+        "KVM",
+        "Provision"
     ]
 }

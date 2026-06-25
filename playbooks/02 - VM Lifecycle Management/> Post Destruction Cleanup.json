@@ -1,0 +1,188 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Post Destruction Cleanup",
+    "aliasName": null,
+    "tag": null,
+    "description": "Cleanup Internet access, network inter....etc",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/0be04649-4a89-47db-9405-2d586c53fa35",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Delete Interface Record",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "iri": "\/api\/3\/delete\/network_interfaces",
+                    "body": "{\"ids\":[\"{{vars.input.records[0].networkInterfaces['@id']|basename}}\"]}",
+                    "method": "DELETE"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "86d8a43e-daaf-46da-8b22-69e21284a831"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Remove Internet Access If Exists",
+            "description": null,
+            "arguments": {
+                "arguments": {
+                    "ip_address": "{{vars.input.records[0].networkInterfaces.iPAddress}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/8c65a3c6-e61f-4b81-85b3-e7f325a55962"
+            },
+            "status": null,
+            "top": "165",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "597469d8-87d3-4d8b-8ab4-ad764e9ae8da"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "resource": "v_m_instances",
+                "resources": [
+                    "v_m_instances"
+                ],
+                "__triggerLimit": true,
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": [
+                            "{{vars.input.records[0]}}"
+                        ]
+                    }
+                },
+                "triggerOnSource": true,
+                "fieldbasedtrigger": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "object",
+                            "field": "status",
+                            "value": "\/api\/3\/picklists\/87e8de7b-4ca7-41f2-b3ee-bc367faf489c",
+                            "_value": {
+                                "@id": "\/api\/3\/picklists\/87e8de7b-4ca7-41f2-b3ee-bc367faf489c",
+                                "display": "Destroyed",
+                                "itemValue": "Destroyed"
+                            },
+                            "operator": "eq"
+                        },
+                        {
+                            "type": "object",
+                            "field": "status",
+                            "value": "",
+                            "_value": {
+                                "@id": "",
+                                "display": "",
+                                "itemValue": ""
+                            },
+                            "operator": "changed"
+                        }
+                    ]
+                },
+                "triggerOnReplicate": false
+            },
+            "status": null,
+            "top": "30",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/9300bf69-5063-486d-b3a6-47eb9da24872",
+            "group": null,
+            "uuid": "0be04649-4a89-47db-9405-2d586c53fa35"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update Cleanup Status",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "logs": "{{vars.input.records[0].logs}}\n<ul><li> Internet Access Cleanup: {{vars.steps.Remove_Internet_Access_If_Exists}}<\/li>\n<li> Interface {{vars.input.records[0].networkInterfaces.iPAddress}} freed <\/li><\/ul>"
+                },
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/v_m_instances",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "435",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "7023e553-38f9-471d-a390-175ce857adb5"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Delete Interface Record -> Update Cleanup Status",
+            "targetStep": "\/api\/3\/workflow_steps\/7023e553-38f9-471d-a390-175ce857adb5",
+            "sourceStep": "\/api\/3\/workflow_steps\/86d8a43e-daaf-46da-8b22-69e21284a831",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "de69d6c0-7b4b-4fff-af12-9d2894843365"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Remove Internet Access If Exists -> Delete Interface Record",
+            "targetStep": "\/api\/3\/workflow_steps\/86d8a43e-daaf-46da-8b22-69e21284a831",
+            "sourceStep": "\/api\/3\/workflow_steps\/597469d8-87d3-4d8b-8ab4-ad764e9ae8da",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "db7bdf3c-9987-4350-9976-6e008d74d216"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Remove Internet Access If Exists",
+            "targetStep": "\/api\/3\/workflow_steps\/597469d8-87d3-4d8b-8ab4-ad764e9ae8da",
+            "sourceStep": "\/api\/3\/workflow_steps\/0be04649-4a89-47db-9405-2d586c53fa35",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e6b68e97-fedd-47ef-abb0-ea2dc9c0e9a6"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "b4427e5d-831c-4c97-8019-24ac17ffbaed",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Cleanup"
+    ]
+}
