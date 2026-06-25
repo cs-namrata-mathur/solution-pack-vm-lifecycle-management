@@ -1,33 +1,8 @@
 {
-    "name": "vMLifecycleManagement",
-    "version": "1.0.0",
-    "fsrMinCompatibility": "7.6.4",
-    "type": "solutionpack",
-    "local": true,
-    "label": "VM Lifecycle Management",
-    "dependencies": [
-        {
-            "name": "sOARFramework",
-            "type": "solutionpack",
-            "label": "SOAR Framework",
-            "minVersion": null
-        }
-    ],
-    "prerequisite": "# Connectors: \n- Active Directory (installed)\n- DNS\n- FortiMail\n- FortiGate\n- SSH (KVM)\n- Google Gemini\n- -IMAP\n- SMTP\n- VirusTotal\n\n# Users:\nYou will need extra users (other than csadmin) to test the requests from \n",
-    "publisher": "Fortinet CSE",
-    "contributor": "Naili.M",
-    "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
-    "help": null,
-    "category": [
-        "Compute Platform"
-    ],
-    "supportInfo": null,
-    "iconLarge": null,
-    "postInstallConfig": {
-        "enabled": false
-    },
-    "recordTags": ["FortiSOAR", "VM Lifecycle Management"],
-    "date": "2026-04-15T07:09:05+00:00",
+    "fsrMinCompatibility": "7.2.0",
+    "date": "2026-06-25T05:27:37+00:00",
+    "exported_from": "fortisoar",
+    "exported_by": "CS Admin",
     "contents": {
         "picklistNames": [
             {
@@ -42,7 +17,7 @@
                 "name": "Network Interfaces",
                 "apiName": "network_interfaces"
             },
-            "v_m_instances": {
+            "": {
                 "name": "VM Instances",
                 "apiName": "v_m_instances"
             }
@@ -91,12 +66,12 @@
                 "name": "Full App Permissions"
             }
         ],
-        "globalVariables": [
+        "actors": [
             {
-                "name": "Current_Date",
-                "value": "{{arrow.utcnow().timestamp}}",
-                "default_value": "{{arrow.utcnow().timestamp}}"
-            },
+                "name": "atlas numid"
+            }
+        ],
+        "globalVariables": [
             {
                 "name": "infrastructure_team_email",
                 "value": "cloud-ops@fortielab.com",
@@ -104,8 +79,13 @@
             },
             {
                 "name": "Server_fqhn",
-                "value": "34.1.59.201:13002",
+                "value": "es13-fs0.fortielab.com:21443",
                 "default_value": "master.fortisoar.in"
+            },
+            {
+                "name": "Current_Date",
+                "value": "{{arrow.utcnow().timestamp}}",
+                "default_value": "{{arrow.utcnow().timestamp}}"
             }
         ],
         "playbooks": [
@@ -116,19 +96,23 @@
         "connectors": [
             {
                 "name": "Active Directory",
-                "apiName": "activedirectory"
+                "apiName": "activedirectory",
+                "version": "2.4.0"
             },
             {
                 "name": "DNS",
-                "apiName": "dns"
+                "apiName": "dns",
+                "version": "1.0.0"
             },
             {
                 "name": "Fortinet FortiGate",
-                "apiName": "fortigate-firewall"
+                "apiName": "fortigate-firewall",
+                "version": "5.4.0"
             },
             {
                 "name": "Fortinet FortiMail",
-                "apiName": "fortinet-fortimail"
+                "apiName": "fortinet-fortimail",
+                "version": "1.2.1"
             },
             {
                 "name": "Google Gemini",
@@ -137,15 +121,28 @@
             },
             {
                 "name": "IMAP",
-                "apiName": "imap"
+                "apiName": "imap",
+                "version": "3.5.8"
+            },
+            {
+                "name": "Proxmox VE Hypervisor",
+                "apiName": "proxmox-ve",
+                "version": "1.0.0"
             },
             {
                 "name": "SMTP",
-                "apiName": "smtp"
+                "apiName": "smtp",
+                "version": "2.6.0"
             },
             {
                 "name": "SSH",
-                "apiName": "ssh"
+                "apiName": "ssh",
+                "version": "2.1.2"
+            },
+            {
+                "name": "VirusTotal",
+                "apiName": "virustotal",
+                "version": "3.2.1"
             }
         ]
     }

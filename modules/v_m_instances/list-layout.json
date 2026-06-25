@@ -22,9 +22,9 @@
                                     "editableFields": false,
                                     "actionButtons": [
                                         {
-                                            "id": "\/api\/3\/workflows\/0bda469e-1790-4fdb-bf95-cbdd98cf85ed",
+                                            "id": "\/api\/3\/workflows\/c43e970f-5d00-4992-989b-88f715272914",
                                             "name": "Request VM Instance",
-                                            "icon": "fa fa-tasks"
+                                            "icon": "fa fa-check"
                                         }
                                     ],
                                     "query": {

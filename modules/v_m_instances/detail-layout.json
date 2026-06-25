@@ -105,18 +105,35 @@
                                                             "readOnly": false
                                                         }
                                                     ],
-                                                    "style": "col-lg-6"
+                                                    "style": "col-lg-4"
                                                 },
                                                 {
                                                     "fields": [
                                                         {
-                                                            "name": "businessJustification",
+                                                            "name": "vMType",
                                                             "highlightMode": true,
                                                             "linky": true,
                                                             "readOnly": false
                                                         },
                                                         {
-                                                            "name": "vMType",
+                                                            "name": "vMID",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "hypervisor",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-4"
+                                                },
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "businessJustification",
                                                             "highlightMode": true,
                                                             "linky": true,
                                                             "readOnly": false
@@ -146,12 +163,36 @@
                                                             "readOnly": false
                                                         }
                                                     ],
-                                                    "style": "col-lg-6"
+                                                    "style": "col-lg-4"
                                                 }
                                             ]
                                         }
                                     ],
                                     "title": "VM Instance"
+                                }
+                            },
+                            {
+                                "type": "editableFormGroup",
+                                "config": {
+                                    "wid": "928e9a22-5271-417a-b34f-8c5dd49bb63b",
+                                    "rows": [
+                                        {
+                                            "columns": [
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "sourceData",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": true,
+                                                            "renderWidget": "json",
+                                                            "renderWidgetHeight": 400
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             }
                         ],

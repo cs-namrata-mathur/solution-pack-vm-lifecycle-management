@@ -1,8 +1,13 @@
 [
     "Approval",
+    "Cleanup",
     "Create",
     "Destroy",
     "Enrichment",
+    "KVM",
     "Main",
-    "Utility"
+    "Provision",
+    "Proxmox",
+    "Utility",
+    "Wrapper"
 ]
