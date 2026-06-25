@@ -1,149 +1,153 @@
 {
-    "fsrMinCompatibility": "7.2.0",
-    "date": "2026-06-25T05:27:37+00:00",
-    "exported_from": "fortisoar",
-    "exported_by": "CS Admin",
-    "contents": {
-        "picklistNames": [
-            {
-                "name": "VM Status"
-            },
-            {
-                "name": "VM Type"
-            }
-        ],
-        "modules": {
-            "network_interfaces": {
-                "name": "Network Interfaces",
-                "apiName": "network_interfaces"
-            },
-            "": {
-                "name": "VM Instances",
-                "apiName": "v_m_instances"
-            }
-        },
-        "viewTemplates": {
-            "network_interfaces": {
-                "name": "Network Interfaces",
-                "apiName": "network_interfaces",
-                "views": [
-                    "list",
-                    "form",
-                    "detail"
-                ]
-            },
-            "v_m_instances": {
-                "name": "VM Instances",
-                "apiName": "v_m_instances",
-                "views": [
-                    "detail",
-                    "list",
-                    "form"
-                ]
-            }
-        },
-        "views": {
-            "navigation": [
-                "Dashboard",
-                "Queue & Shift Management",
-                "Incident Response",
-                "Automation",
-                "Resources",
-                "Vulnerability Management",
-                "Threat Intel Management",
-                "Outbreak Management",
-                "VM Lifecycle Management",
-                "Reports",
-                "Widget Library",
-                "Content Hub",
-                "Simulations",
-                "Help",
-                "User Community"
-            ]
-        },
-        "roles": [
-            {
-                "name": "Full App Permissions"
-            }
-        ],
-        "actors": [
-            {
-                "name": "atlas numid"
-            }
-        ],
-        "globalVariables": [
-            {
-                "name": "infrastructure_team_email",
-                "value": "cloud-ops@fortielab.com",
-                "default_value": "cloud-ops@fortielab.com"
-            },
-            {
-                "name": "Server_fqhn",
-                "value": "es13-fs0.fortielab.com:21443",
-                "default_value": "master.fortisoar.in"
-            },
-            {
-                "name": "Current_Date",
-                "value": "{{arrow.utcnow().timestamp}}",
-                "default_value": "{{arrow.utcnow().timestamp}}"
-            }
-        ],
-        "playbooks": [
-            {
-                "name": "02 - VM Lifecycle Management"
-            }
-        ],
-        "connectors": [
-            {
-                "name": "Active Directory",
-                "apiName": "activedirectory",
-                "version": "2.4.0"
-            },
-            {
-                "name": "DNS",
-                "apiName": "dns",
-                "version": "1.0.0"
-            },
-            {
-                "name": "Fortinet FortiGate",
-                "apiName": "fortigate-firewall",
-                "version": "5.4.0"
-            },
-            {
-                "name": "Fortinet FortiMail",
-                "apiName": "fortinet-fortimail",
-                "version": "1.2.1"
-            },
-            {
-                "name": "Google Gemini",
-                "apiName": "google-bard",
-                "version": "2.1.0"
-            },
-            {
-                "name": "IMAP",
-                "apiName": "imap",
-                "version": "3.5.8"
-            },
-            {
-                "name": "Proxmox VE Hypervisor",
-                "apiName": "proxmox-ve",
-                "version": "1.0.0"
-            },
-            {
-                "name": "SMTP",
-                "apiName": "smtp",
-                "version": "2.6.0"
-            },
-            {
-                "name": "SSH",
-                "apiName": "ssh",
-                "version": "2.1.2"
-            },
-            {
-                "name": "VirusTotal",
-                "apiName": "virustotal",
-                "version": "3.2.1"
-            }
+  "name": "vMLifecycleManagement",
+  "version": "1.0.0",
+  "fsrMinCompatibility": "7.2.0",
+  "type": "solutionpack",
+  "date": "2026-06-25T05:27:37+00:00",
+  "label": "VM Lifecycle Management",
+  "exported_from": "fortisoar",
+  "exported_by": "CS Admin",
+  "help": null,
+  "publisher": "Fortinet CSE",
+  "contributor": "Naili.M",
+  "supportInfo": null,
+  "iconLarge": null,
+  "recordTags": [
+    "FortiSOAR",
+    "VM Lifecycle Management"
+  ],
+  "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
+  "contents": {
+    "picklistNames": [
+      {
+        "name": "VM Status"
+      },
+      {
+        "name": "VM Type"
+      }
+    ],
+    "modules": {
+      "network_interfaces": {
+        "name": "Network Interfaces",
+        "apiName": "network_interfaces"
+      },
+      "": {
+        "name": "VM Instances",
+        "apiName": "v_m_instances"
+      }
+    },
+    "viewTemplates": {
+      "network_interfaces": {
+        "name": "Network Interfaces",
+        "apiName": "network_interfaces",
+        "views": [
+          "list",
+          "form",
+          "detail"
         ]
-    }
+      },
+      "v_m_instances": {
+        "name": "VM Instances",
+        "apiName": "v_m_instances",
+        "views": [
+          "detail",
+          "list",
+          "form"
+        ]
+      }
+    },
+    "views": {
+      "navigation": [
+        "Dashboard",
+        "Queue & Shift Management",
+        "Incident Response",
+        "Automation",
+        "Resources",
+        "Vulnerability Management",
+        "Threat Intel Management",
+        "Outbreak Management",
+        "VM Lifecycle Management",
+        "Reports",
+        "Widget Library",
+        "Content Hub",
+        "Simulations",
+        "Help",
+        "User Community"
+      ]
+    },
+    "roles": [
+      {
+        "name": "Full App Permissions"
+      }
+    ],
+    "actors": [
+      {
+        "name": "atlas numid"
+      }
+    ],
+    "globalVariables": [
+      {
+        "name": "infrastructure_team_email",
+        "value": "cloud-ops@fortielab.com",
+        "default_value": "cloud-ops@fortielab.com"
+      },
+      {
+        "name": "Server_fqhn",
+        "value": "es13-fs0.fortielab.com:21443",
+        "default_value": "master.fortisoar.in"
+      },
+      {
+        "name": "Current_Date",
+        "value": "{{arrow.utcnow().timestamp}}",
+        "default_value": "{{arrow.utcnow().timestamp}}"
+      }
+    ],
+    "playbooks": [
+      {
+        "name": "02 - VM Lifecycle Management"
+      }
+    ],
+    "connectors": [
+      {
+        "name": "Active Directory",
+        "apiName": "activedirectory"
+      },
+      {
+        "name": "DNS",
+        "apiName": "dns"
+      },
+      {
+        "name": "Fortinet FortiGate",
+        "apiName": "fortigate-firewall"
+      },
+      {
+        "name": "Fortinet FortiMail",
+        "apiName": "fortinet-fortimail"
+      },
+      {
+        "name": "Google Gemini",
+        "apiName": "google-bard"
+      },
+      {
+        "name": "IMAP",
+        "apiName": "imap"
+      },
+      {
+        "name": "Proxmox",
+        "apiName": "proxmox"
+      },
+      {
+        "name": "SMTP",
+        "apiName": "smtp"
+      },
+      {
+        "name": "SSH",
+        "apiName": "ssh"
+      },
+      {
+        "name": "VirusTotal",
+        "apiName": "virustotal"
+      }
+    ]
+  }
 }
