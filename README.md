@@ -1,1 +1,1 @@
-# solution-template-repository
+# VM Lifecycle Management
