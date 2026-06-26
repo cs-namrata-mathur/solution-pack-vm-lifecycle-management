@@ -37,7 +37,7 @@
             "name": "Clone VM",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "full": true,
@@ -49,7 +49,7 @@
                     "timeout": 1800
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "clone_vm",
                 "ignore_errors": true,
                 "operationTitle": "Clone VM",
@@ -68,7 +68,7 @@
             "name": "Cloud Init Config",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -76,7 +76,7 @@
                     "body_params": "{{vars.cloud_init_cfg}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "config_vm",
                 "ignore_errors": true,
                 "operationTitle": "Configure VM",
@@ -181,13 +181,13 @@
             "name": "Get Cluster Resources",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "type": ""
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "get_cluster_resources",
                 "operationTitle": "Get Cluster Resources",
                 "pickFromTenant": false,
@@ -205,13 +205,13 @@
             "name": "Get Hypervisor Status",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": ""
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "get_node_status",
                 "operationTitle": "Get Node Status",
                 "pickFromTenant": false,
@@ -229,11 +229,11 @@
             "name": "Get Next VMID",
             "description": "Get next available VMID from Proxmox cluster.",
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": [],
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "get_next_vmid",
                 "ignore_errors": true,
                 "operationTitle": "Get Next VMID",
@@ -269,7 +269,7 @@
             "name": "Get VM Status",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -281,7 +281,7 @@
                     "retries": 6,
                     "condition": "{{\"nics\" in vars.steps.Get_VM_Status.data.data}}"
                 },
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "get_vm_status",
                 "ignore_errors": true,
                 "operationTitle": "Get VM Status",
@@ -482,14 +482,14 @@
             "name": "Start VM",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
                     "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "start_vm",
                 "ignore_errors": true,
                 "operationTitle": "Start VM",
@@ -522,14 +522,14 @@
             "name": "Update Cloud Init Setup",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
                     "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "update_vm_cloudinit",
                 "ignore_errors": true,
                 "operationTitle": "Update VM Cloud-Init",

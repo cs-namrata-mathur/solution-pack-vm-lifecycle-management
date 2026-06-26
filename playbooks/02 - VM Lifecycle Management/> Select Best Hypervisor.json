@@ -144,13 +144,13 @@
             "name": "Proxmox Available Resources",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "type": "node"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "get_cluster_resources",
                 "operationTitle": "Get Cluster Resources",
                 "pickFromTenant": false,
