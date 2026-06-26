@@ -65,7 +65,7 @@
             "name": "Destroy VM",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -73,7 +73,7 @@
                     "purge": true
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "destroy_vm",
                 "ignore_errors": true,
                 "operationTitle": "Destroy VM",
@@ -149,14 +149,14 @@
             "name": "Stop VM",
             "description": "Stop the VM before destroy so Proxmox accepts delete.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
                     "vmid": "{{vars.vm_id}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "stop_vm",
                 "operationTitle": "Stop VM",
                 "pickFromTenant": false,
@@ -226,7 +226,7 @@
             "name": "Wait To Shutdown",
             "description": null,
             "arguments": {
-                "name": "Proxmox VE Hypervisor",
+                "name": "Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -238,7 +238,7 @@
                     "retries": 5,
                     "condition": "{{vars.steps.Wait_To_Shutdown.data.data.status == \"stopped\"}}"
                 },
-                "connector": "proxmox-ve",
+                "connector": "proxmox",
                 "operation": "get_vm_status",
                 "ignore_errors": true,
                 "operationTitle": "Get VM Status",
