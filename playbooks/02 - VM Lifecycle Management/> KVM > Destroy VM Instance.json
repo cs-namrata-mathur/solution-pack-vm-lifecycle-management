@@ -193,8 +193,7 @@
                 "resource": {
                     "logs": "| Hypervisor Report |\n| --- |\n{%- for line in vars.cmd_result.replace('\\r','').split('\\n') if line.strip() %}\n  | > {{ line|trim }}|\n{%- endfor %}\n\n| NGFW Report |\n| --- |\n|{{vars.steps.Remove_Internet_Access_If_Exists.status}}|\n",
                     "status": "\/api\/3\/picklists\/87e8de7b-4ca7-41f2-b3ee-bc367faf489c",
-                    "destroyedOn": "{{globalVars.Current_Date}}",
-                    "networkInterfaces": "{{None}}"
+                    "destroyedOn": "{{globalVars.Current_Date}}"
                 },
                 "operation": "Append",
                 "collection": "{{vars.input.records[0]['@id']}}",
