@@ -212,17 +212,6 @@
                             "operator": "eq"
                         },
                         {
-                            "type": "object",
-                            "field": "status",
-                            "value": "",
-                            "_value": {
-                                "@id": "",
-                                "display": "",
-                                "itemValue": ""
-                            },
-                            "operator": "changed"
-                        },
-                        {
                             "type": "primitive",
                             "field": "internetAccess",
                             "value": true,
