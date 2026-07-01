@@ -5,7 +5,7 @@
 
 Install the Solution Pack. This is an example screenshot and what you see in the content hub may defer in version and details. 
 
-![](./res/setup/setup-001.png) ( ##Pls attach new- NetOps SP Image)
+![](./res/setup-001.png) 
 
 # Configuration
  
@@ -24,15 +24,15 @@ As far the current setup, this solution pack will use user *atlas* to submit req
  5. Create an Application Control Profile named *FortiSOAR* with default settings
  6. Create an API key with admin privileges
 - *FortiGate Connector Configurations*
- 1. Install and Configure a FortiGate connector with the following settings:
- 2. Configuration Name: FortiGate
- 3. Mark as default configuration
- 4. host: <Your FortiGate IP>
- 5. API Key: <the one you just created>
- 6. Port: <FortiGate API communication Port>
- 7. Web Filter Profile Name: FortiSOAR
- 8. Application Control Profile Name: FortiSOAR
- 9. Verify SSL: False
+  Install and Configure a FortiGate connector with the following settings:
+  Configuration Name: FortiGate
+  Mark as default configuration
+  host: `Your FortiGate IP`
+  API Key: `Add the API Key you have just created`
+  Port: `FortiGate API communication Port`
+  Web Filter Profile Name: FortiSOAR
+  Application Control Profile Name: FortiSOAR
+  Verify SSL: False
  Save
 - *SSH Connector*
  We will need this to run commands on the KVM host for provisioning and deprovisioning VMs.
@@ -50,17 +50,26 @@ Configure your webmail for this configurations for e.g. FortiMail ( This should 
  3. Schedule the connector to run every couple of minutes (to speed up test while you are developing the playbooks). Once the testing is done you can adjust the schedule as per your requirement.
 
 *Fixing IMAP Data Ingestion*
-1. Head to Automation > Data Ingestion and search for IMAP
-2. Click on Playbooks and open IMAP > Ingest playbook
-3. Open the Create Record step and set the subject to {{vars.item.headers.Subject}} instead of {{vars.item.headers.subject}}
-4. Update Email From to {{vars.item.headers.From}}
-5. Update Email Recipients (To) To {{vars.item.headers.To}}
-6. Sender Domain: {% if vars.item.headers.From %}{{(vars.item.headers.From.split('<')[-1] | replace(">","")).split('@')[-1] | replace(">","")}}{% endif %}
-7. Sender Email Address: {% if vars.item.headers.From %}{{vars.item.headers.From.split('<')[-1] | replace(">","")}}{% endif %}
-8. Return Path: {{ vars.item.headers['Return-Path'] }}
-9. Source ID: {{ vars.item.headers['Message-ID'] | join }}
-10. Name: {% if vars.item.headers.Subject %} {{vars.item.headers.Subject}} {% else %} Email from {{vars.item.headers.From}} {% endif %}
-11. Save and quit the playbook editor
+Head to Automation > Data Ingestion and search for IMAP
+  - Click on Playbooks and open IMAP > Ingest playbook
+  - Open the Create Record step and set the subject to 
+   {{vars.item.headers.Subject}} instead of 
+   {{vars.item.headers.subject}}
+  - Update Email From to 
+   {{vars.item.headers.From}}
+  - Update Email Recipients (To) To 
+   {{vars.item.headers.To}}
+  - Sender Domain: 
+   {% if vars.item.headers.From %}{{(vars.item.headers.From.split('<')[-1] | replace(">","")).split('@')[-1] | replace(">","")}}{% endif %}
+  - Sender Email Address: 
+   {% if vars.item.headers.From %}{{vars.item.headers.From.split('<')[-1] | replace(">","")}}{% endif %}
+  - Return Path: 
+  {{ vars.item.headers['Return-Path'] }}
+  - Source ID: 
+  {{ vars.item.headers['Message-ID'] | join }}
+  -  Name: 
+  {% if vars.item.headers.Subject %} {{vars.item.headers.Subject}} {% else %} Email from {{vars.item.headers.From}} {% endif %}
+  - Save and quit the playbook editor
 Test with another Dummy email for e.g. atlas@fortielab.com -> fortisoar@fortielab.com to make sure emails are being ingested and parsed properly
 
 - *Enable Custom Connectors Upload*
