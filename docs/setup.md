@@ -27,8 +27,8 @@ As far the current setup, this solution pack will use user *atlas* to submit req
   Install and Configure a FortiGate connector with the following settings:
   Configuration Name: FortiGate
   Mark as default configuration
-  host: `Your FortiGate IP`
-  API Key: `Add the API Key you have just created`
+  host: `Your FortiGate IP`. 
+  API Key: `Add the API Key you have just created`. 
   Port: `FortiGate API communication Port`
   Web Filter Profile Name: FortiSOAR
   Application Control Profile Name: FortiSOAR

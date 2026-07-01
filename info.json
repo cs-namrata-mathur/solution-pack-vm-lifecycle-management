@@ -11,7 +11,7 @@
   "publisher": "Fortinet CSE",
   "contributor": "Naili.M",
   "supportInfo": null,
-  "iconLarge": null,
+  "iconLarge": "large.png",
   "recordTags": [
     "FortiSOAR",
     "VM Lifecycle Management"
