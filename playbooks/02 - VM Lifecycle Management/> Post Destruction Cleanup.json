@@ -5,7 +5,7 @@
     "name": "> Post Destruction Cleanup",
     "aliasName": null,
     "tag": null,
-    "description": "Cleanup Internet access, network inter....etc",
+    "description": "Cleanup Internet access, network interface etc",
     "isActive": true,
     "debug": true,
     "singleRecordExecution": false,
