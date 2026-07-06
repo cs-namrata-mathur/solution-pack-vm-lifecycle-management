@@ -1,11 +1,11 @@
 {
     "@context": "\/api\/3\/contexts\/WorkflowCollection",
     "@type": "WorkflowCollection",
-    "name": "02 - VM Lifecycle Management",
+    "name": "02 - Use Case - VM Lifecycle Management",
     "description": null,
     "visible": true,
     "image": null,
-    "uuid": "b0076576-d514-4d67-a3e0-98e8a57dede9",
+    "uuid": "1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
     "deletedAt": null,
     "recordTags": []
 }

@@ -12,9 +12,9 @@
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/e4c82830-aef7-487b-ad6c-c9e035aeb38c",
+    "triggerStep": "\/api\/3\/workflow_steps\/20335181-4d54-4ee9-89e6-9c723c8ca96a",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -29,7 +29,7 @@
             "left": "240",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "fe64e3f0-fa61-4e40-b38e-d1ccdc3a4d8b"
+            "uuid": "8a165d53-2283-4eda-aca2-4e9dabe41a95"
         },
         {
             "@type": "WorkflowStep",
@@ -43,7 +43,7 @@
             "left": "440",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "e1e3d268-51b7-494b-ad78-15d62fde95df"
+            "uuid": "ee74a4aa-b808-4ef1-9abe-b95592c6a2b5"
         },
         {
             "@type": "WorkflowStep",
@@ -57,7 +57,7 @@
             "left": "40",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "72ecfe6e-56ba-4414-b082-f1ff447308c2"
+            "uuid": "3ba70dfe-6b34-430e-b746-8a74bc080f00"
         },
         {
             "@type": "WorkflowStep",
@@ -87,7 +87,7 @@
             "left": "440",
             "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
             "group": null,
-            "uuid": "7cf3d388-57be-4062-8eb1-e11a1c8b1a45"
+            "uuid": "aa775db6-17d3-4eca-a2d2-8283970cf274"
         },
         {
             "@type": "WorkflowStep",
@@ -108,7 +108,7 @@
             "left": "240",
             "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
             "group": null,
-            "uuid": "e4c82830-aef7-487b-ad6c-c9e035aeb38c"
+            "uuid": "20335181-4d54-4ee9-89e6-9c723c8ca96a"
         },
         {
             "@type": "WorkflowStep",
@@ -130,7 +130,7 @@
             "left": "240",
             "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
             "group": null,
-            "uuid": "3e8d37f2-f111-4d43-8b40-1db19eb3e14f"
+            "uuid": "b415a852-73bf-42b3-bf59-b9a0e0cef17d"
         },
         {
             "@type": "WorkflowStep",
@@ -140,14 +140,14 @@
                 "conditions": [
                     {
                         "option": "UI",
-                        "step_iri": "\/api\/3\/workflow_steps\/72ecfe6e-56ba-4414-b082-f1ff447308c2",
+                        "step_iri": "\/api\/3\/workflow_steps\/3ba70dfe-6b34-430e-b746-8a74bc080f00",
                         "condition": "{{ vars.uri | default('') | length > 0 }}",
                         "step_name": "Get Base URl"
                     },
                     {
                         "option": "Email",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/7cf3d388-57be-4062-8eb1-e11a1c8b1a45",
+                        "step_iri": "\/api\/3\/workflow_steps\/aa775db6-17d3-4eca-a2d2-8283970cf274",
                         "step_name": "Get FortiSOAR Public IP"
                     }
                 ],
@@ -158,79 +158,79 @@
             "left": "240",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "ed4097b6-9f4d-4617-bff1-90d9ffea79ef"
+            "uuid": "50fb7135-c777-499b-bcde-3a89f7bec661"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
             "name": "Configuration -> VM Request Origin",
-            "targetStep": "\/api\/3\/workflow_steps\/ed4097b6-9f4d-4617-bff1-90d9ffea79ef",
-            "sourceStep": "\/api\/3\/workflow_steps\/fe64e3f0-fa61-4e40-b38e-d1ccdc3a4d8b",
+            "targetStep": "\/api\/3\/workflow_steps\/50fb7135-c777-499b-bcde-3a89f7bec661",
+            "sourceStep": "\/api\/3\/workflow_steps\/8a165d53-2283-4eda-aca2-4e9dabe41a95",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a86a9855-c121-4fe6-b77d-e6bb86f3fbf3"
+            "uuid": "3d106377-64ed-4453-bd54-681df5dd97e5"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Create Base URl -> Update FortiSOAR FQDN",
-            "targetStep": "\/api\/3\/workflow_steps\/3e8d37f2-f111-4d43-8b40-1db19eb3e14f",
-            "sourceStep": "\/api\/3\/workflow_steps\/e1e3d268-51b7-494b-ad78-15d62fde95df",
+            "targetStep": "\/api\/3\/workflow_steps\/b415a852-73bf-42b3-bf59-b9a0e0cef17d",
+            "sourceStep": "\/api\/3\/workflow_steps\/ee74a4aa-b808-4ef1-9abe-b95592c6a2b5",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "cb937b34-c6ca-40e4-aea7-8ad325da6634"
+            "uuid": "03e7e656-727e-40ec-8cc0-b1dd30fe9a48"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get Base URl -> Update FortiSOAR FQDN",
-            "targetStep": "\/api\/3\/workflow_steps\/3e8d37f2-f111-4d43-8b40-1db19eb3e14f",
-            "sourceStep": "\/api\/3\/workflow_steps\/72ecfe6e-56ba-4414-b082-f1ff447308c2",
+            "targetStep": "\/api\/3\/workflow_steps\/b415a852-73bf-42b3-bf59-b9a0e0cef17d",
+            "sourceStep": "\/api\/3\/workflow_steps\/3ba70dfe-6b34-430e-b746-8a74bc080f00",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a8c36239-f7ae-4771-8045-f501442bbb15"
+            "uuid": "2c15a664-693e-4c75-80fc-ff707f292abb"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get FortiSOAR Public IP -> Create Base URl",
-            "targetStep": "\/api\/3\/workflow_steps\/e1e3d268-51b7-494b-ad78-15d62fde95df",
-            "sourceStep": "\/api\/3\/workflow_steps\/7cf3d388-57be-4062-8eb1-e11a1c8b1a45",
+            "targetStep": "\/api\/3\/workflow_steps\/ee74a4aa-b808-4ef1-9abe-b95592c6a2b5",
+            "sourceStep": "\/api\/3\/workflow_steps\/aa775db6-17d3-4eca-a2d2-8283970cf274",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "4d0430b6-cf3b-4304-a411-0328f7e9b8ed"
+            "uuid": "59b4239b-5899-41ab-a3bb-ed9e36de8215"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/fe64e3f0-fa61-4e40-b38e-d1ccdc3a4d8b",
-            "sourceStep": "\/api\/3\/workflow_steps\/e4c82830-aef7-487b-ad6c-c9e035aeb38c",
+            "targetStep": "\/api\/3\/workflow_steps\/8a165d53-2283-4eda-aca2-4e9dabe41a95",
+            "sourceStep": "\/api\/3\/workflow_steps\/20335181-4d54-4ee9-89e6-9c723c8ca96a",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "5b0cf314-68be-4625-9b32-aebffc3ea9e6"
+            "uuid": "bbc19f54-22eb-4748-b90b-c6d04444472a"
         },
         {
             "@type": "WorkflowRoute",
             "name": "VM Request Origin -> Get Base URl",
-            "targetStep": "\/api\/3\/workflow_steps\/72ecfe6e-56ba-4414-b082-f1ff447308c2",
-            "sourceStep": "\/api\/3\/workflow_steps\/ed4097b6-9f4d-4617-bff1-90d9ffea79ef",
+            "targetStep": "\/api\/3\/workflow_steps\/3ba70dfe-6b34-430e-b746-8a74bc080f00",
+            "sourceStep": "\/api\/3\/workflow_steps\/50fb7135-c777-499b-bcde-3a89f7bec661",
             "label": "UI",
             "isExecuted": false,
             "group": null,
-            "uuid": "3abf1c4c-bdca-48e6-8b15-f13ac9ffb9f3"
+            "uuid": "41421a78-b0d9-4426-a39d-1850ba77ec0b"
         },
         {
             "@type": "WorkflowRoute",
             "name": "VM Request Origin -> Get FortiSOAR Public IP",
-            "targetStep": "\/api\/3\/workflow_steps\/7cf3d388-57be-4062-8eb1-e11a1c8b1a45",
-            "sourceStep": "\/api\/3\/workflow_steps\/ed4097b6-9f4d-4617-bff1-90d9ffea79ef",
+            "targetStep": "\/api\/3\/workflow_steps\/aa775db6-17d3-4eca-a2d2-8283970cf274",
+            "sourceStep": "\/api\/3\/workflow_steps\/50fb7135-c777-499b-bcde-3a89f7bec661",
             "label": "Email",
             "isExecuted": false,
             "group": null,
-            "uuid": "4b502bf0-cfab-4c1a-9ea6-0652b0d3f1d2"
+            "uuid": "0a75c236-1f5f-4e9b-983f-7bc96be95de8"
         }
     ],
     "groups": [
@@ -248,14 +248,14 @@
             "left": "580",
             "height": "168",
             "width": "198",
-            "uuid": "dfa5ebfc-38b7-43ac-a87e-48c1b13b7ef7",
+            "uuid": "5756397b-9780-41cf-a6b6-d5814fc1240a",
             "recordTags": []
         }
     ],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
-    "uuid": "56b3c5d6-6d46-43ba-aada-ed86afec86a6",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "2446845f-7007-4885-92a2-2af00604cb67",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
