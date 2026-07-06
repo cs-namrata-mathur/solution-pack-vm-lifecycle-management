@@ -75,11 +75,11 @@
                 "name": "Full App Permissions"
             }
         ],
-    "actors": [
-      {
-        "name": "atlas numid"
-      }
-    ],
+        "actors": [
+            {
+                "name": "atlas numid"
+            }
+        ],
         "globalVariables": [
             {
                 "name": "Current_Date",
@@ -127,10 +127,10 @@
                 "name": "IMAP",
                 "apiName": "imap"
             },
-      {
-        "name": "Proxmox",
-        "apiName": "proxmox"
-      },
+            {
+                "name": "Proxmox",
+                "apiName": "proxmox"
+            },
             {
                 "name": "SMTP",
                 "apiName": "smtp"
@@ -138,10 +138,10 @@
             {
                 "name": "SSH",
                 "apiName": "ssh"
-      },
-      {
-        "name": "VirusTotal",
-        "apiName": "virustotal"
+            },
+            {
+                "name": "VirusTotal",
+                "apiName": "virustotal"
             }
         ]
     }
