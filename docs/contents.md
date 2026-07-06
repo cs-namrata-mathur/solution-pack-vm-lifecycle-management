@@ -3,68 +3,99 @@
 
 # Contents
 
-The **VM Lifecycle Management** solution pack contains the following resources.
-
-## Connectors
-
-|**Name**|**Description**|
-| :- | :- |
-| Active Directory | An Active Directory Connector in FortiSOAR is an integration that enables FortiSOAR to communicate with Microsoft Active Directory and allows to automate user and group tasks|
-| DNS | It allows integration with a DNS server to automate DNS lookups |
-| Fortinet FortiGate | It facilitates automated interactions, with a Fortinet FortiGate firewall using FortiSOAR playbooks.
-| Fortinet FortiMail | This connector automates operations over FortiMail email security gateway that monitors email messages on behalf of an organization to identify messages that contain malicious content, including spam, malware and phishing attempts. |
-| Google Gemini | This connector facilitates automated interactions, with a Google Gemini server using FortiSOAR playbooks. 
-| IMAP | Using this connector we can set up multiple email accounts and fetch emails from different email accounts.
-| SMTP |It is used to send emails from SOAR playbooks using the Simple Mail Transfer Protocol (SMTP). |
-| SSH | It enables secure remote access to Linux, Unix, and network devices over the SSH (Secure Shell) protocol.|
-| VirusTotal | This connector performs automated operations, such as scanning and analyzing suspicious files and URLs and retrieving reports from VirusTotal for files, IP addresses, and domains.|
-
-
-## Module Schema
-
-|**Name**|**Description**|
-| :- | :- |
-| VM Instances | To store the VM instance attributes (name, type, status etc.) |
-| Network Interfaces | Representing the VM interface record (IP Address, mask, gateway etc.) |
-
-
+The **VM Lifecycle Management** solution pack includes the following resources to automate and manage the lifecycle of virtual machines (VMs).
 
 ## Roles
 
-|**Name**|**Description**|
+|**Role**|**Description**|
 | :- | :- |
-| Full App Permissions | Existing FortiSOAR Role to merge newly created modules.
+| Full App Permissions | Existing FortiSOAR role that grants access to the modules installed by this solution pack.
 
+## System Views
 
+N/A
+
+>[!Note]
+>
+>To add VM Lifecycle Management to the FortiSOAR left navigation menu, click **Settings** > **Navigation**, select **VM Lifecycle Management** and then click **Add To Menu**. The **VM Lifecycle Management** menu provides access to the **Network Interfaces** and **VM Instances** modules.
+>
+
+## Users
+
+|**User**|**Description**|
+| :- | :- |
+| atlas numid | A new user `atlas numid` account created by the solution pack acts as the default VM requestor.
+
+## Module Schema
+
+|**Module Schema**|**Description**|
+| :- | :- |
+| VM Instances | Represents a record that stores VM instance attributes, including the name, type, and status. |
+| Network Interfaces | Represents a record of the VM interface that stores network interface information, including the IP address, subnet mask, gateway, and related network settings. |
 
 ## Playbook Collection
 | 02 - VM Lifecycle Management |
 | :----------------------------------------------- |
 
 
-| Playbook Name                              | Description                                                                                                                                                                   |
+| **Playbook Name**                              | **Description**                                                                                                                                                                   |
 |:-------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| > AD User Enrichment.json| Enrich user with Active Directory data.   |
-| > Get Public FortiSOAR URL.json| Set Server_FQHN global variable.   |
-| > KVM > Destroy VM Instance.json| Destroy individual VM defined with params.   |
-| > KVM > Provision VM Instances.json| Create VM Instances.   |
-| > Manage VM Instance Request.json| Process VM instances requests and approvals.   |
-| > Post Destruction Cleanup.json| Cleanup Internet access, network interface etc.    |
-| > Proxmox > Destroy VM Instance.json| Destroy individual VM defined with params.   |
-| > Proxmox > Provision VM Instances.json| Provision VM on Proxmox.   |
-| > Run Provisioning_Deprovisioning Playbook.json| Wrapper to run playbooks dynamically based on the target hypervisor.   |
-| > Select Best Hypervisor.json| Pick which hypervisor to use based on available resources.   |
-| Allow Internet Access on Fortigate.json| If Approved VM is allowed to access internet.   |
-| Destroy Expired VM Instances.json| Iterate over existing VM instances and destroy expired ones.   |
-| Parse VM Requests Emails.json| Parse emails with VM requests.   |
-| Remove Internet Access on FortiGate.json| Remove access for destroyed VMs.   |
-| Request VM Instance.json| Request virtual machine deployment and manage approval process.   |
+| > AD User Enrichment.json| Enriches a user with information from Active Directory.   |
+| > Get Public FortiSOAR URL.json| Sets the `Server_FQHN` global variable.   |
+| > KVM > Destroy VM Instance.json| Destroy an individual KVM virtual machine based on the specified parameters.   |
+| > KVM > Provision VM Instances.json| Creates a virtual machine instance on a KVM hypervisor.   |
+| > Manage VM Instance Request.json| Processes VM instances requests and approvals.   |
+| > Post Destruction Cleanup.json| Cleans up network interfaces, Internet access, and related resources after a VM is deleted.    |
+| > Proxmox > Destroy VM Instance.json| Destroy an individual Proxmox virtual machine based on the specified parameters.  |
+| > Proxmox > Provision VM Instances.json| Creates a virtual machine instance on Proxmox.   |
+| > Run Provisioning_Deprovisioning Playbook.json| Runs the appropriate provisioning or deprovisioning playbook dynamically based on the target hypervisor.   |
+| > Select Best Hypervisor.json| Selects the optimal hypervisor based on available resources.   |
+| Allow Internet Access on Fortigate.json| Includes a decision flow, which if approved, grants Internet access to approved virtual machines.   |
+| Destroy Expired VM Instances.json| Iterates over existing VM instances and destroys expired ones.   |
+| Parse VM Requests Emails.json| Parses emails with VM requests.   |
+| Remove Internet Access on FortiGate.json| Removes Internet access for for destroyed VMs.   |
+| Request VM Instance.json| Submits a virtual machine provisioning request and manages the approval workflow.   |
 
->**Warning:** We recommend that you clone these playbooks before customizing to avoid loss of information while modifying the solution pack.
+>[!Important]
+>
+>Clone the provided playbooks before making customizations. This prevents custom changes from being overwritten when the solution pack is upgraded.
+>
 
-## User 
 
-A new user *atlas numid* is added as a part of this solution pack, which will act as a VM requestor.
+## Connectors
+
+|**Connector**|**Description**|
+| :- | :- |
+| Active Directory | Enables FortiSOAR to communicate with Microsoft Active Directory and automate user and group management tasks. |
+| DNS | Integrates with DNS servers to automate DNS lookups. |
+| Fortinet FortiGate | Enables FortiSOAR playbooks to automate interactions with Fortinet FortiGate firewalls.
+| Fortinet FortiMail | Automates interactions with Fortinet FortiMail to process and manage email security operations, including spam, malware, and phishing detection. |
+| Google Gemini | Enables FortiSOAR playbooks to automate interactions with Google Gemini. 
+| IMAP |Retrieves email messages from one or more IMAP mailboxes for automated processing.
+| SMTP |Sends email messages from FortiSOAR playbooks using the Simple Mail Transfer Protocol (SMTP). |
+| SSH | Enables secure remote access to Linux, UNIX, and network devices over the Secure Shell (SSH) protocol.|
+| VirusTotal | Automates reputation lookups and analysis of files, URLs, IP addresses, and domains using VirusTotal. |
+
+## Picklists
+
+- VM Status
+- VM Type
+
+## Module Views
+
+- VM Instances - Detail, List, Form
+- Network Interfaces - Detail, List, Form
+
+## Playbook Blocks
+
+- Dynamic Manager and Device List
+
+## Global Variables
+
+- infrastructure_team_email
+- Server_fqhn
+- Current_Date
+
 
 | [Installation](./setup.md#installation) | [Configuration](./setup.md#configuration) | [Usage](./usage.md) |
 |-----------------------------------------|-------------------------------------------|---------------------|

@@ -5,16 +5,16 @@
 - **Certified**: No
 - **Publisher**: Fortinet CSE
 - **Contributor**: Mahdi Naili
-- **Compatible Version**: FortiSOAR v7.2.0 and later
+- **Compatible Version**: FortiSOAR v8.0.0 and later
 
 ## Overview
 
-The `VM Lifecycle Management` Solution Pack is designed to automate and orchestrate the lifecycle of virtual machines  (VMs) across virtualization platforms such as Proxmox, KVM and potentially other hypervisors depending on integration using FortiSOAR. 
+The `VM Lifecycle Management` Solution Pack automates the lifecycle management of virtual machines (VMs) across supported virtualization platforms, including Proxmox and KVM. Additional hypervisors may be supported through integrations with FortiSOAR. 
 
-It typically enables actions like:
-- Provisioning VMs
-- Automating approval-based workflows
-- Decommissioning / deleting VMs
+The solution pack enables you to:
+- Provision virtual machines
+- Automate approval-based workflows
+- Decommission and/or delete virtual machines
 
 
 
