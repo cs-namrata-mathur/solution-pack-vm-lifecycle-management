@@ -13,7 +13,7 @@ The solution pack provides the following capabilities.
 FortiSOAR handles new virtual machines deployment requests on supported hypervisors, such as Debian.
 
 1. FortiSOAR accepts VM provisioning requests through:
-    - Email, where Google Gemini/FortiAI extracts request details and pre-populates the request form with default values.
+    - Email, where Google Gemini extracts request details and pre-populates the request form with default values.
     - A request form in the FortiSOAR user interface.
 3. Routes requests to the requestor's manager or the Cloud Operations team for approval.
 4. Once approved, the created VM and its attributes are stored in FortiSOAR as a **VM Instance** record.
