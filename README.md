@@ -16,8 +16,6 @@ The solution pack enables you to:
 - Automate approval-based workflows
 - Decommission and/or delete virtual machines
 
-
-
 # Next Steps 
 
 | [Installation](./docs/setup.md#installation) | [Configuration](./docs/setup.md#configuration) | [Usage](./docs/usage.md) | [Contents](./docs/contents.md) |

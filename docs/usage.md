@@ -3,45 +3,85 @@
 
 # Usage
 
-The `VM Lifecycle Management` Solution Pack handles VM life cycle on Proxmox, KVM and potentially other hypervisors using FortiSOAR. It is ideal for those interested in leveraging FortiSOAR for IT operations automation, specifically VM lifecycle management.
+The **VM Lifecycle Management** Solution Pack automates the provisioning, management, and decommissioning of virtual machines (VMs) on supported hypervisors, such as **Proxmox** and **KVM**, using FortiSOAR. It streamlines VM lifecycle operations by combining automated request processing, approval workflows, provisioning, and deprovisioning into a single solution.
 
-# Objectives
-- *Single Hypervisor Support*
+## Objectives
+The solution pack provides the following capabilities.
 
-  * FortiSOAR should handle new VM deployment requests (limited to: Debian)
-  * Requests can be raised via email. GenAI is used to extract request details and pre-populate the request form automatically with default values.
-  * Requests can also be raised via FortiSOAR UI request form
-  * Requests is approved by the requestor’s manager or the Cloud-Ops team
-  * The created VM along with its attributes is stored on FortiSOAR as a VM Instance record
-  * Optional internet access is supported with FortiGate Firewall integration
-  * FortiSOAR handles VM Instance decommissions when the expiry date is reached and allow users to destroy the VM on demand
-  * The VM Instance record status on FortiSOAR is updated to “Destroyed” and the associated IP address freed up and removed from the firewall configuration
+### VM Provisioning
+
+FortiSOAR handles new virtual machines deployment requests on supported hypervisors, such as Debian.
+
+1. FortiSOAR accepts VM provisioning requests through:
+    - Email, where Google Gemini/FortiAI extracts request details and pre-populates the request form with default values.
+    - A request form in the FortiSOAR user interface.
+3. Routes requests to the requestor's manager or the Cloud Operations team for approval.
+4. Once approved, the created VM and its attributes are stored in FortiSOAR as a **VM Instance** record.
+    - Optionally, internet access can be configured internet access through FortiGate Firewall integration.
+
+
+### VM Decommissioning
+
+- FortiSOAR handles decommissioning of VMs when they reach their expiration date. Users can also  destroy VM instances on demand.
+- Once decommissioned: 
+  - Status of the corresponding **VM Instance** record is set to **Destroyed**
+  - Release the associated IP address
+  - Remove related firewall configuration
+
 ![](./res/high-level-flow.png)
 
-- *Requesting a VM Instance*
-  * `Parse VM Requests Emails` playbook is triggered when a VM request email is fetched (via IMAP) and will create a *VM Instance* record in FortiSOAR
-![](./res/sample-mail-request.png)
-  * It extracts key request attributes with Google Gemini and provides them to `Request VM Instance` playbook, that will create *Network Interface* record for the VM.
-  * A pre-populated form will be sent to requestor to fill the required information.
-![](./res/VM-request-form.png)
-  * Playbook `> Manage VM Instance Request` will be triggered, once *VM Instance* record is created , which will validate requestor credentials over Active Directory. If it is a valid requestor, his/her Manager's will be prompt for approval of VM request over the email.
-![](./res/Manager-approval.png)
-  * Once the approval is received, provisioning of VM will be taken care by playbook `> Run Provisioning/Deprovisioning Playbook`
-This playbook will select best Hypervisor (by calculating available resources) and will provide output if resources are available.
-Once Hypervisor is selected, based on Hypervisor a playbook will be chosen dynamically to provision the VM over selected Hypervisor for e.g. if KVM is selected , the playbook chosen will be `> KVM > Provision VM Instances`
-  * VM will be provisioned over Hypervisor using commands (SSH connector) and a requestor will be notified over the email
-![](./res/Success-VM-provision.png)
-  * You can verify your VM over FortiSOAR Console that shows VM details and over KVM as well.
-![](./res/VM-Instance.png)
-  * Re-verify the same over KVM:
-![](./res/KVM.png)
+## Request a VM Instance
 
-- *Destroying a VM Instance*
-  * Choose a VM instance that you want to decommission by selecting *Destroy Instance* playbook for e.g. `> KVM > Destroy VM Instance`
+The following workflow describes how a VM provisioning request is processed.
+
+1. When an email request is received through IMAP, the **Parse VM Requests Emails** playbook is triggered and a **VM Instance** record is created in FortiSOAR.
+![](./res/sample-mail-request.png)
+
+2. The **Parse VM Requests Emails** playbook using Google Gemini extracts key request attributes from  the email.
+
+3. The extracted requests attributes are provided to the **Request VM Instance** playbook, which then creates a **Network Interface** record for the VM and generates a pre-populated request form for the requestor to complete.
+   ![](./res/VM-request-form.png)
+
+4. After the **VM Instance** record is created, the **Manage VM Instance Request** playbook is triggered to:
+   - Validate the requestor against Active Directory.
+   - Identify the requestor's manager.
+   - Send an approval request to the manager or the Cloud Operations team.
+   ![](./res/Manager-approval.png)
+
+5. After the request is approved, the **> Run Provisioning/Deprovisioning Playbook** is triggered to
+   - Evaluate available resources across configured hypervisors.
+   - Selects the most appropriate hypervisor.
+   - Dynamically invokes the corresponding provisioning playbook. For example, if KVM is selected, the **KVM > Provision VM Instances** playbook is executed.
+
+6. The selected provisioning playbook creates the VM by using the SSH connector to execute commands on the target hypervisor.
+
+7. After provisioning completes successfully:
+   - The requestor receives an email notification.
+   - A **VM Instance** record is updated in FortiSOAR.  
+   ![](./res/Success-VM-provision.png)
+
+8. Verify the deployed VM:
+   - In the FortiSOAR **VM Instance** record.
+     ![](./res/VM-Instance.png)
+   - On the target hypervisor, KVM in our example:
+     ![](./res/KVM.png)
+
+## Destroy a VM Instance
+
+To decommission a VM instance:
+
+1. Open the VM Instance record in FortiSOAR.
+
+2. Run the appropriate destroy playbook for the target hypervisor. For example, to decommission a VM on KVM, run the **KVM > Destroy VM Instance** playbook. 
 ![](./res/destroy-instance.png)
-  * Requested VM will be destroyed using commands (SSH Connector)
-  * Upon successful decommission, a FortiSOAR VM Instance record will be marked as *Destroyed*
-![](./res/Destroy-status.png)
-  * If internet access was provided for VM during/after provisioning , it will be removed during Post Destruction Cleanup activities.
-  * Network Interface record will be removed which was linked to destroyed VM
+
+3. The playbook uses the SSH connector to destroy the VM on the hypervisor.
+
+4. After the VM is successfully decommissioned:
+   - The **VM Instance** record status is updated to **Destroyed**.
+   - Any internet access configured through FortiGate is removed during Post Destruction Cleanup activities.
+   - The linked **Network Interface** record is deleted.
+   ![](./res/Destroy-status.png)
+
+
 
