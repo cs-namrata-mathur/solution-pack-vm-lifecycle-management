@@ -12,9 +12,9 @@
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/994f86ee-ca8b-4af8-ab9c-0a4550e394b2",
+    "triggerStep": "\/api\/3\/workflow_steps\/151e866a-6408-42d5-a5dd-295e97b9b054",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -30,7 +30,7 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "22358383-c5b2-4187-8dcb-d871f243138a"
+            "uuid": "422d83c5-a445-4e80-833b-5dd90a024f5e"
         },
         {
             "@type": "WorkflowStep",
@@ -44,7 +44,7 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "cb7e090e-396b-4689-956e-f318872044e6"
+            "uuid": "a560a833-cbda-48fe-8edf-50010aaf2a82"
         },
         {
             "@type": "WorkflowStep",
@@ -79,7 +79,7 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "615ce6f8-e260-45d1-b146-c109333b88a9"
+            "uuid": "7c31ffc5-454a-43a4-b36e-ef9a1e5d2345"
         },
         {
             "@type": "WorkflowStep",
@@ -93,14 +93,14 @@
                 "step_variables": [],
                 "pass_parent_env": false,
                 "pass_input_record": false,
-                "workflowReference": "\/api\/3\/workflows\/c43e970f-5d00-4992-989b-88f715272914"
+                "workflowReference": "\/api\/3\/workflows\/0bda469e-1790-4fdb-bf95-cbdd98cf85ed"
             },
             "status": null,
             "top": "570",
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
             "group": null,
-            "uuid": "933209f9-09c6-48b3-9104-da09abd4c841"
+            "uuid": "44bd0f7e-727d-4483-812c-a80449145866"
         },
         {
             "@type": "WorkflowStep",
@@ -142,56 +142,56 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/ea155646-3821-4542-9702-b246da430a8d",
             "group": null,
-            "uuid": "994f86ee-ca8b-4af8-ab9c-0a4550e394b2"
+            "uuid": "151e866a-6408-42d5-a5dd-295e97b9b054"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
             "name": "Configuration -> Parse Requestor Email",
-            "targetStep": "\/api\/3\/workflow_steps\/615ce6f8-e260-45d1-b146-c109333b88a9",
-            "sourceStep": "\/api\/3\/workflow_steps\/22358383-c5b2-4187-8dcb-d871f243138a",
+            "targetStep": "\/api\/3\/workflow_steps\/7c31ffc5-454a-43a4-b36e-ef9a1e5d2345",
+            "sourceStep": "\/api\/3\/workflow_steps\/422d83c5-a445-4e80-833b-5dd90a024f5e",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "09030d33-46e8-41d7-ae4c-fa2f94a03c74"
+            "uuid": "44fa1a1d-e2db-44b8-a440-9f29092c9477"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get Parsed VM Request Attributes -> Request VM Instance",
-            "targetStep": "\/api\/3\/workflow_steps\/933209f9-09c6-48b3-9104-da09abd4c841",
-            "sourceStep": "\/api\/3\/workflow_steps\/cb7e090e-396b-4689-956e-f318872044e6",
+            "targetStep": "\/api\/3\/workflow_steps\/44bd0f7e-727d-4483-812c-a80449145866",
+            "sourceStep": "\/api\/3\/workflow_steps\/a560a833-cbda-48fe-8edf-50010aaf2a82",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "2688384c-69ea-4125-918a-9e8d7788ad3b"
+            "uuid": "3e0eb82e-a868-400a-b9be-3ea0adcfe480"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Parse Requestor Email -> Get Parsed VM Config",
-            "targetStep": "\/api\/3\/workflow_steps\/cb7e090e-396b-4689-956e-f318872044e6",
-            "sourceStep": "\/api\/3\/workflow_steps\/615ce6f8-e260-45d1-b146-c109333b88a9",
+            "targetStep": "\/api\/3\/workflow_steps\/a560a833-cbda-48fe-8edf-50010aaf2a82",
+            "sourceStep": "\/api\/3\/workflow_steps\/7c31ffc5-454a-43a4-b36e-ef9a1e5d2345",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "7fa3e1d6-680f-4fdd-9593-5ec6e6362f92"
+            "uuid": "51e3d538-cc09-42e1-abac-77eef8138211"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/22358383-c5b2-4187-8dcb-d871f243138a",
-            "sourceStep": "\/api\/3\/workflow_steps\/994f86ee-ca8b-4af8-ab9c-0a4550e394b2",
+            "targetStep": "\/api\/3\/workflow_steps\/422d83c5-a445-4e80-833b-5dd90a024f5e",
+            "sourceStep": "\/api\/3\/workflow_steps\/151e866a-6408-42d5-a5dd-295e97b9b054",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e6a2fb55-3dcf-470e-ae89-d8a321b3fe34"
+            "uuid": "8c116078-2cb8-4c80-a64f-ad7486fe8ac8"
         }
     ],
     "groups": [],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
-    "uuid": "c93f39ed-a3f0-4e3e-9f44-a468eae764fe",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "82b656ad-6ca7-427c-bcbe-8970d2e18aea",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
