@@ -60,7 +60,7 @@ Configure the connector to connect to the KVM host used for VM provisioning and 
 
 ### SMTP Connector Configurations
 
-The SSH connector is installed with FortiSOAR.
+The SMTP connector is installed with FortiSOAR.
 
 Configure the connector and ensure that one of its configurations is marked as `Mark as default configuration`.
 
