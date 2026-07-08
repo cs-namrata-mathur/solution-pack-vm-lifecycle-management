@@ -74,7 +74,7 @@ N/A
 | IMAP |Retrieves email messages from one or more IMAP mailboxes for automated processing.
 | SMTP |Sends email messages from FortiSOAR playbooks using the Simple Mail Transfer Protocol (SMTP). |
 | SSH | Enables secure remote access to Linux, UNIX, and network devices over the Secure Shell (SSH) protocol.|
-| VirusTotal | Automates reputation lookups and analysis of files, URLs, IP addresses, and domains using VirusTotal. |
+| Proxmox | Automates workflows that integrate with the open-source Proxmox Virtual Environment (Proxmox VE). |
 
 ## Picklists
 

@@ -8,7 +8,7 @@ The **VM Lifecycle Management** Solution Pack automates the provisioning, manage
 ## Objectives
 The solution pack provides the following capabilities.
 
-### VM Provisioning
+### VM Provisioning 
 
 FortiSOAR handles new virtual machines deployment requests on supported hypervisors, such as Debian.
 
@@ -23,10 +23,6 @@ FortiSOAR handles new virtual machines deployment requests on supported hypervis
 ### VM Decommissioning
 
 - FortiSOAR handles decommissioning of VMs when they reach their expiration date. Users can also  destroy VM instances on demand.
-- Once decommissioned: 
-  - Status of the corresponding **VM Instance** record is set to **Destroyed**
-  - Release the associated IP address
-  - Remove related firewall configuration
 
 ![](./res/high-level-flow.png)
 
@@ -79,9 +75,10 @@ To decommission a VM instance:
 
 4. After the VM is successfully decommissioned:
    - The **VM Instance** record status is updated to **Destroyed**.
+   ![](./res/Destroy-status.png)
    - Any internet access configured through FortiGate is removed during Post Destruction Cleanup activities.
    - The linked **Network Interface** record is deleted.
-   ![](./res/Destroy-status.png)
+   
 
 
 
