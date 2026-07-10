@@ -13,7 +13,7 @@
             "minVersion": null
         }
     ],
-    "prerequisite": "# Connectors: \n- Active Directory (installed)\n- DNS\n- FortiMail\n- FortiGate\n- SSH (KVM)\n- Google Gemini\n- -IMAP\n- SMTP\n\n# Users:\nYou will need extra users (other than csadmin) to test the requests from \n",
+    "prerequisite": null,
     "publisher": "Fortinet CSE",
     "contributor": "Naili.M",
     "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
