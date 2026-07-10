@@ -1,0 +1,888 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Proxmox > Provision VM Instances",
+    "aliasName": null,
+    "tag": null,
+    "description": "Provision VM on Proxmox",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [
+        "vm_instance"
+    ],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/30ac2637-43ca-4711-9748-4fee781e9429",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Cannot Locate Storage",
+            "description": null,
+            "arguments": {
+                "provisioning_error": "Storage missing, please contact your system administrator"
+            },
+            "status": null,
+            "top": "700",
+            "left": "700",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "2bbefc7c-cd70-4ef5-820c-76385e70e272"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Clone VM",
+            "description": null,
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "full": true,
+                    "name": "{{ vars.vm_name }}",
+                    "node": "",
+                    "vmid": "{{vars.template_vm_id}}",
+                    "newid": "{{vars.steps.Get_Next_VMID.data.data}}",
+                    "storage": "{{vars.storage.id.split(\"\/\")[-1]}}",
+                    "timeout": 1800
+                },
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "clone_vm",
+                "ignore_errors": true,
+                "operationTitle": "Clone VM",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1060",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "1051d6c0-4632-4655-94f2-f059160ff06d"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Cloud Init Config",
+            "description": null,
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "node": "",
+                    "vmid": "{{vars.steps.Get_Next_VMID.data.data}}",
+                    "body_params": "{{vars.cloud_init_cfg}}"
+                },
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "config_vm",
+                "ignore_errors": true,
+                "operationTitle": "Configure VM",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1180",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "79d0d436-e4c8-41b1-8537-33cf91262f73"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Compute Final Status",
+            "description": null,
+            "arguments": {
+                "successful_steps": "{{vars.provisioning_status|yaql('$.where($.status = \"Success\")')}}"
+            },
+            "status": null,
+            "top": "1660",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "068d72b4-0701-4b47-a50a-55ed41990147"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": "Reads VM Instance sizing. disk_gb defaults to 10 for CT rootfs. VM resize uses diskGB on the record only when it differs from proxmox_default_disk_gb (10).",
+            "arguments": {
+                "bridge": "br0",
+                "ci_user": "root",
+                "gateway": "10.255.255.1",
+                "vm_name": "{{vars.input.records[0].name}}",
+                "vm_type": "{{vars.input.records[0].vMType.itemValue}}",
+                "cpu_cores": "1",
+                "memory_mb": "512",
+                "json_to_html": "#!\/usr\/bin\/env python3\n\"\"\"Convert nested JSON into a colorful HTML table.\n\nUsage:\n    python json_to_colorful_table.py\n\nThe script renders nested dicts\/lists recursively, so complex JSON objects are\nshown as nested HTML tables with a colorful theme.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport html\nfrom typing import Any\n\n\n# --- Color configuration --------------------------------------------------\n# Edit these defaults to change the generated HTML theme.\nCARD_BG = \"#ffffff\"\nBORDER_COLOR = \"#d7e0ea\"\nHEADER_GRADIENT = \"linear-gradient(135deg, #2563eb, #7c3aed)\"\nKEY_COLOR = \"#0f766e\"\nSTRING_COLOR = \"#3a2c9f\"\nNUMBER_COLOR = \"#0369a1\"\nBOOLEAN_COLOR = \"#be123c\"\nNULL_COLOR = \"#6b7280\"\nROW_COLORS = {\n    \"row-a\": \"#eaf2ff\",\n    \"row-b\": \"#edf9f0\",\n    \"row-c\": \"#f4efff\",\n    \"row-d\": \"#bccbcb\",\n}\n\n\n# --- Static data ----------------------------------------------------------\n# Replace this object with your own nested JSON-like structure.\nSTATIC_JSON_DATA: dict[str, Any] = {\n    \"name\": \"example-vm\",\n    \"status\": \"running\",\n    \"resources\": {\n        \"cpu\": 4,\n        \"memory_mb\": 8192,\n        \"disk_gb\": 80,\n    },\n    \"network\": {\n        \"interfaces\": [\n            {\"name\": \"eth0\", \"ip\": \"10.0.0.10\/24\", \"gateway\": \"10.0.0.1\"},\n            {\"name\": \"eth1\", \"ip\": \"192.168.1.10\/24\", \"gateway\": \"192.168.1.1\"},\n        ],\n        \"dns\": [\"1.1.1.1\", \"8.8.8.8\"],\n    },\n    \"tags\": [\"prod\", \"web\", \"linux\"],\n    \"metadata\": None,\n}\n\n\ndef render_scalar(value: Any) -> str:\n    if value is None:\n        return f'<span style=\"color:{NULL_COLOR};font-style:italic;\">null<\/span>'\n    if isinstance(value, bool):\n        return f'<span style=\"color:{BOOLEAN_COLOR};\">{str(value).lower()}<\/span>'\n    if isinstance(value, (int, float)):\n        return f'<span style=\"color:{NUMBER_COLOR};\">{html.escape(str(value))}<\/span>'\n    return f'<span style=\"color:{STRING_COLOR};\">{html.escape(str(value))}<\/span>'\n\n\ndef table_style() -> str:\n    return (\n        \"width:100%;\"\n        \"border-collapse:separate;\"\n        \"border-spacing:0;\"\n        f\"background:{CARD_BG};\"\n        f\"border:1px solid {BORDER_COLOR};\"\n        \"border-radius:16px;\"\n        \"overflow:hidden;\"\n        \"box-shadow:0 12px 30px rgba(15, 23, 42, 0.08);\"\n    )\n\n\ndef th_style() -> str:\n    return (\n        \"text-align:left;\"\n        \"padding:12px 14px;\"\n        \"color:#ffffff;\"\n        f\"background:{HEADER_GRADIENT};\"\n        \"font-size:13px;\"\n        \"text-transform:uppercase;\"\n        \"letter-spacing:0.08em;\"\n    )\n\n\ndef td_style(row_class: str) -> str:\n    return (\n        \"padding:12px 14px;\"\n        f\"border-top:1px solid {BORDER_COLOR};\"\n        \"vertical-align:top;\"\n        \"word-break:break-word;\"\n        f\"background:{ROW_COLORS[row_class]};\"\n    )\n\n\ndef key_style() -> str:\n    return f\"color:{KEY_COLOR};font-weight:700;\"\n\n\ndef nested_table_style() -> str:\n    return \"margin-top:8px;width:100%;border-collapse:separate;border-spacing:0;\"\n\n\ndef render_value(value: Any, depth: int = 0) -> str:\n    if isinstance(value, dict):\n        return render_object(value, depth + 1)\n    if isinstance(value, list):\n        if not value:\n            return f'<span style=\"color:{NULL_COLOR};font-style:italic;\">[]<\/span>'\n        if all(not isinstance(item, (dict, list)) for item in value):\n            items = \", \".join(render_scalar(item) for item in value)\n            return f\"<div>{items}<\/div>\"\n        rows = []\n        for index, item in enumerate(value):\n            row_class = row_class_for_depth(depth)\n            rows.append(\n                \"<tr><td style=\\\"{td_style}\\\"><span style=\\\"{key_style}\\\">[{index}]<\/span><\/td><td style=\\\"{td_style}\\\">{content}<\/td><\/tr>\".format(\n                    td_style=td_style(row_class),\n                    key_style=key_style(),\n                    index=index,\n                    content=render_value(item, depth + 1),\n                )\n            )\n        return (\n            f'<table style=\"{nested_table_style()}\">'\n            f\"<tbody>{''.join(rows)}<\/tbody><\/table>\"\n        )\n    return render_scalar(value)\n\n\ndef row_class_for_depth(depth: int) -> str:\n    classes = [\"row-a\", \"row-b\", \"row-c\", \"row-d\"]\n    return classes[depth % len(classes)]\n\n\ndef render_object(obj: dict[str, Any], depth: int = 0) -> str:\n    rows: list[str] = []\n    for key, value in obj.items():\n        row_class = row_class_for_depth(depth)\n        rows.append(\n        \"<tr><td style=\\\"{td_style}\\\"><span style=\\\"{key_style}\\\">{key}<\/span><\/td><td style=\\\"{td_style}\\\">{value}<\/td><\/tr>\".format(\n          td_style=td_style(row_class),\n          key_style=key_style(),\n                key=html.escape(str(key)),\n                value=render_value(value, depth + 1),\n            )\n        )\n    return (\n        f'<table style=\"{nested_table_style()}\">'\n        f\"<tbody>{''.join(rows)}<\/tbody><\/table>\"\n    )\n\n\ndef build_html(data: Any, title: str = \"JSON to HTML Table\") -> str:\n    body = render_value(data)\n    return f\"\"\"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" \/>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" \/>\n  <title>{html.escape(title)}<\/title>\n<\/head>\n<body style=\"margin:0;padding:24px;font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;\">\n  <div style=\"max-width:1200px;margin:0 auto;\">\n    <h1 style=\"margin:0 0 12px;font-size:28px;letter-spacing:-0.02em;\">{html.escape(title)}<\/h1>\n                <p style=\"margin:0 0 20px;\">Nested JSON rendered as a recursive HTML table.<\/p>\n    {body}\n  <\/div>\n<\/body>\n<\/html>\n\"\"\"\n\n\ndef main() -> int:\n    html_output = build_html(STATIC_JSON_DATA, title=\"JSON to HTML Table\")\n    print(html_output)\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())",
+                "root_password": "{% set specials = '-_@#~' %}\n{%- set chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + specials -%}\n{%- set ns = namespace(parts=[specials | random]) -%}\n{%- for _ in range(9) -%}\n  {% set ns.parts = ns.parts + [chars | random] %}\n{%- endfor -%}\n{{ ns.parts | shuffle | join('') }}",
+                "vm_ip_address": "{{vars.input.records[0].networkInterfaces.iPAddress}}",
+                "requestor_email": "{{vars.input.records[0].requestor.email}}",
+                "provisioning_status": "[]",
+                "infrastructure_team_email": "{{globalVars.infrastructure_team_email or \"cloud-ops@fortielab.com\"}}"
+            },
+            "status": null,
+            "top": "160",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "21f02490-e729-4727-999b-b38a3cb584fe"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Deployment Successful",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/d651cc8c-4a04-4e19-9458-b2a7cc234b68",
+                        "condition": "{{ vars.successful_steps is defined and vars.successful_steps|length == 5 }}",
+                        "step_name": "Get VM Status"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/dc2b5fa3-3946-40ab-8df9-2d71087bee60",
+                        "step_name": "Update VM Instance Failure"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1780",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "5180482a-c42e-47d2-898a-738dbd6a005c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Available Resources",
+            "description": null,
+            "arguments": {
+                "storages": "{{ vars.steps.Get_Cluster_Resources.data.data | yaql('$.where($.get(\"type\", \"\") = \"storage\")') }}",
+                "vm_template": "{{ vars.steps.Get_Cluster_Resources.data.data | yaql('$.where($.get(\"template\", 0) = 1 and $.get(\"type\", \"\") = \"qemu\" and $.get(\"name\", \"\") = \"{}\")'.format(vars.vm_type)) }}",
+                "cpu_5min_avg": "{{vars.steps.Get_Hypervisor_Status.data.data.cpu}}",
+                "available_mem": "{{vars.steps.Get_Hypervisor_Status.data.data.memory.total - vars.steps.Get_Hypervisor_Status.data.data.memory.used}}",
+                "available_disk": "{{vars.steps.Get_Hypervisor_Status.data.data.rootfs.avail}}"
+            },
+            "status": null,
+            "top": "440",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "8d6a297b-2685-4738-98a3-19d075669ddc"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Cluster Resources",
+            "description": null,
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "type": ""
+                },
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "get_cluster_resources",
+                "operationTitle": "Get Cluster Resources",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "500",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "cef9543e-d678-4ef1-92d6-579e9edb6ddc"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Hypervisor Status",
+            "description": null,
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "node": ""
+                },
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "get_node_status",
+                "operationTitle": "Get Node Status",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "2413db90-86e1-4bb7-997c-0c7abb8fc8df"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Next VMID",
+            "description": "Get next available VMID from Proxmox cluster.",
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": [],
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "get_next_vmid",
+                "ignore_errors": true,
+                "operationTitle": "Get Next VMID",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "940",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "a2e9f59c-7697-46bb-90d5-5b073aa1b4ad"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Template Resource Requirements",
+            "description": null,
+            "arguments": {
+                "vm_mem": "{{vars.vm_template.0.maxmem}}",
+                "storage": "{%- macro select_storage(items) -%}\n  {# namespace lets us update values inside loop #}\n  {%- set ns = namespace(best=None, best_diff=None) -%}\n  {%- for obj in items -%}\n    {%- set maxdisk = obj.get('maxdisk', 0) -%}\n    {%- set disk = obj.get('disk', 0) -%}\n    {%- set diff = maxdisk - disk -%}\n\n    {%- if ns.best is none or diff > ns.best_diff -%}\n      {%- set ns.best = obj -%}\n      {%- set ns.best_diff = diff -%}\n    {%- endif -%}\n  {%- endfor -%}\n  {%- do ns.best.update({\"freespace\":ns.best_diff}) -%}\n  {{ ns.best }}\n{%- endmacro -%}\n{{select_storage(vars.storages)}}",
+                "vm_disk": "{{vars.vm_template.0.maxdisk}}",
+                "template_vm_id": "{{vars.vm_template.0.vmid}}"
+            },
+            "status": null,
+            "top": "560",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "725cb26d-8d52-4b5a-a3d8-d6bddc20d0d0"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get VM Status",
+            "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "node": "",
+                    "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
+                },
+                "version": "1.0.0",
+                "do_until": {
+                    "delay": 30,
+                    "retries": 6,
+                    "condition": "{{\"nics\" in vars.steps.Get_VM_Status.data.data}}"
+                },
+                "connector": "proxmox",
+                "operation": "get_vm_status",
+                "ignore_errors": true,
+                "operationTitle": "Get VM Status",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1920",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "d651cc8c-4a04-4e19-9458-b2a7cc234b68"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Not Enough Resources",
+            "description": null,
+            "arguments": {
+                "provisioning_error": "Disk storage full, please contact your system administrator"
+            },
+            "status": null,
+            "top": "800",
+            "left": "700",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "ce5e2d8a-1338-481d-86a3-fcf93066358f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Notify Failure",
+            "description": null,
+            "arguments": {
+                "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
+                "params": {
+                    "body": "<p>Dear VM requestor,<\/p>\n<p>An error occurred while processing request ID:&nbsp;<span style=\"color: rgb(230, 126, 35);\"><strong>{{vars.input.records[0].id}}<\/strong><\/span>.<\/p>\n<p>&nbsp;The Cloud Operations team has been notified and will address the issue shortly.<\/p>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
+                    "subject": "VM Instance Request Provisioning Failure",
+                    "iri_list": "",
+                    "cc_recipients": "{{globalVars.infrastructure_team_email}}",
+                    "to_recipients": "{{vars.input.records[0].requestor.email}}",
+                    "bcc_recipients": ""
+                },
+                "version": "2.6.0",
+                "from_str": "admin@example.com",
+                "connector": "smtp",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1900",
+            "left": "700",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "group": null,
+            "uuid": "3d26bc5d-9a47-4d6f-8e58-7a498b7a4820"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Notify Success",
+            "description": null,
+            "arguments": {
+                "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
+                "params": {
+                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}<\/p>\n<p>Your VM Instance has been provisioned successfully<\/p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}<\/li>\n<li>Username: {{ vars.ci_user }}<\/li>\n<li>Default password: {{vars.root_password}}<\/li>\n<\/ul>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
+                    "subject": "VM Instance Request Provisioning Success",
+                    "iri_list": "",
+                    "cc_recipients": "{{globalVars.infrastructure_team_email}}",
+                    "to_recipients": "{{vars.input.records[0].requestor.email}}",
+                    "bcc_recipients": ""
+                },
+                "version": "2.6.0",
+                "from_str": "admin@example.com",
+                "connector": "smtp",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "2180",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "group": null,
+            "uuid": "8d122c11-5851-4da5-9f31-bb035cb0bf2f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Ready For Provisioning",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "no",
+                        "step_iri": "\/api\/3\/workflow_steps\/058983d2-8488-46f2-88ba-17bece634cf3",
+                        "condition": "{{ vars.vm_template is not defined or vars.vm_template|length == 0 }}",
+                        "step_name": "Template Not Found"
+                    },
+                    {
+                        "option": "no",
+                        "step_iri": "\/api\/3\/workflow_steps\/ce5e2d8a-1338-481d-86a3-fcf93066358f",
+                        "condition": "{{ vars.vm_mem >= vars.available_mem or vars.vm_disk >= vars.available_disk or vars.cpu_5min_avg > 0.9 }}",
+                        "step_name": "Not Enough Resources"
+                    },
+                    {
+                        "option": "yes",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/5897b63b-74ab-4bda-9b7a-91ac2157b267",
+                        "step_name": "Set Provisioning Params"
+                    },
+                    {
+                        "option": "no",
+                        "step_iri": "\/api\/3\/workflow_steps\/2bbefc7c-cd70-4ef5-820c-76385e70e272",
+                        "condition": "{{ vars.storage is not defined or vars.storage|length == 0 }}",
+                        "step_name": "Cannot Locate Storage"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "680",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "6d65f473-e283-450c-ac17-ce4e13deb8d7"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Provisioning Params",
+            "description": "Set variables for API-based provisioning (templates, network).",
+            "arguments": {
+                "cloud_init_cfg": "{{ {'cores': vars.cpu_cores | int, 'memory': vars.memory_mb | int, 'net0': 'virtio,bridge=' ~ vars.bridge, 'ipconfig0': 'ip=' ~ vars.vm_ip_address ~ '\/24,gw=' ~ vars.gateway, 'ciuser': vars.ci_user, 'cipassword': vars.root_password, 'nameserver': '1.1.1.1'} }}"
+            },
+            "status": null,
+            "top": "820",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "5897b63b-74ab-4bda-9b7a-91ac2157b267"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Provision Result VM",
+            "description": null,
+            "arguments": {
+                "provisioning_status": "{{\n[\n  {\"task\": \"Get Next VMID\", \"status\": vars.steps.Get_Next_VMID.status},\n  {\"task\": \"Clone VM\", \"status\": vars.steps.Clone_VM.status or vars.steps.Clone_VM['Error message']},\n  {\"task\": \"Cloud Init Config\", \"status\": vars.steps.Cloud_Init_Config.status or vars.steps.Cloud_Init_Config['Error message']},\n  {\"task\": \"Cloud Init Setup\", \"status\": vars.steps.Update_Cloud_Init_Setup.status or vars.steps.Update_Cloud_Init_Setup['Error message']},\n  {\"task\": \"Start VM\", \"status\": vars.steps.Start_VM.status or vars.steps.Start_VM['Error message']}\n]\n}}"
+            },
+            "status": null,
+            "top": "1540",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "b8ac3611-4423-47fd-97f3-b107841bce47"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "route": "71ba27f4-7881-4c06-ad0c-5a89f383236c",
+                "resources": [
+                    "v_m_instances"
+                ],
+                "__triggerLimit": true,
+                "inputVariables": [],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    },
+                    "useMockOutput": "False",
+                    "_update_records_env": "{%- if vars.input.params.vm_instance and vars.input.params.vm_instance | length > 0 -%}{{vars.input.records.append(vars.input.params.vm_instance)}}{%-endif-%}"
+                },
+                "triggerOnSource": true,
+                "displayConditions": {
+                    "v_m_instances": {
+                        "sort": [],
+                        "limit": 30,
+                        "logic": "AND",
+                        "filters": []
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "showToasterMessage": {
+                    "visible": false,
+                    "messageVisible": true
+                },
+                "triggerOnReplicate": false,
+                "singleRecordExecution": true
+            },
+            "status": null,
+            "top": "30",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "30ac2637-43ca-4711-9748-4fee781e9429"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start VM",
+            "description": null,
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "node": "",
+                    "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
+                },
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "start_vm",
+                "ignore_errors": true,
+                "operationTitle": "Start VM",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1420",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "cc888117-5e8a-4ab4-b1fd-8bc23731737a"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Template Not Found",
+            "description": null,
+            "arguments": {
+                "provisioning_error": "Template VM not found, please contact your system administrator"
+            },
+            "status": null,
+            "top": "600",
+            "left": "700",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "058983d2-8488-46f2-88ba-17bece634cf3"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update Cloud Init Setup",
+            "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
+            "arguments": {
+                "name": "Proxmox",
+                "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
+                "params": {
+                    "node": "",
+                    "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
+                },
+                "version": "1.0.0",
+                "connector": "proxmox",
+                "operation": "update_vm_cloudinit",
+                "ignore_errors": true,
+                "operationTitle": "Update VM Cloud-Init",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1300",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "11933a41-569f-4e9d-b161-2fc5ddb7f41a"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update VM Instance Failure",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "logs": "<ul><li>Provisioning status: <\/li><\/ul>\n{{vars.provisioning_status | json2html(row_fields=[], template=\"Generic\", display=\"Horizontal\", styling=false, table_style={})}}",
+                    "status": "\/api\/3\/picklists\/3a009813-79af-4d41-8eeb-cec911d4821c",
+                    "description": "* Error: {{vars.provisioning_error}}\n"
+                },
+                "_showJson": false,
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/v_m_instances",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1780",
+            "left": "700",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "dc2b5fa3-3946-40ab-8df9-2d71087bee60"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update VM Instance Success",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "logs": "Provisioning status: \n{{vars.provisioning_status | json2html(row_fields=[], template=\"Generic\", display=\"Vertical\", styling=false, table_style={})}}",
+                    "vMID": "{{vars.steps.Get_Next_VMID.data.data}}",
+                    "status": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                    "hypervisor": "\/api\/3\/picklists\/eb3538e1-ea93-483a-8de9-e641987cc2c8",
+                    "sourceData": "{{vars.steps.Get_VM_Status.data.data}}",
+                    "description": "| Attribute | Value |\n| --- | --- |\n|Host| {{vars.vm_ip_address}}|\n|Username| {{vars.ci_user}}|\n|Password| {{vars.root_password}}|\n|Protocol | SSH |\n\n{{vars.steps.Get_VM_Status.data.data | json2html(row_fields=[\"name\",\"uptime\",\"cpus\",\"agent\",\"status\",\"qmpstatus\",\"running-machine\",\"serial\"], template=\"Stylized with row selection\", display=\"Horizontal\", styling=false, table_style={})}}"
+                },
+                "_showJson": false,
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/v_m_instances",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "2040",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "0d92dd2a-6197-431b-afbd-45088a5083b7"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Cannot Locate Storage -> Update VM Instance Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/dc2b5fa3-3946-40ab-8df9-2d71087bee60",
+            "sourceStep": "\/api\/3\/workflow_steps\/2bbefc7c-cd70-4ef5-820c-76385e70e272",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "2b5cb772-df15-4f8a-bd1f-8af689fffea4"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Clone VM API -> Config VM API",
+            "targetStep": "\/api\/3\/workflow_steps\/79d0d436-e4c8-41b1-8537-33cf91262f73",
+            "sourceStep": "\/api\/3\/workflow_steps\/1051d6c0-4632-4655-94f2-f059160ff06d",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ddc4cb42-4a92-4221-adda-47857172cd1c"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Get Node Status",
+            "targetStep": "\/api\/3\/workflow_steps\/2413db90-86e1-4bb7-997c-0c7abb8fc8df",
+            "sourceStep": "\/api\/3\/workflow_steps\/21f02490-e729-4727-999b-b38a3cb584fe",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "839fd04e-6bb4-4b29-b929-4d886e320016"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Get Storage Status",
+            "targetStep": "\/api\/3\/workflow_steps\/cef9543e-d678-4ef1-92d6-579e9edb6ddc",
+            "sourceStep": "\/api\/3\/workflow_steps\/21f02490-e729-4727-999b-b38a3cb584fe",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "aab6f5d0-b513-4836-abd8-5ed04f39a851"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Config VM API -> Update Cloud Init API",
+            "targetStep": "\/api\/3\/workflow_steps\/11933a41-569f-4e9d-b161-2fc5ddb7f41a",
+            "sourceStep": "\/api\/3\/workflow_steps\/79d0d436-e4c8-41b1-8537-33cf91262f73",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "df931d18-834a-4bc1-a44a-39de5a6f54aa"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Copy of Set Provision Result VM -> Deployment Successful",
+            "targetStep": "\/api\/3\/workflow_steps\/5180482a-c42e-47d2-898a-738dbd6a005c",
+            "sourceStep": "\/api\/3\/workflow_steps\/068d72b4-0701-4b47-a50a-55ed41990147",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "449ce544-ad81-43e4-be6c-241f74b76c80"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Deployment Successful -> Get VM Status",
+            "targetStep": "\/api\/3\/workflow_steps\/d651cc8c-4a04-4e19-9458-b2a7cc234b68",
+            "sourceStep": "\/api\/3\/workflow_steps\/5180482a-c42e-47d2-898a-738dbd6a005c",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4f65f773-22db-4245-9d27-a440532c17d1"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Deployment Successful -> Update VM Instance Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/dc2b5fa3-3946-40ab-8df9-2d71087bee60",
+            "sourceStep": "\/api\/3\/workflow_steps\/5180482a-c42e-47d2-898a-738dbd6a005c",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "68ab2c1a-883f-4a6e-9f0a-2f484d0b9fa2"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Enough Hardware Resources -> Not Enough Resources",
+            "targetStep": "\/api\/3\/workflow_steps\/ce5e2d8a-1338-481d-86a3-fcf93066358f",
+            "sourceStep": "\/api\/3\/workflow_steps\/6d65f473-e283-450c-ac17-ce4e13deb8d7",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "77ff5a05-e974-48f8-abcd-ce49259b36c4"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Enough Hardware Resources -> Template Not Found",
+            "targetStep": "\/api\/3\/workflow_steps\/058983d2-8488-46f2-88ba-17bece634cf3",
+            "sourceStep": "\/api\/3\/workflow_steps\/6d65f473-e283-450c-ac17-ce4e13deb8d7",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "fc3cf29c-78b3-41d8-8ac4-2959f58dab77"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Available Resources -> Copy of Get Available Resources",
+            "targetStep": "\/api\/3\/workflow_steps\/725cb26d-8d52-4b5a-a3d8-d6bddc20d0d0",
+            "sourceStep": "\/api\/3\/workflow_steps\/8d6a297b-2685-4738-98a3-19d075669ddc",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e4f41416-cb7f-45dc-b177-026db9bddfd5"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Hypervisor Status -> Get Resources Values",
+            "targetStep": "\/api\/3\/workflow_steps\/8d6a297b-2685-4738-98a3-19d075669ddc",
+            "sourceStep": "\/api\/3\/workflow_steps\/2413db90-86e1-4bb7-997c-0c7abb8fc8df",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "eac8d6a9-6c60-4206-95c2-eaf15dff325c"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Next VMID -> Clone VM",
+            "targetStep": "\/api\/3\/workflow_steps\/1051d6c0-4632-4655-94f2-f059160ff06d",
+            "sourceStep": "\/api\/3\/workflow_steps\/a2e9f59c-7697-46bb-90d5-5b073aa1b4ad",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "fb49c847-929d-479b-9a32-67091d50a660"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Storage Status -> Find Template ID",
+            "targetStep": "\/api\/3\/workflow_steps\/8d6a297b-2685-4738-98a3-19d075669ddc",
+            "sourceStep": "\/api\/3\/workflow_steps\/cef9543e-d678-4ef1-92d6-579e9edb6ddc",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "1140c14c-f7a1-486a-bbf5-027c46a215f6"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Template Resource Requirements -> Ready For Provisioning",
+            "targetStep": "\/api\/3\/workflow_steps\/6d65f473-e283-450c-ac17-ce4e13deb8d7",
+            "sourceStep": "\/api\/3\/workflow_steps\/725cb26d-8d52-4b5a-a3d8-d6bddc20d0d0",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "92768ad3-8309-4fd5-a713-ca96dc0d4cf0"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get VM Status -> Update VM Instance Success",
+            "targetStep": "\/api\/3\/workflow_steps\/0d92dd2a-6197-431b-afbd-45088a5083b7",
+            "sourceStep": "\/api\/3\/workflow_steps\/d651cc8c-4a04-4e19-9458-b2a7cc234b68",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "58400579-d340-42a6-857a-f858f8a377af"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Not Enough Resources -> Update VM Instance Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/dc2b5fa3-3946-40ab-8df9-2d71087bee60",
+            "sourceStep": "\/api\/3\/workflow_steps\/ce5e2d8a-1338-481d-86a3-fcf93066358f",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6fc9efee-e949-4fc9-9f1f-64ea8257d7e6"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Proxmox Node Resources Available -> Set Provisioning Params",
+            "targetStep": "\/api\/3\/workflow_steps\/5897b63b-74ab-4bda-9b7a-91ac2157b267",
+            "sourceStep": "\/api\/3\/workflow_steps\/6d65f473-e283-450c-ac17-ce4e13deb8d7",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "33501925-0f09-487d-8ae5-afddef2f0618"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Ready For Provisioning -> Cannot Locate Storage",
+            "targetStep": "\/api\/3\/workflow_steps\/2bbefc7c-cd70-4ef5-820c-76385e70e272",
+            "sourceStep": "\/api\/3\/workflow_steps\/6d65f473-e283-450c-ac17-ce4e13deb8d7",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6983ddd4-f39f-4545-a44d-564a31c5645d"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Provisioning Params -> Get Next VMID",
+            "targetStep": "\/api\/3\/workflow_steps\/a2e9f59c-7697-46bb-90d5-5b073aa1b4ad",
+            "sourceStep": "\/api\/3\/workflow_steps\/5897b63b-74ab-4bda-9b7a-91ac2157b267",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "23837e27-820c-449f-abf1-317dde6aa16f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Provision Result VM -> Copy of Set Provision Result VM",
+            "targetStep": "\/api\/3\/workflow_steps\/068d72b4-0701-4b47-a50a-55ed41990147",
+            "sourceStep": "\/api\/3\/workflow_steps\/b8ac3611-4423-47fd-97f3-b107841bce47",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "847a98f9-e97a-4ac3-ba64-874b0c523ee2"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/21f02490-e729-4727-999b-b38a3cb584fe",
+            "sourceStep": "\/api\/3\/workflow_steps\/30ac2637-43ca-4711-9748-4fee781e9429",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "dee16bf0-3ac3-418b-9ec2-be4bf829a1da"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start VM API -> Set Provision Result VM",
+            "targetStep": "\/api\/3\/workflow_steps\/b8ac3611-4423-47fd-97f3-b107841bce47",
+            "sourceStep": "\/api\/3\/workflow_steps\/cc888117-5e8a-4ab4-b1fd-8bc23731737a",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b66f41a9-6337-4ff4-ae55-132277b98ce9"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Template Not Found -> Update VM Instance Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/dc2b5fa3-3946-40ab-8df9-2d71087bee60",
+            "sourceStep": "\/api\/3\/workflow_steps\/058983d2-8488-46f2-88ba-17bece634cf3",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "0b5cb073-2d20-4e44-b408-dcf55605e6e5"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update Cloud Init API -> Start VM API",
+            "targetStep": "\/api\/3\/workflow_steps\/cc888117-5e8a-4ab4-b1fd-8bc23731737a",
+            "sourceStep": "\/api\/3\/workflow_steps\/11933a41-569f-4e9d-b161-2fc5ddb7f41a",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a7d52793-36c2-4444-8800-7d54d5594ddd"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update VM Instance Failure -> Notify Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/3d26bc5d-9a47-4d6f-8e58-7a498b7a4820",
+            "sourceStep": "\/api\/3\/workflow_steps\/dc2b5fa3-3946-40ab-8df9-2d71087bee60",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ea4a4f79-f582-472e-8396-ca569569b7ec"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update VM Instance Success -> Notify Success",
+            "targetStep": "\/api\/3\/workflow_steps\/8d122c11-5851-4da5-9f31-bb035cb0bf2f",
+            "sourceStep": "\/api\/3\/workflow_steps\/0d92dd2a-6197-431b-afbd-45088a5083b7",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "245a14a9-c43f-4b16-925e-e3330db61626"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "7691dc84-5884-4fc0-bd32-b37c332bbc21",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Create",
+        "Proxmox"
+    ]
+}
