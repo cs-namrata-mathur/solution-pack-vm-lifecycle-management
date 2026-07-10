@@ -17,7 +17,7 @@ N/A
 
 >[!Note]
 >
->To add VM Lifecycle Management to the FortiSOAR left navigation menu, click **Settings** > **Navigation**, select **VM Lifecycle Management** and then click **Add To Menu**. The **VM Lifecycle Management** menu provides access to the **Network Interfaces** and **VM Instances** modules.
+>To add VM Lifecycle Management to the FortiSOAR left navigation menu, click **Settings** > **Navigation**, select **VM Lifecycle Management** and **Network Interfaces**, and then click **Add As Group**. The new group is added to the end of the navigation menu. Rename the group from **Untitled** to **VM Lifecycle Management**.<br />To add a logo, click the logo drop-down, search for `Puzzle Piece` in the **Filter Icons** search box, and select it from the group logo collection.<br />The **VM Lifecycle Management** menu provides access to the **Network Interfaces** and **VM Instances** modules.
 >
 
 ## Users
