@@ -15,7 +15,7 @@
     ],
     "prerequisite": null,
     "publisher": "Fortinet CSE",
-    "contributor": "Naili.M",
+    "contributor": "Mahdi Naili",
     "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
     "help": "https://github.com/fortinet-fortisoar/solution-pack-vm-lifecycle-management/blob/release/1.0.0/README.md",
     "category": [
