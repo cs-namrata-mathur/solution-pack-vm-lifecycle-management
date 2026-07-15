@@ -1,17 +1,22 @@
 [
     {
-        "name": "Current_Date",
-        "value": "{{arrow.utcnow().timestamp}}",
-        "default_value": "{{arrow.utcnow().timestamp}}"
-    },
-    {
         "name": "infrastructure_team_email",
         "value": "cloud-ops@fortielab.com",
         "default_value": "cloud-ops@fortielab.com"
     },
     {
+        "name": "VM_Lifecycle_Management_Hypervisor",
+        "value": "KVM",
+        "default_value": "KVM"
+    },
+    {
+        "name": "Current_Date",
+        "value": "{{arrow.utcnow().timestamp}}",
+        "default_value": "{{arrow.utcnow().timestamp}}"
+    },
+    {
         "name": "Server_fqhn",
-        "value": "master.fortisoar.in",
+        "value": "pod7.fortielab.com:21443",
         "default_value": "master.fortisoar.in"
     }
 ]

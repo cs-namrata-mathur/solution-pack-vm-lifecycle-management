@@ -5,6 +5,7 @@
             "PLURAL_NAME": "Network Interfaces"
         },
         "FIELDS": {
+            "COMMENTS": "Comments",
             "NAME": "Name",
             "IPADDRESS": "IP Address",
             "NETMASK": "Netmask",
