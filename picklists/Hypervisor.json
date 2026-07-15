@@ -1,0 +1,30 @@
+{
+    "@context": "\/api\/3\/contexts\/PicklistName",
+    "@id": "\/api\/3\/picklist_names\/a9f530ac-dfad-4599-9396-c4919340bc93",
+    "@type": "PicklistName",
+    "name": "Hypervisor",
+    "system": false,
+    "picklists": [
+        {
+            "@id": "\/api\/3\/picklists\/3e1484e4-4cb8-4b8f-bd1e-bf5032eeb4fc",
+            "@type": "Picklist",
+            "itemValue": "KVM",
+            "orderIndex": 0,
+            "color": null,
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/a9f530ac-dfad-4599-9396-c4919340bc93",
+            "uuid": "3e1484e4-4cb8-4b8f-bd1e-bf5032eeb4fc"
+        },
+        {
+            "@id": "\/api\/3\/picklists\/eb3538e1-ea93-483a-8de9-e641987cc2c8",
+            "@type": "Picklist",
+            "itemValue": "Proxmox",
+            "orderIndex": 1,
+            "color": null,
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/a9f530ac-dfad-4599-9396-c4919340bc93",
+            "uuid": "eb3538e1-ea93-483a-8de9-e641987cc2c8"
+        }
+    ],
+    "uuid": "a9f530ac-dfad-4599-9396-c4919340bc93"
+}

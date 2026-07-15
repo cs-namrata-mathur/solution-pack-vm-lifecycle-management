@@ -14,7 +14,7 @@
         "vm_instance"
     ],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
     "versions": [],
     "triggerStep": "\/api\/3\/workflow_steps\/5d2f2217-a0b7-4c6a-b391-8363c719c328",
     "steps": [
@@ -65,7 +65,7 @@
             "name": "Destroy VM",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "API Connector Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -73,7 +73,7 @@
                     "purge": true
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "destroy_vm",
                 "ignore_errors": true,
                 "operationTitle": "Destroy VM",
@@ -149,14 +149,14 @@
             "name": "Stop VM",
             "description": "Stop the VM before destroy so Proxmox accepts delete.",
             "arguments": {
-                "name": "Proxmox",
+                "name": "API Connector Proxmox",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
                     "vmid": "{{vars.vm_id}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "stop_vm",
                 "operationTitle": "Stop VM",
                 "pickFromTenant": false,
@@ -226,7 +226,7 @@
             "name": "Wait To Shutdown",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -238,7 +238,7 @@
                     "retries": 5,
                     "condition": "{{vars.steps.Wait_To_Shutdown.data.data.status == \"stopped\"}}"
                 },
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "get_vm_status",
                 "ignore_errors": true,
                 "operationTitle": "Get VM Status",
@@ -337,8 +337,8 @@
     ],
     "groups": [],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
     "uuid": "f549bbb6-c4ef-471e-9734-9733aace5cb1",
     "owners": [],
     "isPrivate": false,

@@ -1,10 +1,11 @@
 {
     "name": "vMLifecycleManagement",
     "version": "1.0.0",
-    "fsrMinCompatibility": "7.6.4",
+    "fsrMinCompatibility": "7.6.5",
     "type": "solutionpack",
     "local": true,
     "label": "VM Lifecycle Management",
+    "contributor": "Naili.M, Michael Ibe, Pallavi M",
     "dependencies": [
         {
             "name": "sOARFramework",
@@ -13,26 +14,25 @@
             "minVersion": null
         }
     ],
-    "prerequisite": null,
-    "publisher": "Fortinet CSE",
-    "contributor": "Mahdi Naili",
+    "prerequisite": "# Connectors:\n- DNS\n- Proxmox\n- FortiGate\n- SSH (To KVM as root)\n- SMTP\n- Code Snippet\n- IMAP\n- Active Directory\n- Google Gemini\n# Widgets\nPlaybook Buttons Widget\n\n# Other settings\nSetup Default Email Sender",
+    "publisher": "Community",
     "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
     "help": "https://github.com/fortinet-fortisoar/solution-pack-vm-lifecycle-management/blob/release/1.0.0/README.md",
     "category": [
         "Compute Platform"
     ],
     "supportInfo": null,
-    "iconLarge": "large.png",
-    "postInstallConfig": {
-        "enabled": false
-    },
+    "iconLarge": "images/large.png",
+    "postInstallConfig": null,
     "recordTags": [
-        "FortiSOAR",
-        "VM Lifecycle Management"
+        "CloudOps"
     ],
-    "date": "2026-04-15T07:09:05+00:00",
+    "date": "2026-07-15T08:19:26+00:00",
     "contents": {
         "picklistNames": [
+            {
+                "name": "Hypervisor"
+            },
             {
                 "name": "VM Status"
             },
@@ -70,30 +70,49 @@
                 ]
             }
         },
+        "views": {
+            "navigation": [
+                "Dashboard",
+                "Queue & Shift Management",
+                "Incident Response",
+                "Automation",
+                "Resources",
+                "Vulnerability Management",
+                "Threat Intel Management",
+                "Outbreak Management",
+                "VM Lifecycle Management",
+                "Reports",
+                "Widget Library",
+                "Content Hub",
+                "Simulations",
+                "Help",
+                "User Community"
+            ]
+        },
         "roles": [
             {
                 "name": "Full App Permissions"
             }
         ],
-        "actors": [
-            {
-                "name": "atlas numid"
-            }
-        ],
         "globalVariables": [
-            {
-                "name": "Current_Date",
-                "value": "{{arrow.utcnow().timestamp}}",
-                "default_value": "{{arrow.utcnow().timestamp}}"
-            },
             {
                 "name": "infrastructure_team_email",
                 "value": "cloud-ops@fortielab.com",
                 "default_value": "cloud-ops@fortielab.com"
             },
             {
+                "name": "VM_Lifecycle_Management_Hypervisor",
+                "value": "KVM",
+                "default_value": "KVM"
+            },
+            {
+                "name": "Current_Date",
+                "value": "{{arrow.utcnow().timestamp}}",
+                "default_value": "{{arrow.utcnow().timestamp}}"
+            },
+            {
                 "name": "Server_fqhn",
-                "value": "master.fortisoar.in",
+                "value": "pod7.fortielab.com:21443",
                 "default_value": "master.fortisoar.in"
             }
         ],
@@ -106,6 +125,10 @@
             {
                 "name": "Active Directory",
                 "apiName": "activedirectory"
+            },
+            {
+                "name": "Code Snippet",
+                "apiName": "code-snippet"
             },
             {
                 "name": "DNS",
@@ -128,8 +151,9 @@
                 "apiName": "imap"
             },
             {
-                "name": "Proxmox",
-                "apiName": "proxmox"
+                "name": "Proxmox VE Hypervisor",
+                "apiName": "proxmox-ve",
+                "version": "1.0.0"
             },
             {
                 "name": "SMTP",
@@ -138,6 +162,12 @@
             {
                 "name": "SSH",
                 "apiName": "ssh"
+            }
+        ],
+        "widgets": [
+            {
+                "apiName": "playbookButtons",
+                "name": "Playbook Buttons"
             }
         ]
     }

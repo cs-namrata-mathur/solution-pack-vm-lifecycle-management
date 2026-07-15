@@ -14,7 +14,7 @@
         "vm_instance"
     ],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/1d3bea48-a2e0-469d-a0f2-e0a598bfcbf4",
+    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
     "versions": [],
     "triggerStep": "\/api\/3\/workflow_steps\/30ac2637-43ca-4711-9748-4fee781e9429",
     "steps": [
@@ -37,7 +37,7 @@
             "name": "Clone VM",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "full": true,
@@ -49,7 +49,7 @@
                     "timeout": 1800
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "clone_vm",
                 "ignore_errors": true,
                 "operationTitle": "Clone VM",
@@ -68,7 +68,7 @@
             "name": "Cloud Init Config",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -76,7 +76,7 @@
                     "body_params": "{{vars.cloud_init_cfg}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "config_vm",
                 "ignore_errors": true,
                 "operationTitle": "Configure VM",
@@ -116,7 +116,6 @@
                 "vm_type": "{{vars.input.records[0].vMType.itemValue}}",
                 "cpu_cores": "1",
                 "memory_mb": "512",
-                "json_to_html": "#!\/usr\/bin\/env python3\n\"\"\"Convert nested JSON into a colorful HTML table.\n\nUsage:\n    python json_to_colorful_table.py\n\nThe script renders nested dicts\/lists recursively, so complex JSON objects are\nshown as nested HTML tables with a colorful theme.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport html\nfrom typing import Any\n\n\n# --- Color configuration --------------------------------------------------\n# Edit these defaults to change the generated HTML theme.\nCARD_BG = \"#ffffff\"\nBORDER_COLOR = \"#d7e0ea\"\nHEADER_GRADIENT = \"linear-gradient(135deg, #2563eb, #7c3aed)\"\nKEY_COLOR = \"#0f766e\"\nSTRING_COLOR = \"#3a2c9f\"\nNUMBER_COLOR = \"#0369a1\"\nBOOLEAN_COLOR = \"#be123c\"\nNULL_COLOR = \"#6b7280\"\nROW_COLORS = {\n    \"row-a\": \"#eaf2ff\",\n    \"row-b\": \"#edf9f0\",\n    \"row-c\": \"#f4efff\",\n    \"row-d\": \"#bccbcb\",\n}\n\n\n# --- Static data ----------------------------------------------------------\n# Replace this object with your own nested JSON-like structure.\nSTATIC_JSON_DATA: dict[str, Any] = {\n    \"name\": \"example-vm\",\n    \"status\": \"running\",\n    \"resources\": {\n        \"cpu\": 4,\n        \"memory_mb\": 8192,\n        \"disk_gb\": 80,\n    },\n    \"network\": {\n        \"interfaces\": [\n            {\"name\": \"eth0\", \"ip\": \"10.0.0.10\/24\", \"gateway\": \"10.0.0.1\"},\n            {\"name\": \"eth1\", \"ip\": \"192.168.1.10\/24\", \"gateway\": \"192.168.1.1\"},\n        ],\n        \"dns\": [\"1.1.1.1\", \"8.8.8.8\"],\n    },\n    \"tags\": [\"prod\", \"web\", \"linux\"],\n    \"metadata\": None,\n}\n\n\ndef render_scalar(value: Any) -> str:\n    if value is None:\n        return f'<span style=\"color:{NULL_COLOR};font-style:italic;\">null<\/span>'\n    if isinstance(value, bool):\n        return f'<span style=\"color:{BOOLEAN_COLOR};\">{str(value).lower()}<\/span>'\n    if isinstance(value, (int, float)):\n        return f'<span style=\"color:{NUMBER_COLOR};\">{html.escape(str(value))}<\/span>'\n    return f'<span style=\"color:{STRING_COLOR};\">{html.escape(str(value))}<\/span>'\n\n\ndef table_style() -> str:\n    return (\n        \"width:100%;\"\n        \"border-collapse:separate;\"\n        \"border-spacing:0;\"\n        f\"background:{CARD_BG};\"\n        f\"border:1px solid {BORDER_COLOR};\"\n        \"border-radius:16px;\"\n        \"overflow:hidden;\"\n        \"box-shadow:0 12px 30px rgba(15, 23, 42, 0.08);\"\n    )\n\n\ndef th_style() -> str:\n    return (\n        \"text-align:left;\"\n        \"padding:12px 14px;\"\n        \"color:#ffffff;\"\n        f\"background:{HEADER_GRADIENT};\"\n        \"font-size:13px;\"\n        \"text-transform:uppercase;\"\n        \"letter-spacing:0.08em;\"\n    )\n\n\ndef td_style(row_class: str) -> str:\n    return (\n        \"padding:12px 14px;\"\n        f\"border-top:1px solid {BORDER_COLOR};\"\n        \"vertical-align:top;\"\n        \"word-break:break-word;\"\n        f\"background:{ROW_COLORS[row_class]};\"\n    )\n\n\ndef key_style() -> str:\n    return f\"color:{KEY_COLOR};font-weight:700;\"\n\n\ndef nested_table_style() -> str:\n    return \"margin-top:8px;width:100%;border-collapse:separate;border-spacing:0;\"\n\n\ndef render_value(value: Any, depth: int = 0) -> str:\n    if isinstance(value, dict):\n        return render_object(value, depth + 1)\n    if isinstance(value, list):\n        if not value:\n            return f'<span style=\"color:{NULL_COLOR};font-style:italic;\">[]<\/span>'\n        if all(not isinstance(item, (dict, list)) for item in value):\n            items = \", \".join(render_scalar(item) for item in value)\n            return f\"<div>{items}<\/div>\"\n        rows = []\n        for index, item in enumerate(value):\n            row_class = row_class_for_depth(depth)\n            rows.append(\n                \"<tr><td style=\\\"{td_style}\\\"><span style=\\\"{key_style}\\\">[{index}]<\/span><\/td><td style=\\\"{td_style}\\\">{content}<\/td><\/tr>\".format(\n                    td_style=td_style(row_class),\n                    key_style=key_style(),\n                    index=index,\n                    content=render_value(item, depth + 1),\n                )\n            )\n        return (\n            f'<table style=\"{nested_table_style()}\">'\n            f\"<tbody>{''.join(rows)}<\/tbody><\/table>\"\n        )\n    return render_scalar(value)\n\n\ndef row_class_for_depth(depth: int) -> str:\n    classes = [\"row-a\", \"row-b\", \"row-c\", \"row-d\"]\n    return classes[depth % len(classes)]\n\n\ndef render_object(obj: dict[str, Any], depth: int = 0) -> str:\n    rows: list[str] = []\n    for key, value in obj.items():\n        row_class = row_class_for_depth(depth)\n        rows.append(\n        \"<tr><td style=\\\"{td_style}\\\"><span style=\\\"{key_style}\\\">{key}<\/span><\/td><td style=\\\"{td_style}\\\">{value}<\/td><\/tr>\".format(\n          td_style=td_style(row_class),\n          key_style=key_style(),\n                key=html.escape(str(key)),\n                value=render_value(value, depth + 1),\n            )\n        )\n    return (\n        f'<table style=\"{nested_table_style()}\">'\n        f\"<tbody>{''.join(rows)}<\/tbody><\/table>\"\n    )\n\n\ndef build_html(data: Any, title: str = \"JSON to HTML Table\") -> str:\n    body = render_value(data)\n    return f\"\"\"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" \/>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" \/>\n  <title>{html.escape(title)}<\/title>\n<\/head>\n<body style=\"margin:0;padding:24px;font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;\">\n  <div style=\"max-width:1200px;margin:0 auto;\">\n    <h1 style=\"margin:0 0 12px;font-size:28px;letter-spacing:-0.02em;\">{html.escape(title)}<\/h1>\n                <p style=\"margin:0 0 20px;\">Nested JSON rendered as a recursive HTML table.<\/p>\n    {body}\n  <\/div>\n<\/body>\n<\/html>\n\"\"\"\n\n\ndef main() -> int:\n    html_output = build_html(STATIC_JSON_DATA, title=\"JSON to HTML Table\")\n    print(html_output)\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())",
                 "root_password": "{% set specials = '-_@#~' %}\n{%- set chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + specials -%}\n{%- set ns = namespace(parts=[specials | random]) -%}\n{%- for _ in range(9) -%}\n  {% set ns.parts = ns.parts + [chars | random] %}\n{%- endfor -%}\n{{ ns.parts | shuffle | join('') }}",
                 "vm_ip_address": "{{vars.input.records[0].networkInterfaces.iPAddress}}",
                 "requestor_email": "{{vars.input.records[0].requestor.email}}",
@@ -164,7 +163,7 @@
             "description": null,
             "arguments": {
                 "storages": "{{ vars.steps.Get_Cluster_Resources.data.data | yaql('$.where($.get(\"type\", \"\") = \"storage\")') }}",
-                "vm_template": "{{ vars.steps.Get_Cluster_Resources.data.data | yaql('$.where($.get(\"template\", 0) = 1 and $.get(\"type\", \"\") = \"qemu\" and $.get(\"name\", \"\") = \"{}\")'.format(vars.vm_type)) }}",
+                "vm_template": "{{ vars.steps.Get_Cluster_Resources.data.data | yaql('$.where($.get(\"type\", \"\") = \"qemu\" and $.get(\"name\", \"\") = \"{}\")'.format(vars.vm_type)) }}",
                 "cpu_5min_avg": "{{vars.steps.Get_Hypervisor_Status.data.data.cpu}}",
                 "available_mem": "{{vars.steps.Get_Hypervisor_Status.data.data.memory.total - vars.steps.Get_Hypervisor_Status.data.data.memory.used}}",
                 "available_disk": "{{vars.steps.Get_Hypervisor_Status.data.data.rootfs.avail}}"
@@ -181,13 +180,13 @@
             "name": "Get Cluster Resources",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "type": ""
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "get_cluster_resources",
                 "operationTitle": "Get Cluster Resources",
                 "pickFromTenant": false,
@@ -205,13 +204,13 @@
             "name": "Get Hypervisor Status",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": ""
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "get_node_status",
                 "operationTitle": "Get Node Status",
                 "pickFromTenant": false,
@@ -229,11 +228,11 @@
             "name": "Get Next VMID",
             "description": "Get next available VMID from Proxmox cluster.",
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": [],
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "get_next_vmid",
                 "ignore_errors": true,
                 "operationTitle": "Get Next VMID",
@@ -269,7 +268,7 @@
             "name": "Get VM Status",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
@@ -281,7 +280,7 @@
                     "retries": 6,
                     "condition": "{{\"nics\" in vars.steps.Get_VM_Status.data.data}}"
                 },
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "get_vm_status",
                 "ignore_errors": true,
                 "operationTitle": "Get VM Status",
@@ -316,11 +315,11 @@
             "arguments": {
                 "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
                 "params": {
-                    "body": "<p>Dear VM requestor,<\/p>\n<p>An error occurred while processing request ID:&nbsp;<span style=\"color: rgb(230, 126, 35);\"><strong>{{vars.input.records[0].id}}<\/strong><\/span>.<\/p>\n<p>&nbsp;The Cloud Operations team has been notified and will address the issue shortly.<\/p>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
+                    "body": "<p>Dear VM requestor,<\/p>\n<p>An error occurred while processing request ID:&nbsp;<span style=\"color: rgb(230, 126, 35);\"><strong>{{vars.input.records[0].id}}<\/strong><\/span>.<\/p>\n<p>Details: {{vars.provisioning_error}}<\/p>\n<p>The Cloud Operations team has been notified and will address the issue shortly.<\/p>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
                     "subject": "VM Instance Request Provisioning Failure",
                     "iri_list": "",
                     "cc_recipients": "{{globalVars.infrastructure_team_email}}",
-                    "to_recipients": "{{vars.input.records[0].requestor.email}}",
+                    "to_recipients": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}",
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
@@ -348,7 +347,7 @@
                     "subject": "VM Instance Request Provisioning Success",
                     "iri_list": "",
                     "cc_recipients": "{{globalVars.infrastructure_team_email}}",
-                    "to_recipients": "{{vars.input.records[0].requestor.email}}",
+                    "to_recipients": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}",
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
@@ -482,14 +481,14 @@
             "name": "Start VM",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
                     "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "start_vm",
                 "ignore_errors": true,
                 "operationTitle": "Start VM",
@@ -522,14 +521,14 @@
             "name": "Update Cloud Init Setup",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
                 "params": {
                     "node": "",
                     "vmid": "{{vars.steps.Get_Next_VMID.data.data}}"
                 },
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "update_vm_cloudinit",
                 "ignore_errors": true,
                 "operationTitle": "Update VM Cloud-Init",
@@ -549,9 +548,9 @@
             "description": null,
             "arguments": {
                 "resource": {
-                    "logs": "<ul><li>Provisioning status: <\/li><\/ul>\n{{vars.provisioning_status | json2html(row_fields=[], template=\"Generic\", display=\"Horizontal\", styling=false, table_style={})}}",
+                    "logs": "Provisioning status: Error\n{{vars.provisioning_error}}",
                     "status": "\/api\/3\/picklists\/3a009813-79af-4d41-8eeb-cec911d4821c",
-                    "description": "* Error: {{vars.provisioning_error}}\n"
+                    "description": "\n"
                 },
                 "_showJson": false,
                 "operation": "Append",
@@ -873,10 +872,28 @@
             "uuid": "245a14a9-c43f-4b16-925e-e3330db61626"
         }
     ],
-    "groups": [],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "Templates",
+            "description": "Selected source VM can be either a template or a regular VM",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "500",
+            "left": "560",
+            "height": "0",
+            "width": "300",
+            "uuid": "d5aa75d0-fbf1-4fde-80aa-cd96405a0bba",
+            "recordTags": []
+        }
+    ],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
     "uuid": "7691dc84-5884-4fc0-bd32-b37c332bbc21",
     "owners": [],
     "isPrivate": false,
