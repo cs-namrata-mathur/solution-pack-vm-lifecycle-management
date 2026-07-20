@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Proxmox > Provision VM Instances",
@@ -111,16 +110,16 @@
             "arguments": {
                 "bridge": "br0",
                 "ci_user": "root",
-                "gateway": "10.255.255.1",
+                "gateway": "{{keystore(key_name=\"vm-lifecycle-management-parameters\"). jSONValue.Network.gateway}}",
                 "vm_name": "{{vars.input.records[0].name}}",
                 "vm_type": "{{vars.input.records[0].vMType.itemValue}}",
-                "cpu_cores": "1",
-                "memory_mb": "512",
+                "cpu_cores": "{{keystore(key_name=\"vm-lifecycle-management-parameters\"). jSONValue.Proxmox.cpuCores}}",
+                "memory_mb": "{{keystore(key_name=\"vm-lifecycle-management-parameters\"). jSONValue.Proxmox.minRAMMB}}",
                 "root_password": "{% set specials = '-_@#~' %}\n{%- set chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + specials -%}\n{%- set ns = namespace(parts=[specials | random]) -%}\n{%- for _ in range(9) -%}\n  {% set ns.parts = ns.parts + [chars | random] %}\n{%- endfor -%}\n{{ ns.parts | shuffle | join('') }}",
                 "vm_ip_address": "{{vars.input.records[0].networkInterfaces.iPAddress}}",
-                "requestor_email": "{{vars.input.records[0].requestor.email}}",
+                "requestor_email": "{{keystore(key_name=\"vm-lifecycle-management-parameters\"). jSONValue.Email_Address.requestorEmail}}",
                 "provisioning_status": "[]",
-                "infrastructure_team_email": "{{globalVars.infrastructure_team_email or \"cloud-ops@fortielab.com\"}}"
+                "infrastructure_team_email": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.infrastructure_team_email}}"
             },
             "status": null,
             "top": "160",
@@ -302,7 +301,7 @@
                 "provisioning_error": "Disk storage full, please contact your system administrator"
             },
             "status": null,
-            "top": "800",
+            "top": "820",
             "left": "700",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
@@ -319,7 +318,7 @@
                     "subject": "VM Instance Request Provisioning Failure",
                     "iri_list": "",
                     "cc_recipients": "{{globalVars.infrastructure_team_email}}",
-                    "to_recipients": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}",
+                    "to_recipients": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}},{{vars.requestor_email}}",
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
@@ -343,11 +342,11 @@
             "arguments": {
                 "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
                 "params": {
-                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}<\/p>\n<p>Your VM Instance has been provisioned successfully<\/p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}<\/li>\n<li>Username: {{ vars.ci_user }}<\/li>\n<li>Default password: {{vars.root_password}}<\/li>\n<\/ul>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
+                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}<\/p>\n<p>Your VM Instance has been provisioned successfully<\/p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}<\/li>\n<li>Username: {{ vars.ci_user }}<\/li>\n<li>Default password: {{vars.root_password}}<\/li>\n<li>Hypervisor : Proxmox<\/li>\n<li>VM Type&nbsp; : {{vars.steps.Update_VM_Instance_Success.vMType.itemValue}}<\/li>\n<li>Delete After :&nbsp;{{arrow.get(vars.steps.Update_VM_Instance_Success.deleteAfter).to(\"UTC\").format(\"YYYY-MM-DD HH:mm:ss\")}}<\/li>\n<\/ul>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
                     "subject": "VM Instance Request Provisioning Success",
                     "iri_list": "",
                     "cc_recipients": "{{globalVars.infrastructure_team_email}}",
-                    "to_recipients": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}",
+                    "to_recipients": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}},{{vars.requestor_email}}",
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
@@ -580,7 +579,8 @@
                     "status": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
                     "hypervisor": "\/api\/3\/picklists\/eb3538e1-ea93-483a-8de9-e641987cc2c8",
                     "sourceData": "{{vars.steps.Get_VM_Status.data.data}}",
-                    "description": "| Attribute | Value |\n| --- | --- |\n|Host| {{vars.vm_ip_address}}|\n|Username| {{vars.ci_user}}|\n|Password| {{vars.root_password}}|\n|Protocol | SSH |\n\n{{vars.steps.Get_VM_Status.data.data | json2html(row_fields=[\"name\",\"uptime\",\"cpus\",\"agent\",\"status\",\"qmpstatus\",\"running-machine\",\"serial\"], template=\"Stylized with row selection\", display=\"Horizontal\", styling=false, table_style={})}}"
+                    "description": "| Attribute | Value |\n| --- | --- |\n|Host| {{vars.vm_ip_address}}|\n|Username| {{vars.ci_user}}|\n|Password| {{vars.root_password}}|\n|Protocol | SSH |\n\n{{vars.steps.Get_VM_Status.data.data | json2html(row_fields=[\"name\",\"uptime\",\"cpus\",\"agent\",\"status\",\"qmpstatus\",\"running-machine\",\"serial\"], template=\"Stylized with row selection\", display=\"Horizontal\", styling=false, table_style={})}}",
+                    "provisionedOn": "{{globalVars.Current_Date}}"
                 },
                 "_showJson": false,
                 "operation": "Append",
@@ -703,13 +703,13 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Get Available Resources -> Copy of Get Available Resources",
+            "name": "Get Available Resources -> Get Template Resource Requirements",
             "targetStep": "\/api\/3\/workflow_steps\/725cb26d-8d52-4b5a-a3d8-d6bddc20d0d0",
             "sourceStep": "\/api\/3\/workflow_steps\/8d6a297b-2685-4738-98a3-19d075669ddc",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e4f41416-cb7f-45dc-b177-026db9bddfd5"
+            "uuid": "8350ad20-8020-4926-ae51-3847c579dae0"
         },
         {
             "@type": "WorkflowRoute",

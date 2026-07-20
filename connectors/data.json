@@ -123,7 +123,7 @@
             "utilities"
         ],
         "description": "Steps that use an ssh connection. Including sftp and remote code execution",
-        "publisher": "CyberSponse",
+        "publisher": "Fortinet",
         "operation_roles": [],
         "configurations": [],
         "dataImports": [],

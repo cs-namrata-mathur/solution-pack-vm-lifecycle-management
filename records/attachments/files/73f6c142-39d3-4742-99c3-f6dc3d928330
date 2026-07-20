@@ -1,0 +1,19 @@
+#/bin/bash
+if [ $# -lt 1 ]; then
+    echo "Usage: ./$0 VM_NAME"
+    exit 1
+fi
+NAME="${1}"
+
+VMs=$(virsh list --all)
+
+if echo "$VMs" | grep -q "$NAME"; then
+  echo "VM $NAME found, destroying..."
+else
+  echo "Error: VM $NAME does not exist"
+  exit
+fi
+
+DISK=$(virsh domblklist $NAME | grep $NAME | awk '{print $2}')
+
+virsh destroy $NAME && virsh undefine $NAME && rm -fv $DISK && echo "VM: $NAME successfully destroyed"

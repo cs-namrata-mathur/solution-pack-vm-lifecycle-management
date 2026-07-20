@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Manage VM Instance Request",
@@ -43,9 +42,9 @@
             "description": null,
             "arguments": {
                 "interface_uuid": "{{vars.input.records[0].networkInterfaces.uuid}}",
-                "local_requestor": "{{vars.input.records[0].requestor.email}}",
+                "local_requestor": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.requestorEmail}}",
                 "users_query_payload": "{\n    \"users\": [\"{{vars.input.records[0].requestor.userId}}\"]\n}",
-                "default_approver_email": "cloud-ops@fortielab.com"
+                "default_approver_email": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.additionalApproverEmail}}"
             },
             "status": null,
             "top": "165",
@@ -328,7 +327,7 @@
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a3610099-e273-4386-ba0e-051c56d08865"
+            "uuid": "dca9446e-dc7f-46cc-8f5b-12f08ce66456"
         },
         {
             "@type": "WorkflowRoute",

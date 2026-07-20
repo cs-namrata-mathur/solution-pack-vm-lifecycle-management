@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "Remove Internet Access on FortiGate",
@@ -52,7 +51,7 @@
             "description": null,
             "arguments": {
                 "ip_address": "{{vars.input.params['ip_address']}}",
-                "fortigate_address_group": "Allowed_LAN_Devices"
+                "fortigate_address_group": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Network.FortiGateAddrGroup}}"
             },
             "status": null,
             "top": "165",
@@ -223,13 +222,13 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Configuration -> Create Network Interface Object",
+            "name": "Configuration -> Get Network Address",
             "targetStep": "\/api\/3\/workflow_steps\/ac77d407-1160-460f-beba-fa2e83fa7030",
             "sourceStep": "\/api\/3\/workflow_steps\/b35aa1c1-5eb3-4a4c-b396-4a639e6b9b27",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "db1f8f81-656b-4734-b122-19a2218181b7"
+            "uuid": "213da0a4-0a81-49e9-829d-509335ffb420"
         },
         {
             "@type": "WorkflowRoute",

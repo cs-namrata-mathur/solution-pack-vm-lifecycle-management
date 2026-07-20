@@ -1,0 +1,36 @@
+[
+    {
+        "@type": "Attachment",
+        "name": "destroy_debian.sh",
+        "description": "Solution Pack : VM Lifecycle Management\n\nScript to destroy debian vm over KVM.\nplease check script before running\n",
+        "file": "\/api\/3\/files\/73f6c142-39d3-4742-99c3-f6dc3d928330",
+        "type": null,
+        "uuid": "88ee3108-9b99-4624-a48e-3e28bc3b50cf",
+        "createUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+        "createDate": 1784544786.337835,
+        "modifyUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+        "modifyDate": 1784544786.337835,
+        "tenant": "\/api\/3\/tenants\/b3a700f7-00be-4ef9-90c6-3c8fe6e1be63",
+        "conflict": false,
+        "tenantRecordId": 3,
+        "recordTags": [],
+        "assignee": ""
+    },
+    {
+        "@type": "Attachment",
+        "name": "debian.sh",
+        "description": "Solution Pack : VM Lifecycle Management\nScript to provision e debian VM on KVM\nPlease check resources in file before uploading",
+        "file": "\/api\/3\/files\/f9326601-73bc-4bb1-b09b-7c61c6a260e9",
+        "type": null,
+        "uuid": "ca833c19-c2a5-413a-b935-b5b90e3f3a0f",
+        "createUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+        "createDate": 1784544718.814061,
+        "modifyUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+        "modifyDate": 1784544796.86645,
+        "tenant": "\/api\/3\/tenants\/b3a700f7-00be-4ef9-90c6-3c8fe6e1be63",
+        "conflict": false,
+        "tenantRecordId": 2,
+        "recordTags": [],
+        "assignee": ""
+    }
+]
