@@ -5,7 +5,7 @@
 - **Certified**: No
 - **Publisher**: Fortinet CSE
 - **Contributor**: Mahdi Naili
-- **Compatible Version**: FortiSOAR v8.0.0 and later
+- **Compatible Version**: FortiSOAR v7.6.4 and later
 
 ## Overview
 

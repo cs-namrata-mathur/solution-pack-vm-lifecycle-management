@@ -80,15 +80,6 @@ Enable Custom Code Execution in the System `Settings > System Configuration > Ad
 - Install and configure *Google Gemini Connector*
 - Install *Playbook Buttons* widget from Content hub.
 
-- *Updating key store*
-  * Navigate to `Resources` -> `Key Store` and find key `vm-lifecycle-management-parameters`
-  * Update required parameters according to your environment for e.g. Email Address
-
-- *Updating KVM Scripts*
-  * Navigate to `Resources` -> `Attachments` and download files `debian.sh` and `destroy_debian.sh`
-  * Modify these files according to your need and upload those at KVM hypervisor (/root)
-
-
 
 | [Usage](./usage.md) | [Contents](./contents.md) |
 |---------------------|---------------------------|
