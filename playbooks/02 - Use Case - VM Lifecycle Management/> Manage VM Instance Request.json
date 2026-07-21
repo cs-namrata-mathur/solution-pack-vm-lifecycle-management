@@ -21,7 +21,7 @@
             "description": null,
             "arguments": {
                 "arguments": {
-                    "requestor_email": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}"
+                    "requestor_email": "{{vars.local_requestor}}"
                 },
                 "apply_async": false,
                 "step_variables": [],
@@ -298,7 +298,7 @@
             "description": null,
             "arguments": {
                 "approver_email": "{{vars.steps.AD_User_Enrichment.user_details.managerEmail or vars.default_approver_email}}",
-                "request_details": "{%- if vars.input.records[0].deleteAfter -%}\n{%- set _days = ((arrow.get(vars.input.records[0].deleteAfter).int_timestamp - arrow.utcnow().int_timestamp)\/24\/60\/60)|round-%}\n{%- endif -%}\n\n{\n\"VM Name\": \"{{vars.input.records[0].name}}\",\n\"VM Type\": \"{{vars.input.records[0].vMType.itemValue}}\",\n\"Department\": \"{{vars.input.records[0].department or vars.steps.AD_User_Enrichment.user_details.department}}\",\n\"Duration (days)\": \"{{_days or 'Permanent'}}\",\n\"Business Justification\":\"{{vars.input.records[0].businessJustification}}\",\n\"Requested By\":\"{{vars.input.records[0].emailRequestor or vars.input.records[0].requestor.email}}\"\n}"
+                "request_details": "{%- if vars.input.records[0].deleteAfter -%}\n{%- set _days = ((arrow.get(vars.input.records[0].deleteAfter).int_timestamp - arrow.utcnow().int_timestamp)\/24\/60\/60)|round-%}\n{%- endif -%}\n\n{\n\"VM Name\": \"{{vars.input.records[0].name}}\",\n\"VM Type\": \"{{vars.input.records[0].vMType.itemValue}}\",\n\"Department\": \"{{vars.input.records[0].department or vars.steps.AD_User_Enrichment.user_details.department}}\",\n\"Duration (days)\": \"{{_days or 'Permanent'}}\",\n\"Business Justification\":\"{{vars.input.records[0].businessJustification}}\",\n\"Requested By\":\"{{vars.local_requestor}}\"\n}"
             },
             "status": null,
             "top": "435",

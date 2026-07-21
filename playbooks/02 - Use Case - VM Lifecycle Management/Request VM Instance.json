@@ -127,14 +127,13 @@
             "arguments": {
                 "resource": {
                     "name": "{{vars.vm_name}}",
-                    "owner": "{{vars.user_iri}}",
                     "status": "\/api\/3\/picklists\/541c0fde-adaf-44cd-89d2-e7adf05f438d",
                     "vMType": "{{vars.vm_type}}",
                     "__replace": "",
                     "requestor": "{{vars.local_requestor}}",
                     "department": "{{vars.department}}",
                     "deleteAfter": "{{vars.deleteAfter}}",
-                    "emailRequestor": "{{vars.email_requestor}}",
+                    "emailRequestor": "{{vars.requestor_email}}",
                     "internetAccess": "{{vars.internet_access}}",
                     "networkInterfaces": "{{vars.steps.Create_Network_Interface['@id']}}",
                     "businessJustification": "{{vars.businessJustification}}"
@@ -500,7 +499,7 @@
                 "deleteAfter": "{%- if vars.steps.UI_VM_Request.input.deleteAfter and vars.steps.UI_VM_Request.input.deleteAfter|length > 0 -%}\n{{arrow.get(vars.steps.UI_VM_Request.input.deleteAfter).int_timestamp}}\n{%- endif -%}",
                 "internet_access": "{{vars.steps.UI_VM_Request.input.allowInternetAccess}}",
                 "local_requestor": "{{vars.steps.Get_User_Details.data['@id']}}",
-                "requestor_email": "{{vars.steps.Get_User_Details.data.email}}",
+                "requestor_email": "{{vars.requestor_email}}",
                 "businessJustification": "{{vars.steps.UI_VM_Request.input.businessJustification}}"
             },
             "status": null,

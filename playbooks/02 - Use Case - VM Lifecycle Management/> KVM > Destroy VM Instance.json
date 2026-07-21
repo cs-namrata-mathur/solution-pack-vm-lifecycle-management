@@ -46,7 +46,7 @@
                         "inputVariables": []
                     }
                 },
-                "record": "{{vars.input.params['vm_instance']['@id']}}",
+                "record": "",
                 "agent_id": null,
                 "resources": "v_m_instances",
                 "is_approval": false,
@@ -54,7 +54,7 @@
                     "isAssigned": false,
                     "emailRecipients": ""
                 },
-                "isRecordLinked": true,
+                "isRecordLinked": false,
                 "step_variables": [],
                 "response_mapping": {
                     "options": [
