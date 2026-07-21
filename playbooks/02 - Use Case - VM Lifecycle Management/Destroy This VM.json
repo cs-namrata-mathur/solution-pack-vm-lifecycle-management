@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "Destroy This VM",
@@ -18,7 +17,7 @@
     "steps": [
         {
             "@type": "WorkflowStep",
-            "name": "Destroy VM Instance",
+            "name": "Deprovision VM Instance",
             "description": null,
             "arguments": {
                 "arguments": {
@@ -84,13 +83,13 @@
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Start -> Destroy VM Instance",
+            "name": "Start -> Deprovision VM Instance",
             "targetStep": "\/api\/3\/workflow_steps\/5c4f9e19-fdb6-42fb-aceb-0e4cd426d569",
             "sourceStep": "\/api\/3\/workflow_steps\/328b953a-6f33-4e57-9746-40b54b84a018",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "66259333-5e4e-4482-840c-33a4a73e52b3"
+            "uuid": "f77564b1-482a-46f7-ab17-583a14862b87"
         }
     ],
     "groups": [],

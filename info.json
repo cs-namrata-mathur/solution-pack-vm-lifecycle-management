@@ -1,7 +1,7 @@
 {
     "name": "vMLifecycleManagement",
     "version": "1.0.0",
-    "fsrMinCompatibility": "7.6.5",
+    "fsrMinCompatibility": "8.0.0",
     "type": "solutionpack",
     "local": true,
     "label": "VM Lifecycle Management",
@@ -14,7 +14,7 @@
             "minVersion": null
         }
     ],
-    "prerequisite": "# Connectors:\n- DNS\n- Proxmox\n- FortiGate\n- SSH (To KVM as root)\n- SMTP\n- Code Snippet\n- IMAP\n- Active Directory\n- Google Gemini\n# Widgets\nPlaybook Buttons Widget\n\n# Other settings\nSetup Default Email Sender",
+    "prerequisite": "",
     "publisher": "Community",
     "description": "This solution pack streamlines VM lifecycle management by handling VM instance requests, routing approvals, provisioning approved VMs on hypervisors, and automatically cleaning up expired ones.",
     "help": "https://github.com/fortinet-fortisoar/solution-pack-vm-lifecycle-management/blob/release/1.0.0/README.md",
@@ -22,12 +22,12 @@
         "Compute Platform"
     ],
     "supportInfo": null,
-    "iconLarge": "images/large.png",
+    "iconLarge": "large.png",
     "postInstallConfig": null,
     "recordTags": [
         "CloudOps"
     ],
-    "date": "2026-07-15T08:19:26+00:00",
+    "date": "2026-07-20T10:59:54+00:00",
     "contents": {
         "picklistNames": [
             {
@@ -70,25 +70,6 @@
                 ]
             }
         },
-        "views": {
-            "navigation": [
-                "Dashboard",
-                "Queue & Shift Management",
-                "Incident Response",
-                "Automation",
-                "Resources",
-                "Vulnerability Management",
-                "Threat Intel Management",
-                "Outbreak Management",
-                "VM Lifecycle Management",
-                "Reports",
-                "Widget Library",
-                "Content Hub",
-                "Simulations",
-                "Help",
-                "User Community"
-            ]
-        },
         "roles": [
             {
                 "name": "Full App Permissions"
@@ -112,7 +93,7 @@
             },
             {
                 "name": "Server_fqhn",
-                "value": "pod7.fortielab.com:21443",
+                "value": "master.fortisoar.in",
                 "default_value": "master.fortisoar.in"
             }
         ],
@@ -168,6 +149,18 @@
             {
                 "apiName": "playbookButtons",
                 "name": "Playbook Buttons"
+            }
+        ],
+        "recordSets": [
+            {
+                "name": "Attachments",
+                "apiName": "attachments",
+                "count": 2
+            },
+            {
+                "name": "Key Store",
+                "apiName": "keys",
+                "count": 1
             }
         ]
     }

@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "Request VM Instance",
@@ -40,12 +39,12 @@
                 "vm_name": "{{vars.input.params.request_attributes.vm_name}}",
                 "vm_type": "{{vars.input.params.request_attributes.vm_type}}",
                 "user_iri": "{{vars.request.currentUser or vars.request.headers['X-RUNBYUSER']}}",
-                "vm_subnet": "10.255.255.",
+                "vm_subnet": "{{keystore(key_name=\"vm-lifecycle-management-parameters\"). jSONValue.Network.vmSubnet}}",
                 "department": "{{vars.input.params.request_attributes.department}}",
                 "deleteAfter": "{{vars.input.params.request_attributes.deleteAfter}}",
-                "vm_ip_range": "{{range(129,191)|list}}",
+                "vm_ip_range": "{{range((keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Network.ipRange.start),(keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Network.ipRange.end))|list}}",
                 "internet_access": "{{vars.input.params.request_attributes.internet_access}}",
-                "requestor_email": "{{vars.input.params.request_attributes.requestor_email}}",
+                "requestor_email": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.requestorEmail}}",
                 "businessJustification": "{{vars.input.params.request_attributes.businessJustification}}"
             },
             "status": null,
@@ -128,14 +127,13 @@
             "arguments": {
                 "resource": {
                     "name": "{{vars.vm_name}}",
-                    "owner": "{{vars.user_iri}}",
                     "status": "\/api\/3\/picklists\/541c0fde-adaf-44cd-89d2-e7adf05f438d",
                     "vMType": "{{vars.vm_type}}",
                     "__replace": "",
                     "requestor": "{{vars.local_requestor}}",
                     "department": "{{vars.department}}",
                     "deleteAfter": "{{vars.deleteAfter}}",
-                    "emailRequestor": "{{vars.email_requestor}}",
+                    "emailRequestor": "{{vars.requestor_email}}",
                     "internetAccess": "{{vars.internet_access}}",
                     "networkInterfaces": "{{vars.steps.Create_Network_Interface['@id']}}",
                     "businessJustification": "{{vars.businessJustification}}"
@@ -403,7 +401,7 @@
                     {
                         "option": "Email",
                         "step_iri": "\/api\/3\/workflow_steps\/84e3a2f7-32d1-4a73-bc54-38c0ed8b9e32",
-                        "condition": "{{ '@' in vars.requestor_email }}",
+                        "condition": "{{ vars.input.params['request_attributes'] is defined and vars.input.params['request_attributes'] | length > 0 }}",
                         "step_name": "VM Request by Email"
                     },
                     {
@@ -501,7 +499,7 @@
                 "deleteAfter": "{%- if vars.steps.UI_VM_Request.input.deleteAfter and vars.steps.UI_VM_Request.input.deleteAfter|length > 0 -%}\n{{arrow.get(vars.steps.UI_VM_Request.input.deleteAfter).int_timestamp}}\n{%- endif -%}",
                 "internet_access": "{{vars.steps.UI_VM_Request.input.allowInternetAccess}}",
                 "local_requestor": "{{vars.steps.Get_User_Details.data['@id']}}",
-                "requestor_email": "{{vars.steps.Get_User_Details.data.email}}",
+                "requestor_email": "{{vars.requestor_email}}",
                 "businessJustification": "{{vars.steps.UI_VM_Request.input.businessJustification}}"
             },
             "status": null,
@@ -1166,13 +1164,13 @@
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Compute Existing IP Addresses -> Get Candidate IP",
+            "name": "Compute Existing IP Addresses -> Get Available IP Addresses",
             "targetStep": "\/api\/3\/workflow_steps\/51bd0aae-2c42-4a99-8a01-8555b89313d3",
             "sourceStep": "\/api\/3\/workflow_steps\/210dea1f-0693-458e-863e-e4fd7986d1ef",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "c9c02b0f-2b5c-4ae7-8e07-0f62f9f49d25"
+            "uuid": "8edd9968-1be8-413b-8736-6689a556121c"
         },
         {
             "@type": "WorkflowRoute",

@@ -16,7 +16,7 @@
     },
     {
         "name": "Server_fqhn",
-        "value": "pod7.fortielab.com:21443",
+        "value": "master.fortisoar.in",
         "default_value": "master.fortisoar.in"
     }
 ]

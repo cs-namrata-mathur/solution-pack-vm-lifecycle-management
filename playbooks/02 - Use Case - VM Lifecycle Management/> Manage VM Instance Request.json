@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Manage VM Instance Request",
@@ -22,7 +21,7 @@
             "description": null,
             "arguments": {
                 "arguments": {
-                    "requestor_email": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}"
+                    "requestor_email": "{{vars.local_requestor}}"
                 },
                 "apply_async": false,
                 "step_variables": [],
@@ -43,9 +42,9 @@
             "description": null,
             "arguments": {
                 "interface_uuid": "{{vars.input.records[0].networkInterfaces.uuid}}",
-                "local_requestor": "{{vars.input.records[0].requestor.email}}",
+                "local_requestor": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.requestorEmail}}",
                 "users_query_payload": "{\n    \"users\": [\"{{vars.input.records[0].requestor.userId}}\"]\n}",
-                "default_approver_email": "cloud-ops@fortielab.com"
+                "default_approver_email": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.additionalApproverEmail}}"
             },
             "status": null,
             "top": "165",
@@ -299,7 +298,7 @@
             "description": null,
             "arguments": {
                 "approver_email": "{{vars.steps.AD_User_Enrichment.user_details.managerEmail or vars.default_approver_email}}",
-                "request_details": "{%- if vars.input.records[0].deleteAfter -%}\n{%- set _days = ((arrow.get(vars.input.records[0].deleteAfter).int_timestamp - arrow.utcnow().int_timestamp)\/24\/60\/60)|round-%}\n{%- endif -%}\n\n{\n\"VM Name\": \"{{vars.input.records[0].name}}\",\n\"VM Type\": \"{{vars.input.records[0].vMType.itemValue}}\",\n\"Department\": \"{{vars.input.records[0].department or vars.steps.AD_User_Enrichment.user_details.department}}\",\n\"Duration (days)\": \"{{_days or 'Permanent'}}\",\n\"Business Justification\":\"{{vars.input.records[0].businessJustification}}\",\n\"Requested By\":\"{{vars.input.records[0].emailRequestor or vars.input.records[0].requestor.email}}\"\n}"
+                "request_details": "{%- if vars.input.records[0].deleteAfter -%}\n{%- set _days = ((arrow.get(vars.input.records[0].deleteAfter).int_timestamp - arrow.utcnow().int_timestamp)\/24\/60\/60)|round-%}\n{%- endif -%}\n\n{\n\"VM Name\": \"{{vars.input.records[0].name}}\",\n\"VM Type\": \"{{vars.input.records[0].vMType.itemValue}}\",\n\"Department\": \"{{vars.input.records[0].department or vars.steps.AD_User_Enrichment.user_details.department}}\",\n\"Duration (days)\": \"{{_days or 'Permanent'}}\",\n\"Business Justification\":\"{{vars.input.records[0].businessJustification}}\",\n\"Requested By\":\"{{vars.local_requestor}}\"\n}"
             },
             "status": null,
             "top": "435",
@@ -328,7 +327,7 @@
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a3610099-e273-4386-ba0e-051c56d08865"
+            "uuid": "dca9446e-dc7f-46cc-8f5b-12f08ce66456"
         },
         {
             "@type": "WorkflowRoute",

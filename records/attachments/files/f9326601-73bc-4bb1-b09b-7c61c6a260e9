@@ -1,0 +1,58 @@
+#!/bin/bash
+
+NAME="${1:-debian}"
+IP="${2:-10.255.255.100}"
+echo "Deployin Debian with VM name: $NAME, IP:$IP"
+
+
+if [[ ! $IP =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+    echo "Error: Invalid IP format" && exit 1
+fi
+
+if [[ ! $NAME =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "Invalid name: $NAME (only letters, digits, _ and - allowed)"
+    exit 1
+fi
+
+METADATA=$(cat <<EOF
+instance-id: $NAME
+local-hostname: $NAME
+dsmode: local
+network-interfaces: |
+ auto enp1s0
+ iface enp1s0 inet static
+ address $IP/24
+ gateway 10.255.255.1
+EOF
+)
+
+
+USERDATA=$(cat <<EOF
+#cloud-config
+users:
+  - name: root
+    gecos: "root"
+    lock_passwd: false
+    plain_text_passwd: "fortinet"
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+  - name: sysadmin
+    gecos: "Sys Admin"
+    lock_passwd: false
+    plain_text_passwd: "fortinet"
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    
+chpasswd:
+  expire: false
+
+ssh_pwauth: true
+disable_root: false
+EOF
+)
+echo "$METADATA" > /tmp/meta-data
+echo "$USERDATA" > /tmp/user-data
+
+virt-install --name $NAME --memory 1024 --vcpus 1 --disk=size=10,backing_store=/var/lib/libvirt/images/debian.qcow2 --cloud-init meta-data=/tmp/meta-data,user-data=/tmp/user-data --network bridge=br0 --osinfo=debian10 --noautoconsole && echo "VM $NAME has been provisioned successfully"
+
