@@ -19,7 +19,9 @@ The `VM Lifecycle Management` Solution Pack handles VM life cycle on Proxmox, KV
 ![](./res/high-level-flow.png)
 
 - *Requesting a VM Instance*
-  * `Parse VM Requests Emails` playbook is triggered when a VM request email is fetched (via IMAP) and will create a *VM Instance* record in FortiSOAR
+  * Request can be initiated via Manual Trigger `Request VM Instance` in VM Instance, or via Email.
+  If Triggers manually, a `Request VM Instance` Form will pop up and user have to fill in the information.
+  * If user prefers initiating request via Email, `Parse VM Requests Emails` playbook is triggered and will create a *VM Instance* record in FortiSOAR
 ![](./res/sample-mail-request.png)
   * It extracts key request attributes with Google Gemini and provides them to `Request VM Instance` playbook, that will create *Network Interface* record for the VM.
   * A pre-populated form will be sent to requestor to fill the required information.
@@ -39,6 +41,7 @@ Once Hypervisor is selected, based on Hypervisor a playbook will be chosen dynam
 - *Destroying a VM Instance*
   * Choose a VM instance that you want to decommission by selecting *Destroy Instance* playbook for e.g. `> KVM > Destroy VM Instance`
 ![](./res/destroy-instance.png)
+  * An email notification will be sent indicating that VM decommissioning has been initiated.
   * Requested VM will be destroyed using commands (SSH Connector)
   * Upon successful decommission, a FortiSOAR VM Instance record will be marked as *Destroyed*
 ![](./res/Destroy-status.png)
