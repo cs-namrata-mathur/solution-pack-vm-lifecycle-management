@@ -70,6 +70,7 @@ To decommission a VM instance:
 
 2. Run the appropriate destroy playbook for the target hypervisor. For example, to decommission a VM on KVM, run the **KVM > Destroy VM Instance** playbook. 
 ![](./res/destroy-instance.png)
+
 An email notification is sent indicating that VM decommissioning has been initiated.
 
 3. The playbook uses the SSH connector to destroy the VM on the hypervisor.
