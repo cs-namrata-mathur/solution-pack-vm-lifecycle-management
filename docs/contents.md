@@ -20,12 +20,6 @@ N/A
 >To add VM Lifecycle Management to the FortiSOAR left navigation menu, click **Settings** > **Navigation**, select **VM Lifecycle Management** and **Network Interfaces**, and then click **Add As Group**. The new group is added to the end of the navigation menu. Rename the group from **Untitled** to **VM Lifecycle Management**.<br />To add a logo, click the logo drop-down, search for `Puzzle Piece` in the **Filter Icons** search box, and select it from the group logo collection.<br />The **VM Lifecycle Management** menu provides access to the **Network Interfaces** and **VM Instances** modules.
 >
 
-## Users
-
-|**User**|**Description**|
-| :- | :- |
-| atlas numid | A new user `atlas numid` account created by the solution pack acts as the default VM requestor.
-
 ## Module Schema
 
 |**Module Schema**|**Description**|
@@ -40,21 +34,22 @@ N/A
 
 | **Playbook Name**                              | **Description**                                                                                                                                                                   |
 |:-------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| > AD User Enrichment.json| Enriches a user with information from Active Directory.   |
-| > Get Public FortiSOAR URL.json| Sets the `Server_FQHN` global variable.   |
-| > KVM > Destroy VM Instance.json| Destroy an individual KVM virtual machine based on the specified parameters.   |
-| > KVM > Provision VM Instances.json| Creates a virtual machine instance on a KVM hypervisor.   |
-| > Manage VM Instance Request.json| Processes VM instances requests and approvals.   |
-| > Post Destruction Cleanup.json| Cleans up network interfaces, Internet access, and related resources after a VM is deleted.    |
-| > Proxmox > Destroy VM Instance.json| Destroy an individual Proxmox virtual machine based on the specified parameters.  |
-| > Proxmox > Provision VM Instances.json| Creates a virtual machine instance on Proxmox.   |
-| > Run Provisioning_Deprovisioning Playbook.json| Runs the appropriate provisioning or deprovisioning playbook dynamically based on the target hypervisor.   |
-| > Select Best Hypervisor.json| Selects the optimal hypervisor based on available resources.   |
-| Allow Internet Access on Fortigate.json| Includes a decision flow, which if approved, grants Internet access to approved virtual machines.   |
-| Destroy Expired VM Instances.json| Iterates over existing VM instances and destroys expired ones.   |
-| Parse VM Requests Emails.json| Parses emails with VM requests.   |
-| Remove Internet Access on FortiGate.json| Removes Internet access for for destroyed VMs.   |
-| Request VM Instance.json| Submits a virtual machine provisioning request and manages the approval workflow.   |
+| > AD User Enrichment | Enriches a user with information from Active Directory.   |
+| > Get Public FortiSOAR URL | Sets the `Server_FQHN` global variable.   |
+| > KVM > Destroy VM Instance | Destroys an individual KVM virtual machine based on the specified parameters.   |
+| > KVM > Provision VM Instances | Creates a virtual machine instance on a KVM hypervisor.   |
+| > Manage VM Instance Request | Processes VM instances requests and approvals.   |
+| > Post Destruction Cleanup | Cleans up network interfaces, Internet access, and related resources after a VM is deleted.    |
+| > Proxmox > Destroy VM Instance | Destroy an individual Proxmox virtual machine based on the specified parameters.  |
+| > Proxmox > Provision VM Instances | Creates a virtual machine instance on Proxmox.   |
+| > Run Provisioning_Deprovisioning Playbook | Runs the appropriate provisioning or deprovisioning playbook dynamically based on the target hypervisor.   |
+| > Select Best Hypervisor | Selects the optimal hypervisor based on available resources.   |
+| Allow Internet Access on Fortigate | Includes a decision flow, which if approved, grants Internet access to approved virtual machines.   |
+| Destroy Expired VM Instances | Iterates over existing VM instances and destroys expired ones.   |
+| Parse VM Requests Emails | Parses emails with VM requests.   |
+| Remove Internet Access on FortiGate | Removes Internet access for for destroyed VMs.   |
+| Request VM Instance | Submits a virtual machine provisioning request and manages the approval workflow.   |
+| Destroy This VM | Manually destroys the selected VM.  |
 
 >[!Important]
 >
@@ -74,7 +69,7 @@ N/A
 | IMAP |Retrieves email messages from one or more IMAP mailboxes for automated processing.
 | SMTP |Sends email messages from FortiSOAR playbooks using the Simple Mail Transfer Protocol (SMTP). |
 | SSH | Enables secure remote access to Linux, UNIX, and network devices over the Secure Shell (SSH) protocol.|
-| Proxmox | Automates workflows that integrate with the open-source Proxmox Virtual Environment (Proxmox VE). |
+| Proxmox VE Hypervisor | Automates workflows that integrate with the open-source Proxmox Virtual Environment (Proxmox VE). |
 
 ## Picklists
 

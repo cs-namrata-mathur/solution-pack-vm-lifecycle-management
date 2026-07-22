@@ -16,7 +16,6 @@ Complete the following tasks before using this solution pack.
  
 - Install the solution pack and configure connectors listed in the [Contents](./contents.md) file. 
 - Wait for all virtual machines to start. This process can take upto several minutes.
-- Verify that the `atlas numid` user exists in **Settings > Users**. <br />This solution pack uses the `atlas numid` account as the default requestor. If you want to use a different requestor account, create a new user with the same roles, permissions, and team assignments as `atlas numid`, then specify the appropriate email address.
 - Set the`default_approver_email` variable to the email address that will approve virtual machine requests.
 - Install and Configure a DNS connector to use a public DNS server, such as `1.1.1.1`.
 
@@ -133,7 +132,19 @@ After enabling Custom Code Execution:
 - Install and configure the **Google Gemini Connector**.
 - Install the **Playbook Buttons** widget from the Content Hub.
 
+### Update Key Store
 
+Update the Key Store variables used in your environment, such as `requestorEmail`, `gateway`, and other parameters, in the `vm-lifecycle-management-parameters` Key Store record.
+
+1. Navigate to **Resources** > **Key Store**, and open the **vm-lifecycle-management-parameters** record.
+2. Update the required parameters for your environment. For example, update the requestor's email address in the `requestorEmail` parameter.
+
+### Update KVM Scripts
+
+Update the KVM scripts with environment-specific values, such as the instance ID and IP address, to provision and destroy the Debian VM.
+
+1. Navigate to **Resources** > **Attachments**, then download the `debian.sh` and `destroy_debian.sh` files.
+2. Modify these files according to your requirements and upload those at KVM hypervisor (`/root`).
 
 
 | [Usage](./usage.md) | [Contents](./contents.md) |
