@@ -1,0 +1,13 @@
+{
+    "@context": "\/api\/3\/contexts\/File",
+    "@type": "File",
+    "uuid": "73f6c142-39d3-4742-99c3-f6dc3d928330",
+    "assignee": "",
+    "id": "73f6c142-39d3-4742-99c3-f6dc3d928330",
+    "filename": "destroy_debian.sh",
+    "mimeType": "text\/x-sh",
+    "uploadDate": 1784544784.03341,
+    "size": 416,
+    "thumbnail": null,
+    "metadata": []
+}

@@ -93,6 +93,12 @@
                                                             "readOnly": false
                                                         },
                                                         {
+                                                            "name": "emailRequestor",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
                                                             "name": "networkInterfaces",
                                                             "highlightMode": true,
                                                             "linky": true,
@@ -201,41 +207,49 @@
                     {
                         "widgets": [
                             {
-                                "type": "sectionHeader",
+                                "type": "rows",
                                 "config": {
-                                    "wid": "26247ceb-c1e1-478a-a274-ced169dca1f5",
-                                    "query": {
-                                        "filters": [],
-                                        "sort": [],
-                                        "limit": 10
-                                    },
-                                    "editorType": "html",
-                                    "sectionText": "<hr>"
-                                }
-                            },
-                            {
-                                "type": "playbookButtons-1.1.1",
-                                "config": {
-                                    "wid": "5e19b732-4950-4ec5-8218-2674145a11ac",
-                                    "widgetName": "Playbook Execution Wizard",
-                                    "selectedPlaybooksWithRecord": [
+                                    "wid": "ae496d0c-f386-47ce-aba5-698a6a646736",
+                                    "rows": [
                                         {
-                                            "name": "> Destroy VM Instance",
-                                            "uuid": "1f2f9254-007c-4c09-8c4a-0a5be5aed820",
-                                            "actionTriggerName": "> Destroy VM Instance",
-                                            "collectionName": "00 - Service Management",
-                                            "icon": "fa fa-times-circle-o"
-                                        }
-                                    ],
-                                    "showPrimaryButton": true,
-                                    "showExecutionProgress": false,
-                                    "selectedExecutionWizardPlaybooks": [
-                                        {
-                                            "name": "> Destroy VM Instance",
-                                            "uuid": "1f2f9254-007c-4c09-8c4a-0a5be5aed820",
-                                            "actionTriggerName": "> Destroy VM Instance",
-                                            "collectionName": "00 - Service Management",
-                                            "icon": "fa fa-times-circle-o"
+                                            "columns": [
+                                                {
+                                                    "widgets": [
+                                                        {
+                                                            "type": "playbookButtons-1.1.1",
+                                                            "config": {
+                                                                "wid": "5e19b732-4950-4ec5-8218-2674145a11ac",
+                                                                "widgetName": "Playbook Execution Wizard",
+                                                                "selectedPlaybooksWithRecord": [
+                                                                    {
+                                                                        "name": "Destroy VM",
+                                                                        "uuid": "416b0cc1-c88e-4b6c-8609-504ac98d7a02",
+                                                                        "actionTriggerName": "Destroy VM",
+                                                                        "collectionName": "02 - Use Case - VM Lifecycle Management",
+                                                                        "icon": "icon icon-permanent-delete"
+                                                                    }
+                                                                ],
+                                                                "showPrimaryButton": true,
+                                                                "showExecutionProgress": false,
+                                                                "selectedExecutionWizardPlaybooks": [
+                                                                    {
+                                                                        "name": "Destroy VM",
+                                                                        "uuid": "416b0cc1-c88e-4b6c-8609-504ac98d7a02",
+                                                                        "actionTriggerName": "Destroy VM",
+                                                                        "collectionName": "02 - Use Case - VM Lifecycle Management",
+                                                                        "icon": "icon icon-permanent-delete"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-12"
+                                                }
+                                            ],
+                                            "wid": "e06c3892-22b7-428b-9058-9168f098e32e",
+                                            "collapsible": false,
+                                            "collapsibleIndex": 0,
+                                            "_collapsed": false
                                         }
                                     ]
                                 }
@@ -266,7 +280,8 @@
                                 }
                             }
                         ],
-                        "style": "col-lg-3"
+                        "style": "col-lg-3",
+                        "collapsedText": "Utilities"
                     }
                 ],
                 "wid": "f7d96be4-2ec9-49ee-94e0-4ac3ec519666",
@@ -284,8 +299,8 @@
     "isDefault": true,
     "visible": true,
     "viewOptions": "detail",
-    "name": "Base Template",
-    "system": false,
+    "name": "Default Layout",
+    "system": true,
     "uuid": "modules-v_m_instances-detail",
     "newUuid": "30db1fd4-b128-4fb9-94fd-c3c7ed52e008"
 }

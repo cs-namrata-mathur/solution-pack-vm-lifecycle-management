@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Manage VM Instance Request",
@@ -22,7 +21,7 @@
             "description": null,
             "arguments": {
                 "arguments": {
-                    "requestor_email": "{{vars.input.records[0].requestor.email or vars.input.records[0].emailRequestor}}"
+                    "requestor_email": "{{vars.local_requestor}}"
                 },
                 "apply_async": false,
                 "step_variables": [],
@@ -43,9 +42,9 @@
             "description": null,
             "arguments": {
                 "interface_uuid": "{{vars.input.records[0].networkInterfaces.uuid}}",
-                "local_requestor": "{{vars.input.records[0].requestor.email}}",
+                "local_requestor": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.requestorEmail}}",
                 "users_query_payload": "{\n    \"users\": [\"{{vars.input.records[0].requestor.userId}}\"]\n}",
-                "default_approver_email": "cloud-ops@fortielab.com"
+                "default_approver_email": "{{keystore(key_name=\"vm-lifecycle-management-parameters\").jSONValue.Email_Address.additionalApproverEmail}}"
             },
             "status": null,
             "top": "165",
@@ -67,6 +66,7 @@
                 "version": "3.7.0",
                 "connector": "cyops_utilities",
                 "operation": "make_cyops_request",
+                "ignore_errors": true,
                 "operationTitle": "FSR: Make FortiSOAR API Call",
                 "step_variables": []
             },
@@ -186,6 +186,7 @@
                 "from_str": "admin@example.com",
                 "connector": "smtp",
                 "operation": "send_email",
+                "ignore_errors": true,
                 "operationTitle": "Send Email",
                 "step_variables": []
             },
@@ -271,6 +272,7 @@
             "description": null,
             "arguments": {
                 "resource": {
+                    "logs": "VM Provisioning request is rejected by {{vars.approver_email}}",
                     "status": "\/api\/3\/picklists\/abce2612-5ab6-41b8-808b-0f8291adb747"
                 },
                 "_showJson": false,
@@ -296,7 +298,7 @@
             "description": null,
             "arguments": {
                 "approver_email": "{{vars.steps.AD_User_Enrichment.user_details.managerEmail or vars.default_approver_email}}",
-                "request_details": "{%- if vars.input.records[0].deleteAfter -%}\n{%- set _days = ((arrow.get(vars.input.records[0].deleteAfter).int_timestamp - arrow.utcnow().int_timestamp)\/24\/60\/60)|round-%}\n{%- endif -%}\n\n{\n\"VM Name\": \"{{vars.input.records[0].name}}\",\n\"VM Type\": \"{{vars.input.records[0].vMType.itemValue}}\",\n\"Department\": \"{{vars.input.records[0].department or vars.steps.AD_User_Enrichment.user_details.department}}\",\n\"Duration (days)\": \"{{_days or 'Permanent'}}\",\n\"Business Justification\":\"{{vars.input.records[0].businessJustification}}\",\n\"Requested By\":\"{{vars.input.records[0].emailRequestor or vars.input.records[0].requestor.email}}\"\n}"
+                "request_details": "{%- if vars.input.records[0].deleteAfter -%}\n{%- set _days = ((arrow.get(vars.input.records[0].deleteAfter).int_timestamp - arrow.utcnow().int_timestamp)\/24\/60\/60)|round-%}\n{%- endif -%}\n\n{\n\"VM Name\": \"{{vars.input.records[0].name}}\",\n\"VM Type\": \"{{vars.input.records[0].vMType.itemValue}}\",\n\"Department\": \"{{vars.input.records[0].department or vars.steps.AD_User_Enrichment.user_details.department}}\",\n\"Duration (days)\": \"{{_days or 'Permanent'}}\",\n\"Business Justification\":\"{{vars.input.records[0].businessJustification}}\",\n\"Requested By\":\"{{vars.local_requestor}}\"\n}"
             },
             "status": null,
             "top": "435",
@@ -325,7 +327,7 @@
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a3610099-e273-4386-ba0e-051c56d08865"
+            "uuid": "dca9446e-dc7f-46cc-8f5b-12f08ce66456"
         },
         {
             "@type": "WorkflowRoute",
@@ -390,8 +392,8 @@
     ],
     "groups": [],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
     "uuid": "d1c0d347-8bf3-4d18-a31b-e19a90fd68a9",
     "owners": [],
     "isPrivate": false,

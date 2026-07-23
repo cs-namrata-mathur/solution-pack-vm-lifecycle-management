@@ -1,0 +1,13 @@
+{
+    "@context": "\/api\/3\/contexts\/File",
+    "@type": "File",
+    "uuid": "f9326601-73bc-4bb1-b09b-7c61c6a260e9",
+    "assignee": "",
+    "id": "f9326601-73bc-4bb1-b09b-7c61c6a260e9",
+    "filename": "debian.sh",
+    "mimeType": "text\/x-sh",
+    "uploadDate": 1784544704.216934,
+    "size": 1300,
+    "thumbnail": null,
+    "metadata": []
+}

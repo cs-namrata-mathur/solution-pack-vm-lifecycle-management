@@ -1,0 +1,106 @@
+{
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Destroy This VM",
+    "aliasName": null,
+    "tag": null,
+    "description": "Manually destroy a specific VM",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/b0076576-d514-4d67-a3e0-98e8a57dede9",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/328b953a-6f33-4e57-9746-40b54b84a018",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Deprovision VM Instance",
+            "description": null,
+            "arguments": {
+                "arguments": {
+                    "action_name": "Destroy",
+                    "vm_instance": "{{vars.input.records[0]}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/a9c3e50c-ec63-49f9-8eee-9f1bea51921a"
+            },
+            "status": null,
+            "top": "165",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "5c4f9e19-fdb6-42fb-aceb-0e4cd426d569"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "route": "d0052eeb-79c7-436f-8071-0a5deb572a2b",
+                "resources": [
+                    "v_m_instances"
+                ],
+                "__triggerLimit": true,
+                "inputVariables": [],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    }
+                },
+                "triggerOnSource": true,
+                "displayConditions": {
+                    "v_m_instances": {
+                        "sort": [],
+                        "limit": 30,
+                        "logic": "AND",
+                        "filters": []
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "showToasterMessage": {
+                    "visible": false,
+                    "messageVisible": true
+                },
+                "triggerOnReplicate": false,
+                "singleRecordExecution": true
+            },
+            "status": null,
+            "top": "30",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "328b953a-6f33-4e57-9746-40b54b84a018"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Deprovision VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/5c4f9e19-fdb6-42fb-aceb-0e4cd426d569",
+            "sourceStep": "\/api\/3\/workflow_steps\/328b953a-6f33-4e57-9746-40b54b84a018",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f77564b1-482a-46f7-ab17-583a14862b87"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
+    "uuid": "416b0cc1-c88e-4b6c-8609-504ac98d7a02",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Destroy"
+    ]
+}

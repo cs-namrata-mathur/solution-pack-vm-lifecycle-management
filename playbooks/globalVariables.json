@@ -5,13 +5,18 @@
         "default_value": "cloud-ops@fortielab.com"
     },
     {
-        "name": "Server_fqhn",
-        "value": "es13-fs0.fortielab.com:21443",
-        "default_value": "master.fortisoar.in"
+        "name": "VM_Lifecycle_Management_Hypervisor",
+        "value": "KVM",
+        "default_value": "KVM"
     },
     {
         "name": "Current_Date",
         "value": "{{arrow.utcnow().timestamp}}",
         "default_value": "{{arrow.utcnow().timestamp}}"
+    },
+    {
+        "name": "Server_fqhn",
+        "value": "master.fortisoar.in",
+        "default_value": "master.fortisoar.in"
     }
 ]

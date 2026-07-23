@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Select Best Hypervisor",
@@ -23,8 +22,8 @@
             "arguments": {
                 "kvm_free_mem_mb": "{{((vars.steps.KVM_Available_Resources.data.split('\\r\\n')[1]|int) \/ 1024)|int}}",
                 "kvm_free_disk_mb": "{{((vars.steps.KVM_Available_Resources.data.split('\\r\\n')[0]|int) \/ 1024)|int}}",
-                "proxmo_free_mem_mb": "{{((vars.steps.Proxmox_Available_Resources.data.data[0].maxmem - vars.steps.Proxmox_Available_Resources.data.data[0].mem) \/ 1000000) | int}}",
-                "proxmo_free_disk_mb": "{{((vars.steps.Proxmox_Available_Resources.data.data[0].maxdisk - vars.steps.Proxmox_Available_Resources.data.data[0].disk) \/ 1000000)|int}}"
+                "proxmo_free_mem_mb": "{{((vars.proxmoxCluster.maxmem - vars.proxmoxCluster.mem) \/ 1000000) | int}}",
+                "proxmo_free_disk_mb": "{{((vars.proxmoxCluster.maxdisk - vars.proxmoxCluster.disk) \/ 1000000)|int}}"
             },
             "status": null,
             "top": "435",
@@ -144,17 +143,17 @@
             "name": "Proxmox Available Resources",
             "description": null,
             "arguments": {
-                "name": "Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "22ff2a91-fd0f-4526-9130-469e5da75c06",
-                "params": {
-                    "type": "node"
-                },
+                "params": [],
                 "version": "1.0.0",
-                "connector": "proxmox",
+                "connector": "proxmox-ve",
                 "operation": "get_cluster_resources",
                 "operationTitle": "Get Cluster Resources",
                 "pickFromTenant": false,
-                "step_variables": []
+                "step_variables": {
+                    "proxmoxCluster": "{{vars.steps.Proxmox_Available_Resources.data.data | selectattr('id', 'equalto', 'node\/proxmox')| first }}"
+                }
             },
             "status": null,
             "top": "300",
@@ -202,13 +201,13 @@
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Compute resources -> Compute Scores",
+            "name": "Compute resources -> Select Hypervisor",
             "targetStep": "\/api\/3\/workflow_steps\/0b280ab0-d956-4a1a-a166-e9bba341dd70",
             "sourceStep": "\/api\/3\/workflow_steps\/8bbcebce-d311-487d-a980-1dc61974e1b6",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "3207baf1-e97f-4d4a-a42f-c649d1f3b9ea"
+            "uuid": "668eb7c4-6eae-4768-9c01-a84f1772a30e"
         },
         {
             "@type": "WorkflowRoute",
@@ -262,23 +261,23 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Get Available Resources -> Compute resources",
+            "name": "KVM Available Resources -> Compute resources",
             "targetStep": "\/api\/3\/workflow_steps\/8bbcebce-d311-487d-a980-1dc61974e1b6",
             "sourceStep": "\/api\/3\/workflow_steps\/a2b702c6-7efd-4087-8e51-b0867c8baebf",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "81566d3e-010b-42fa-be08-76bbdf53f4b1"
+            "uuid": "c8fd7b12-a887-48d9-9917-c5e6f0a72402"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Get Cluster Status -> Compute resources",
+            "name": "Proxmox Available Resources -> Compute resources",
             "targetStep": "\/api\/3\/workflow_steps\/8bbcebce-d311-487d-a980-1dc61974e1b6",
             "sourceStep": "\/api\/3\/workflow_steps\/cb10159e-b3f5-426c-9962-6f8d52e61abc",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "94bd1d2b-d9f3-45c3-8564-dbdd2870bd0a"
+            "uuid": "75eba337-f0a6-4fa7-8c78-3fa6c7fc5477"
         },
         {
             "@type": "WorkflowRoute",
@@ -311,8 +310,8 @@
         }
     ],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
     "uuid": "770a4d45-6101-4c17-9d39-f2fd660ae9d9",
     "owners": [],
     "isPrivate": false,

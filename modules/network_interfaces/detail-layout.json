@@ -137,8 +137,8 @@
     "isDefault": true,
     "visible": true,
     "viewOptions": "detail",
-    "name": "Base Template",
-    "system": false,
+    "name": "Default Layout",
+    "system": true,
     "uuid": "modules-network_interfaces-detail",
     "newUuid": "e9622e1a-5d4e-4c0c-88b6-ea32318387d5"
 }

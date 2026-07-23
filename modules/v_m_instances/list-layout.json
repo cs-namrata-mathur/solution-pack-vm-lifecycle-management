@@ -54,8 +54,8 @@
     "isDefault": true,
     "visible": true,
     "viewOptions": "list",
-    "name": "Base Template",
-    "system": false,
+    "name": "Default Layout",
+    "system": true,
     "uuid": "modules-v_m_instances-list",
     "newUuid": "74070658-3f8a-4053-a6be-52783ec49934"
 }

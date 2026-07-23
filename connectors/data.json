@@ -1,131 +1,132 @@
 [
-  {
-    "name": "activedirectory",
-    "label": "Active Directory",
-    "category": [
-      "Directory Service"
-    ],
-    "description": "Active Directory (AD) is a directory service that Microsoft developed for Windows domain networks. You can directly query AD to retrieve information about users, groups, and computers, in an organization, by using the Lightweight Directory Access Protocol (LDAP) to directly query the AD.",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "dns",
-    "label": "DNS",
-    "category": [
-      "Information"
-    ],
-    "description": "This connector allows for DNS lookups of both FQDN\/Domain and IP address",
-    "publisher": "CyberSponse Community",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "fortigate-firewall",
-    "label": "Fortinet FortiGate",
-    "category": [
-      "Firewall and Network Protection"
-    ],
-    "description": "Fortinet FortiGate enterprise firewall provide high performance, consolidated advanced security and granular visibility for broad protection across the entire digital attack surface.",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "fortinet-fortimail",
-    "label": "Fortinet FortiMail",
-    "category": [
-      "investigation"
-    ],
-    "description": "Fortinet-FortiMail Connector facilitates automated operation FortiMail email security gateway that monitors email messages on behalf of an organization to identify messages that contain malicious content, including spam, malware and phishing attempts.",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "google-bard",
-    "label": "Google Gemini",
-    "category": [
-      "Miscellaneous"
-    ],
-    "description": "Google Gemini is a conversational AI chatbot, based initially on the LaMDA family of large language models and later the PaLM LLM.",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "imap",
-    "label": "IMAP",
-    "category": [
-      "utilities"
-    ],
-    "description": "Steps related to fetching and parsing email",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "proxmox",
-    "label": "Proxmox",
-    "category": [
-      "Infrastructure"
-    ],
-    "description": "Proxmox VE connector, Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication.",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": []
-  },
-  {
-    "name": "smtp",
-    "label": "SMTP",
-    "category": [
-      "utilities"
-    ],
-    "description": "Steps related to sending email",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "ssh",
-    "label": "SSH",
-    "category": [
-      "utilities"
-    ],
-    "description": "Steps that use an ssh connection. Including sftp and remote code execution",
-    "publisher": "CyberSponse",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  },
-  {
-    "name": "virustotal",
-    "label": "VirusTotal",
-    "category": [
-      "Threat Intelligence"
-    ],
-    "description": "VirusTotal provides a service that analyzes suspicious files and URLs and facilitates the quick detection of viruses, worms, trojans, and all kinds of malware. This connector facilitates automated operations such as scanning and analyzing suspicious files and URLs and retrieving reports from VirusTotal for files, IP addresses, and domains.",
-    "publisher": "Fortinet",
-    "operation_roles": [],
-    "configurations": [],
-    "dataImports": [],
-    "install_mode": "rpm"
-  }
+    {
+        "name": "activedirectory",
+        "label": "Active Directory",
+        "category": [
+            "Directory Service"
+        ],
+        "description": "Active Directory (AD) is a directory service that Microsoft developed for Windows domain networks. You can directly query AD to retrieve information about users, groups, and computers, in an organization, by using the Lightweight Directory Access Protocol (LDAP) to directly query the AD.",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "code-snippet",
+        "label": "Code Snippet",
+        "category": [
+            "utilities"
+        ],
+        "description": "Execute code snippets as part of your Playbooks.",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "dns",
+        "label": "DNS",
+        "category": [
+            "Information"
+        ],
+        "description": "This connector allows for DNS lookups of both FQDN\/Domain and IP address",
+        "publisher": "CyberSponse Community",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "fortigate-firewall",
+        "label": "Fortinet FortiGate",
+        "category": [
+            "Firewall and Network Protection"
+        ],
+        "description": "Fortinet FortiGate enterprise firewall provide high performance, consolidated advanced security and granular visibility for broad protection across the entire digital attack surface.",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "fortinet-fortimail",
+        "label": "Fortinet FortiMail",
+        "category": [
+            "investigation"
+        ],
+        "description": "Fortinet-FortiMail Connector facilitates automated operation FortiMail email security gateway that monitors email messages on behalf of an organization to identify messages that contain malicious content, including spam, malware and phishing attempts.",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "google-bard",
+        "label": "Google Gemini",
+        "category": [
+            "Miscellaneous"
+        ],
+        "description": "Google Gemini is a conversational AI chatbot, based initially on the LaMDA family of large language models and later the PaLM LLM.",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "imap",
+        "label": "IMAP",
+        "category": [
+            "utilities"
+        ],
+        "description": "Steps related to fetching and parsing email",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "proxmox-ve",
+        "label": "Proxmox VE Hypervisor",
+        "category": [
+            "Infrastructure"
+        ],
+        "description": "Proxmox VE connector, Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication.",
+        "publisher": "Fortinet SE",
+        "version": "1.0.0",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": []
+    },
+    {
+        "name": "smtp",
+        "label": "SMTP",
+        "category": [
+            "utilities"
+        ],
+        "description": "Steps related to sending email",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    },
+    {
+        "name": "ssh",
+        "label": "SSH",
+        "category": [
+            "utilities"
+        ],
+        "description": "Steps that use an ssh connection. Including sftp and remote code execution",
+        "publisher": "Fortinet",
+        "operation_roles": [],
+        "configurations": [],
+        "dataImports": [],
+        "install_mode": "rpm"
+    }
 ]

@@ -1,8 +1,7 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
-    "name": "Allow Internet Access on Fortigate",
+    "name": "Allow Internet Access on FortiGate",
     "aliasName": null,
     "tag": null,
     "description": "If Approved VM is allowed to access internet",
@@ -20,6 +19,38 @@
     "steps": [
         {
             "@type": "WorkflowStep",
+            "name": "Add Existing IP to Group",
+            "description": null,
+            "arguments": {
+                "name": "Fortinet FortiGate",
+                "config": "cfa90201-3ce2-4ce9-bdbe-2f47428ea7bc",
+                "params": {
+                    "vdom": "",
+                    "comment": "",
+                    "exclude": "",
+                    "add_member": "{{vars.existing_ip}}",
+                    "group_name": "{{vars.fortigate_address_group}}",
+                    "remove_member": "",
+                    "new_group_name": "",
+                    "address_group_category": "IPv4 Group"
+                },
+                "version": "5.4.0",
+                "connector": "fortigate-firewall",
+                "operation": "update_address_group",
+                "ignore_errors": true,
+                "operationTitle": "Update Address Group",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "780",
+            "left": "1120",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "960f17b8-aee2-43b6-9f05-259280dfd943"
+        },
+        {
+            "@type": "WorkflowStep",
             "name": "Address Already Allowerd",
             "description": null,
             "arguments": {
@@ -27,21 +58,33 @@
                     {
                         "option": "no",
                         "step_iri": "\/api\/3\/workflow_steps\/2801e1f4-1a4b-4ca5-995d-4e248ba3dbfb",
-                        "condition": "{{ vars.ip_address not in vars.members }}",
+                        "condition": "{{ vars.existing_ip is false }}",
                         "step_name": "Create Network Interface Object"
                     },
                     {
                         "option": "yes",
                         "default": true,
                         "step_iri": "\/api\/3\/workflow_steps\/7840a62b-4587-491e-b794-73adc49e8734",
-                        "step_name": "Output"
+                        "step_name": "Create Log Message"
+                    },
+                    {
+                        "option": "no",
+                        "step_iri": "\/api\/3\/workflow_steps\/960f17b8-aee2-43b6-9f05-259280dfd943",
+                        "condition": "{{ vars.existing_ip not in vars.members and vars.addrgrp_error in [none,\"\"] }}",
+                        "step_name": "Add Existing IP to Group"
+                    },
+                    {
+                        "option": "Error",
+                        "step_iri": "\/api\/3\/workflow_steps\/3d811417-9253-4953-ad3b-39e1924d8a49",
+                        "condition": "{{ vars.addrgrp_error is not none and vars.addrgrp_error | length > 0 }}",
+                        "step_name": "Raise Error"
                     }
                 ],
                 "step_variables": []
             },
             "status": null,
-            "top": "570",
-            "left": "125",
+            "top": "620",
+            "left": "940",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
             "uuid": "59823c83-dee0-4021-aa42-d1ef43109e3a"
@@ -71,7 +114,7 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "840",
+            "top": "780",
             "left": "420",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
@@ -83,11 +126,11 @@
             "description": null,
             "arguments": {
                 "ip_address": "{{vars.input.records[0].networkInterfaces.iPAddress}}",
-                "fortigate_address_group": "Allowed_LAN_Devices"
+                "fortigate_address_group": "{{keystore(key_name=\"vm-lifecycle-management-parameters\"). jSONValue.Network.FortiGateAddrGroup}}"
             },
             "status": null,
-            "top": "165",
-            "left": "125",
+            "top": "200",
+            "left": "940",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "b5bdce61-27bc-4098-a19b-a19bb4e28e1c"
@@ -97,11 +140,11 @@
             "name": "Create Log Message",
             "description": null,
             "arguments": {
-                "allow_status": "Internet access for {{vars.ip_address}} status: {{vars.steps.Allow_Internet_if_Requested.status or vars.steps.Get_Address_Group.status}}"
+                "allow_status": "Internet access for {{vars.ip_address}} status: {{vars.steps.Allow_Internet_if_Requested.status or vars.steps.Get_Address_Group.status or vars.steps.Add_Existing_IP_to_Group.status}}"
             },
             "status": null,
-            "top": "975",
-            "left": "125",
+            "top": "780",
+            "left": "740",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "7840a62b-4587-491e-b794-73adc49e8734"
@@ -124,16 +167,44 @@
                 "version": "5.4.0",
                 "connector": "fortigate-firewall",
                 "operation": "create_address",
+                "ignore_errors": false,
                 "operationTitle": "Create Address",
                 "pickFromTenant": false,
                 "step_variables": []
             },
             "status": null,
-            "top": "700",
-            "left": "420",
+            "top": "620",
+            "left": "580",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "2801e1f4-1a4b-4ca5-995d-4e248ba3dbfb"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Address",
+            "description": null,
+            "arguments": {
+                "name": "Fortinet FortiGate",
+                "config": "cfa90201-3ce2-4ce9-bdbe-2f47428ea7bc",
+                "params": {
+                    "name": "{{vars.ip_address}}",
+                    "vdom": "",
+                    "address_category": "IPv4 Address"
+                },
+                "version": "5.4.0",
+                "connector": "fortigate-firewall",
+                "operation": "get_addresses",
+                "ignore_errors": true,
+                "operationTitle": "Get Addresses",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "340",
+            "left": "1140",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "9fda8f54-150c-4a63-b613-f97ed75b9604"
         },
         {
             "@type": "WorkflowStep",
@@ -150,13 +221,14 @@
                 "version": "5.4.0",
                 "connector": "fortigate-firewall",
                 "operation": "get_address_groups",
+                "ignore_errors": true,
                 "operationTitle": "Get Address Groups",
                 "pickFromTenant": false,
                 "step_variables": []
             },
             "status": null,
-            "top": "300",
-            "left": "125",
+            "top": "340",
+            "left": "740",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "fa76ce04-827c-4b4c-900e-7fc291b5ccb6"
@@ -166,14 +238,37 @@
             "name": "Get Address Members",
             "description": null,
             "arguments": {
-                "members": "{{vars.steps.Get_Address_Group.data.results[0].member|yaql('$.name')}}"
+                "members": "{{(vars.steps.Get_Address_Group.data.results[0].member|yaql('$.name')) or []}}",
+                "existing_ip": "{{vars.steps.Get_Address.data.results[0].name|default(false)}}",
+                "addrgrp_error": "{{vars.steps.Get_Address_Group['Error message']}}"
             },
             "status": null,
-            "top": "435",
-            "left": "125",
+            "top": "480",
+            "left": "940",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "6af1703d-30e5-4441-ac5a-08cca93f4ee2"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Raise Error",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "msg": "FortiGate Address Group not found, please add existing address group in the Key Store: 'VMLifecycleManagement'. Error Details:{{vars.addrgrp_error}}"
+                },
+                "version": "3.7.2",
+                "connector": "cyops_utilities",
+                "operation": "raise_exception",
+                "operationTitle": "Utils: Raise Exception",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "620",
+            "left": "1340",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "3d811417-9253-4953-ad3b-39e1924d8a49"
         },
         {
             "@type": "WorkflowStep",
@@ -223,8 +318,8 @@
                 "triggerOnReplicate": false
             },
             "status": null,
-            "top": "30",
-            "left": "125",
+            "top": "80",
+            "left": "940",
             "stepType": "\/api\/3\/workflow_step_types\/9300bf69-5063-486d-b3a6-47eb9da24872",
             "group": null,
             "uuid": "00a626ef-e499-467e-afb9-e0667822e524"
@@ -247,14 +342,34 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "1110",
-            "left": "125",
+            "top": "920",
+            "left": "740",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
             "uuid": "14cc7bb6-f2c9-407b-a1a4-fa9dfa10c09b"
         }
     ],
     "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Add Existing IP to Group -> Create Log Message",
+            "targetStep": "\/api\/3\/workflow_steps\/7840a62b-4587-491e-b794-73adc49e8734",
+            "sourceStep": "\/api\/3\/workflow_steps\/960f17b8-aee2-43b6-9f05-259280dfd943",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "22c9db54-498b-447a-bf4e-fd93e7f6822c"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Address Already Allowerd -> Copy of Get Address",
+            "targetStep": "\/api\/3\/workflow_steps\/960f17b8-aee2-43b6-9f05-259280dfd943",
+            "sourceStep": "\/api\/3\/workflow_steps\/59823c83-dee0-4021-aa42-d1ef43109e3a",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "8feda113-7839-46fa-9bb2-3e2eff223f23"
+        },
         {
             "@type": "WorkflowRoute",
             "name": "Address Already Allowerd -> Create Network Interface Object",
@@ -277,6 +392,16 @@
         },
         {
             "@type": "WorkflowRoute",
+            "name": "Address Already Allowerd -> Raise Error",
+            "targetStep": "\/api\/3\/workflow_steps\/3d811417-9253-4953-ad3b-39e1924d8a49",
+            "sourceStep": "\/api\/3\/workflow_steps\/59823c83-dee0-4021-aa42-d1ef43109e3a",
+            "label": "Error",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6476a0f5-c55a-45a5-9c4c-e03c8218493a"
+        },
+        {
+            "@type": "WorkflowRoute",
             "name": "Allow Internet if Requested -> Output",
             "targetStep": "\/api\/3\/workflow_steps\/7840a62b-4587-491e-b794-73adc49e8734",
             "sourceStep": "\/api\/3\/workflow_steps\/9c90e43e-66fa-42e3-ac02-de4e214f8238",
@@ -284,6 +409,16 @@
             "isExecuted": false,
             "group": null,
             "uuid": "ff205a97-db36-4281-aa28-83682273e3a9"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Copy of Get Address Group",
+            "targetStep": "\/api\/3\/workflow_steps\/9fda8f54-150c-4a63-b613-f97ed75b9604",
+            "sourceStep": "\/api\/3\/workflow_steps\/b5bdce61-27bc-4098-a19b-a19bb4e28e1c",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "58425366-6650-4406-b724-6a74a4e199b0"
         },
         {
             "@type": "WorkflowRoute",
@@ -317,6 +452,16 @@
         },
         {
             "@type": "WorkflowRoute",
+            "name": "Get Address -> Get Address Members",
+            "targetStep": "\/api\/3\/workflow_steps\/6af1703d-30e5-4441-ac5a-08cca93f4ee2",
+            "sourceStep": "\/api\/3\/workflow_steps\/9fda8f54-150c-4a63-b613-f97ed75b9604",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4384ad4d-62dc-4942-a632-cdd43e3838c1"
+        },
+        {
+            "@type": "WorkflowRoute",
             "name": "Get Address Group -> Get Address Members",
             "targetStep": "\/api\/3\/workflow_steps\/6af1703d-30e5-4441-ac5a-08cca93f4ee2",
             "sourceStep": "\/api\/3\/workflow_steps\/fa76ce04-827c-4b4c-900e-7fc291b5ccb6",
@@ -333,7 +478,7 @@
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "1bb39501-e1b0-4c78-a168-e9ead7c02523"
+            "uuid": "a327a707-1a0f-4f58-9379-fa421b2dc4d2"
         },
         {
             "@type": "WorkflowRoute",
@@ -346,10 +491,28 @@
             "uuid": "30c1c66e-d96a-40e6-b330-ead24562f817"
         }
     ],
-    "groups": [],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "IP Exists Already",
+            "description": "If the IP address already exists but is not part of the Allow_Address_Group",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "340",
+            "left": "1400",
+            "height": "0",
+            "width": "300",
+            "uuid": "215c1a6c-4fba-4e3a-985c-5ba779482e95",
+            "recordTags": []
+        }
+    ],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-    "isEditable": true,
+    "playbookOrigin": "\/api\/3\/picklists\/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+    "isEditable": false,
     "uuid": "0a7f4a8f-9742-42c6-9c48-96aa5174f939",
     "owners": [],
     "isPrivate": false,
