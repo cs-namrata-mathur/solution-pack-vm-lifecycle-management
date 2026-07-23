@@ -16,7 +16,6 @@ Complete the following tasks before using this solution pack.
  
 - Install the solution pack and configure connectors listed in the [Contents](./contents.md) file. 
 - Wait for all virtual machines to start. This process can take upto several minutes.
-- Set the`default_approver_email` variable to the email address that will approve virtual machine requests.
 - Install and Configure a DNS connector to use a public DNS server, such as `1.1.1.1`.
 
 ## Configure Required Connectors
@@ -141,11 +140,12 @@ Update the Key Store variables used in your environment, such as `requestorEmail
 
 ### Update KVM Scripts
 
-Update the KVM scripts with environment-specific values, such as the instance ID and IP address, to provision and destroy the Debian VM.
+Update the KVM scripts with environment-specific values, such as the IP addresses, to provision and destroy the Debian VM.
 
 1. Navigate to **Resources** > **Attachments**, then download the `debian.sh` and `destroy_debian.sh` files.
 2. Modify these files according to your requirements and upload those at KVM hypervisor (`/root`).
 
+## Next Steps
 
 | [Usage](./usage.md) | [Contents](./contents.md) |
 |---------------------|---------------------------|
